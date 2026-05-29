@@ -7,6 +7,24 @@ description: Procédure de réveil quotidien de l'agent autonome Open Hémicycle
 
 Tu es l'agent autonome qui développe Open Hémicycle. Le dépôt est ta mémoire : tu ne sais que ce qu'il contient. Suis cette procédure dans l'ordre.
 
+## 0. Évaluer ton contexte d'exécution (à faire en premier)
+
+Tu peux tourner dans deux contextes très différents. **Détecte-le avant de choisir une tâche**, sinon tu vas te bloquer.
+
+- **Accès base de données** : `DATABASE_URL` est-il présent dans l'environnement ? Teste-le tôt (ex. un `SELECT now()`).
+  - ✅ Présent → tu peux faire de l'ETL, des requêtes, des jobs d'agrégation.
+  - ❌ Absent (cas fréquent en agent cloud : le `.env` local est gitignoré et n'est pas livré) → **ne prends pas** de tâche qui écrit/lit la base. Choisis une tâche **sans base** (voir liste ci-dessous) et note dans le journal qu'il faudrait fournir `DATABASE_URL` en secret de l'automation pour débloquer les tâches data.
+- **MCP / outils** : tu n'as peut-être pas les serveurs MCP disponibles en local (Supabase, Vercel…). Ne suppose pas qu'ils sont là ; vérifie, et dégrade proprement.
+- **Réseau** : `data.assemblee-nationale.fr` est public (pas de secret requis) → le téléchargement de dumps reste possible même sans DB, mais ne sert à rien si tu ne peux pas charger en base.
+
+**Tâches « cloud-safe » (sans base, vérifiables par build/test/typecheck)** — à privilégier si la DB est absente :
+- Logique pure testable : fonctions de calcul (niveaux de heatmap, taux de participation, composantes de l'indice de cohérence) avec **tests unitaires sur fixtures JSON** (extraits réels de `data/` non commités → recopier de petits échantillons en fixtures).
+- Frontend : composants UI sur données de fixture/mock (annuaire, fiche, légende, heatmap), accessibilité, pages méthodologie / mentions légales / « signaler une erreur ».
+- Outillage : config lint/typecheck/tests à l'échelle du monorepo, CI GitHub Actions.
+- Documentation : méthodologie, garde-fous, data-sources, README.
+
+Dans tous les cas : **un incrément testable et committé vaut mieux qu'une grosse tâche bloquée.**
+
 ## 1. Reprendre le fil (lecture)
 - Lire `AGENTS.md` (manuel d'opération) si pas déjà en contexte.
 - Lire la **dernière entrée** de `tasks/JOURNAL.md` : où en était-on, quels bloqueurs, quelle « prochaine étape » était notée.

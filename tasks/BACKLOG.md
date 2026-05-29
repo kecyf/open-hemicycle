@@ -37,7 +37,8 @@ Priorité : P0 (critique) · P1 · P2.
 
 | ID | Prio | Statut | Tâche |
 |----|------|--------|-------|
-| 2.1 | P0 | next | Job `activite_journaliere` (heatmap) |
+| 2.0 | P0 | next | **(cloud-safe, sans DB)** Outiller les tests (vitest) + fonctions de calcul **pures** (niveaux heatmap 0–4, taux de participation, composantes indice de cohérence) avec tests unitaires sur fixtures. Base réutilisée ensuite par les jobs DB. |
+| 2.1 | P0 | next | Job `activite_journaliere` (heatmap) — branche les fonctions pures de 2.0 sur la DB |
 | 2.2 | P1 | next | Calcul des 3 taux de participation |
 | 2.3 | P0 | next | API : recherche/liste député·es |
 | 2.4 | P0 | next | API : fiche député·e + données heatmap |
