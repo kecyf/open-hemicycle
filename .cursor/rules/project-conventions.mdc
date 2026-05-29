@@ -1,0 +1,18 @@
+---
+description: Conventions techniques d'Open Hémicycle (stack, structure, données).
+alwaysApply: true
+---
+
+# Conventions techniques
+
+- **Langage** : TypeScript partout.
+- **Paquets** : pnpm + workspaces. Apps dans `apps/`, libs partagées dans `packages/`.
+- **Web** : Next.js (App Router) + Tailwind + shadcn/ui. Charts : Recharts ; heatmap : `react-activity-calendar`.
+- **DB** : PostgreSQL (Supabase) via Drizzle ORM. Table pré-agrégée `activite_journaliere` pour la heatmap.
+- **ETL** : `packages/etl`, scripts TypeScript. Source live = `data.assemblee-nationale.fr` (PAS le miroir data.gouv, figé en 2022).
+- **Données brutes** : téléchargées dans `data/raw/`, **jamais commitées**.
+- **Secrets** : `.env` local non commité ; documenter dans `.env.example`.
+- **Commits** : Conventional Commits (`feat:`, `fix:`, `docs:`, `chore:`, `refactor:`…).
+- **Identifiants AN** : `PA*` acteurs, `PO*` organes, `VTANR5L17V*` scrutins, `AMANR5*` amendements.
+
+Voir `AGENTS.md` pour la boucle de travail et `docs/data-sources.md` pour les URLs.

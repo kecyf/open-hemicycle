@@ -1,0 +1,20 @@
+{
+  "name": "@open-hemicycle/etl",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "license": "AGPL-3.0-or-later",
+  "description": "Pipeline d'ingestion des données ouvertes de l'Assemblée nationale.",
+  "bin": {
+    "oh-etl": "./src/cli.ts"
+  },
+  "scripts": {
+    "sources": "tsx src/cli.ts sources",
+    "check": "tsx src/cli.ts check",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.0"
+  }
+}

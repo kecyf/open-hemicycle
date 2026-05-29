@@ -1,0 +1,18 @@
+{
+  "name": "open-hemicycle",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Observatoire citoyen ouvert de l'activité parlementaire française.",
+  "license": "AGPL-3.0-or-later",
+  "type": "module",
+  "packageManager": "pnpm@10.33.0",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "etl": "pnpm --filter @open-hemicycle/etl",
+    "web": "pnpm --filter @open-hemicycle/web",
+    "lint": "echo \"(lint à configurer en Phase 1)\"",
+    "typecheck": "echo \"(typecheck à configurer en Phase 1)\""
+  }
+}

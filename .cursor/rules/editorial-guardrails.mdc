@@ -1,0 +1,26 @@
+---
+description: Lignes rouges éditoriales et juridiques d'Open Hémicycle. À respecter dans tout code, contenu, texte d'UI, commit ou communication.
+alwaysApply: true
+---
+
+# Lignes rouges éditoriales (NON négociables)
+
+Open Hémicycle traite de personnes publiques à partir de données publiques. Le risque est éditorial/juridique. Ces règles priment sur toute autre considération (y compris l'« impact »).
+
+## Jamais
+- Aucun **adjectif moral** sur une personne dans le code, l'UI, les commits ou la doc (« hypocrite », « menteur », « paresseux », « corrompu », « député fantôme »…).
+- Aucun **score unique** présenté comme une « note d'honnêteté / de moralité ».
+- Aucun **classement « top des pires »** affiché par défaut.
+- Aucune assimilation **non-vote = opposition** (distinguer pour / contre / abstention / non-votant).
+- Aucune **donnée de vie privée ou de santé**.
+- Aucune **asymétrie** de traitement entre groupes politiques.
+
+## Toujours
+- **Fait + source + date + lien** vers le scrutin/document officiel.
+- **Contexte** affiché (fonction, délégation de vote, période de mandat).
+- **Méthodologie** liée et publique pour chaque indicateur.
+- **Droit de réponse / signalement d'erreur** accessible.
+- Parler d'**« activité détectée »**, jamais de **« présence »** sans légende sur les limites des données.
+
+## En cas de doute
+La prudence gagne. Si un texte d'UI ou un indicateur pourrait être lu comme un jugement, le reformuler en fait sourcé. Référence : `docs/legal-guardrails.md` et `docs/METHODOLOGY.md`.

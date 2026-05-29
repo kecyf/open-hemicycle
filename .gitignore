@@ -1,0 +1,39 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Build outputs
+dist/
+build/
+.next/
+out/
+
+# Env / secrets
+.env
+.env.*
+!.env.example
+
+# Data (raw dumps & local DB artifacts — not committed)
+data/raw/
+data/tmp/
+*.zip
+*.sqlite
+*.db
+
+# Logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+
+# OS / editor
+.DS_Store
+.idea/
+*.swp
+
+# Coverage / test
+coverage/
+.nyc_output/
+
+# Vercel / Supabase
+.vercel/
+.supabase/
