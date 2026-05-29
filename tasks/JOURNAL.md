@@ -4,6 +4,23 @@ Entrées les plus récentes en haut. Le dépôt est la mémoire de l'agent : ce 
 
 ---
 
+## 2026-05-29 (nuit, +2) — 📊 Heatmap d'activité (votes-only) de bout en bout
+
+- **Objectif** : rendre visible l'activité parlementaire façon « GitHub contributions », vertical slice complet (calcul pur → job → UI), v1 votes-only assumée.
+- **Fait** :
+  - **Nouveau package `@open-hemicycle/core`** (fonctions PURES, sans dépendance base/réseau, **testé vitest**) : `scoreJour` (poids METHODOLOGY §2), `computeSeuilsNiveaux` (quantiles q25/q50/q75 **sur la population** → couleurs comparables entre fiches), `niveauPourScore` (0–4), helpers participation (`votesExprimes`/`tauxExpression`, non-vote ≠ opposition). **12 tests verts.**
+  - **Job ETL `job:activite`** (`packages/etl/src/jobs/activite.ts`) : agrège en SQL les votes exprimés par (député × jour, fuseau Europe/Paris), calcule les seuils population, reconstruit `activite_journaliere`. Branché au CLI (+ inclus dans `ingest:all`).
+  - **Exécuté sur la DB live** : **66 080 lignes** (576 députés, 2024-10-08 → 2026-05-29). Seuils **2 / 9 / 22** votes. Distribution niveaux équilibrée (n1≈19,2k / n2≈15,0k / n3≈15,4k / n4≈16,4k).
+  - **UI** : composant `ActivityHeatmap` **rendu serveur, sans dépendance externe** (grille semaines × jours, étiquettes mois, légende Moins→Plus, tooltips date+nb votes), branché sur la fiche au-dessus des positions de vote. Légende méthodo + disclaimer « pas une présence ».
+  - **Vérifié** : build Turbopack + typecheck + lint verts ; en local, fiche `aurelie-trouve-95164` → section heatmap + 130 cases colorées (niveau>0).
+- **Appris** :
+  - Échelle de couleur **population-wide** (et non par individu) = condition pour comparer deux fiches honnêtement ; c'est ce que dit METHODOLOGY §2 (quantiles sur la population).
+  - Heatmap maison = zéro risque SSR/bundle vs lib client, et colle aux design tokens. Suffisant pour un POC.
+- **Bloqueurs** : aucun.
+- **Prochaine étape** : (a) explorateur de scrutin/texte (votes par groupe) ; (b) enrichir le score (amendements/questions/interventions) quand les datasets seront ingérés ; (c) AMO30 (55k votes manquants) ; (d) lien scrutin↔dossier (préalable aux thèmes / indice de cohérence).
+
+---
+
 ## 2026-05-29 (nuit) — 🚀 Le site devient vivant : annuaire + fiches sur vraies données
 
 - **Objectif** : « ship fast » — brancher le web sur la base pour transformer la landing morte en vrai produit, en assumant que la data est encore partielle.

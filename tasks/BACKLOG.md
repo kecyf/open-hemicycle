@@ -37,8 +37,8 @@ Priorité : P0 (critique) · P1 · P2.
 
 | ID | Prio | Statut | Tâche |
 |----|------|--------|-------|
-| 2.0 | P0 | next | **(cloud-safe, sans DB)** Outiller les tests (vitest) + fonctions de calcul **pures** (niveaux heatmap 0–4, taux de participation, composantes indice de cohérence) avec tests unitaires sur fixtures. Base réutilisée ensuite par les jobs DB. |
-| 2.1 | P0 | next | Job `activite_journaliere` (heatmap) — branche les fonctions pures de 2.0 sur la DB |
+| 2.0 | P0 | done | `@open-hemicycle/core` : fonctions pures (score jour, seuils quantiles 0–4, participation) + 12 tests vitest |
+| 2.1 | P0 | done | Job `activite_journaliere` (heatmap) — branché sur la DB (66 080 lignes, seuils 2/9/22) |
 | 2.2 | P1 | next | Calcul des 3 taux de participation |
 | 2.3 | P0 | done | Accès données : recherche/liste député·es (server component Drizzle) |
 | 2.4 | P0 | in-progress | Accès données : fiche député·e — votes faits ; reste la heatmap (dépend 2.1) |
@@ -49,7 +49,7 @@ Priorité : P0 (critique) · P1 · P2.
 | ID | Prio | Statut | Tâche |
 |----|------|--------|-------|
 | 3.1 | P0 | done | Annuaire/recherche député·es (filtre groupe, couleurs + effectifs) — en ligne |
-| 3.2 | P0 | in-progress | Fiche député·e : votes + contexte + légende faits ; reste la heatmap |
+| 3.2 | P0 | done | Fiche député·e : heatmap d'activité (votes) + votes par position + contexte + légende |
 | 3.3 | P0 | next | Explorateur texte de loi (votes par groupe) |
 | 3.4 | P0 | next | Page méthodologie + mentions légales + signaler une erreur |
 | 3.5 | P1 | hitl | Déploiement Vercel + Supabase (validation humaine) |

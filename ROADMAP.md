@@ -24,14 +24,15 @@ Horizon de référence : **Jalon M1 à ~1 mois** (POC public fonctionnel). Le d�
 - [~] Validation : effectifs par groupe cohérents ; reste cross-check nominatif vs NosDéputés.
 
 ## Phase 2 — Agrégation & API (semaine 2–3)
-- [ ] Calcul `activite_journaliere` (heatmap) selon METHODOLOGY §2.
+- [x] Fonctions de calcul pures (`@open-hemicycle/core`) + tests vitest (score, seuils 0–4, participation).
+- [x] Calcul `activite_journaliere` (heatmap) selon METHODOLOGY §2 — job ETL, 66 080 lignes (votes-only).
 - [ ] Calcul des 3 taux de participation (METHODOLOGY §3).
 - [x] Accès données (server components Drizzle) : liste/recherche député·es, fiche député·e + répartition des votes.
 - [ ] Scrutin + votes par groupe.
 
 ## Phase 3 — Frontend POC (semaine 3–4)
 - [x] Page recherche/annuaire des député·es (filtre groupe, couleurs + effectifs) — **en ligne**.
-- [~] Fiche député·e : détail votes (pour/contre/abstention/non-votant) + contexte + légende faits ; **reste la heatmap** (dépend du job d'agrégation).
+- [x] Fiche député·e : **heatmap d'activité (votes)** + détail votes (pour/contre/abstention/non-votant) + contexte + légende.
 - [ ] Explorateur d'un texte de loi : qui a voté quoi, par groupe.
 - [ ] Page méthodologie + mentions légales + bouton « signaler une erreur ».
 - [x] Déploiement continu Vercel depuis `main` (landing + pages data).

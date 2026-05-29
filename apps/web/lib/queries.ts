@@ -14,6 +14,7 @@ import {
   affiliationsGroupe,
   votes,
   scrutins,
+  activiteJournaliere,
   type Position,
 } from "@open-hemicycle/db";
 
@@ -175,6 +176,30 @@ export async function getVoteStats(deputeId: string): Promise<VoteStats> {
     exprimes,
     tauxExpression: total > 0 ? exprimes / total : null,
   };
+}
+
+export interface ActiviteJour {
+  jour: string; // YYYY-MM-DD
+  niveau: number; // 0–4
+  nbVotes: number;
+}
+
+/**
+ * Série d'activité journalière d'un·e député·e (pour la heatmap).
+ * Ne contient que les jours actifs ; les jours absents = niveau 0.
+ */
+export async function getActiviteJournaliere(deputeId: string): Promise<ActiviteJour[]> {
+  const db = getDb();
+  const rows = await db
+    .select({
+      jour: activiteJournaliere.jour,
+      niveau: activiteJournaliere.niveau,
+      nbVotes: activiteJournaliere.nbVotes,
+    })
+    .from(activiteJournaliere)
+    .where(eq(activiteJournaliere.deputeId, deputeId))
+    .orderBy(asc(activiteJournaliere.jour));
+  return rows.map((r) => ({ jour: r.jour, niveau: r.niveau, nbVotes: r.nbVotes }));
 }
 
 /** Quelques compteurs globaux pour le contexte (affichés sur la landing/annuaire). */

@@ -1,7 +1,8 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getDeputeBySlug, getVoteStats } from "../../../lib/queries";
+import { getActiviteJournaliere, getDeputeBySlug, getVoteStats } from "../../../lib/queries";
 import { ActivityDisclaimer, DataNotice } from "../../_components/data-notice";
+import { ActivityHeatmap } from "../../_components/activity-heatmap";
 
 export const dynamic = "force-dynamic";
 
@@ -39,7 +40,10 @@ export default async function DeputePage({
   const depute = await getDeputeBySlug(slug);
   if (!depute) notFound();
 
-  const stats = await getVoteStats(depute.id);
+  const [stats, activite] = await Promise.all([
+    getVoteStats(depute.id),
+    getActiviteJournaliere(depute.id),
+  ]);
   const color = groupColor(depute.couleurHex);
   const segments = [
     { ...POSITIONS[0], value: stats.pour },
@@ -83,6 +87,22 @@ export default async function DeputePage({
           </a>
         )}
       </header>
+
+      <section className="flex flex-col gap-4" aria-labelledby="activite-titre">
+        <h2 id="activite-titre" className="text-sm font-semibold uppercase tracking-wider text-muted">
+          Activité détectée (votes)
+        </h2>
+        {activite.length === 0 ? (
+          <p className="text-sm text-muted">Aucune activité de vote enregistrée sur la période.</p>
+        ) : (
+          <ActivityHeatmap data={activite} />
+        )}
+        <p className="text-xs leading-relaxed text-muted">
+          Chaque case = un jour ; l'intensité reflète le nombre de votes exprimés, sur une
+          échelle commune à tou·te·s les député·es (quantiles de population). En v1, seuls les
+          votes sont comptés — amendements, questions et interventions viendront enrichir le score.
+        </p>
+      </section>
 
       <section className="flex flex-col gap-5" aria-labelledby="votes-titre">
         <div className="flex items-baseline justify-between">

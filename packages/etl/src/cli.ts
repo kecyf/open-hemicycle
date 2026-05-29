@@ -9,6 +9,7 @@
  *   ingest:deputes    Importe députés + groupes + affiliations (AMO10).
  *   ingest:scrutins   Importe scrutins + votes individuels.
  *   ingest:all        Enchaîne deputes puis scrutins.
+ *   job:activite      (Re)calcule la table activite_journaliere (heatmap).
  *
  * Les commandes d'ingestion nécessitent DATABASE_URL (voir .env.example).
  */
@@ -17,6 +18,7 @@ import { AN_DATASETS, AN_DAILY_PUBLICATION_INDEX, datasetUrl } from "./sources.t
 import { downloadDataset } from "./lib/download.ts";
 import { importDeputes } from "./import/deputes.ts";
 import { importScrutins } from "./import/scrutins.ts";
+import { computeActiviteJournaliere } from "./jobs/activite.ts";
 
 const LEGISLATURE = process.env.AN_LEGISLATURE ?? "17";
 
@@ -78,10 +80,14 @@ async function main(): Promise<void> {
     case "ingest:all":
       await importDeputes(LEGISLATURE);
       await importScrutins(LEGISLATURE);
+      await computeActiviteJournaliere();
+      break;
+    case "job:activite":
+      await computeActiviteJournaliere();
       break;
     default:
       console.error(
-        `Commande inconnue: ${cmd}\nUsage: oh-etl [sources|check|download|ingest:deputes|ingest:scrutins|ingest:all]`,
+        `Commande inconnue: ${cmd}\nUsage: oh-etl [sources|check|download|ingest:deputes|ingest:scrutins|ingest:all|job:activite]`,
       );
       process.exit(1);
   }

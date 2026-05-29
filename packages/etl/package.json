@@ -15,9 +15,11 @@
     "ingest:deputes": "tsx src/cli.ts ingest:deputes",
     "ingest:scrutins": "tsx src/cli.ts ingest:scrutins",
     "ingest:all": "tsx src/cli.ts ingest:all",
+    "job:activite": "tsx src/cli.ts job:activite",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@open-hemicycle/core": "workspace:*",
     "@open-hemicycle/db": "workspace:*",
     "adm-zip": "^0.5.16",
     "drizzle-orm": "^0.38.0",
