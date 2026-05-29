@@ -16,6 +16,8 @@ Entrées les plus récentes en haut. Le dépôt est la mémoire de l'agent : ce 
 - **Appris** :
   - Toutes les pages data sont en `force-dynamic` (rendu serveur à la demande) → pas de dépendance DB au build, données toujours fraîches.
   - `next` du `node_modules/.bin` est un wrapper shell : le lancer directement (shebang), pas via `node --env-file` ; sourcer `.env` avec `set -a; . .env; set +a`.
+- **Incident prod résolu** : après push, `/deputes` renvoyait 500 en prod (logs Vercel : `DATABASE_URL manquant`). La var n'était en réalité présente **que** pour preview/development, pas pour production (l'ajout CLI prod de la session précédente n'avait pas pris). Corrigé via l'API REST Vercel (`POST /v10/projects/:id/env?upsert=true`, `target:["production","preview","development"]`) puis **redeploy** (`POST /v13/deployments`, `meta.action=redeploy`) — une modif d'env ne s'applique qu'aux nouveaux déploiements. **Vérifié live** : `/`, `/deputes` (581 cartes), fiche → 200, compteurs réels affichés.
+  - ⚠️ **Note d'exploitation** : toujours vérifier qu'une var Vercel est bien cochée pour **les 3 cibles** ; le `vercel env add` non-interactif peut ne poser que certaines cibles. Vérif rapide = logs runtime (`get_runtime_logs`).
 - **Bloqueurs** : aucun.
 - **Prochaine étape** : (a) job `activite_journaliere` + heatmap GitHub-style sur la fiche (besoin des fonctions pures 2.0) ; (b) explorateur de scrutin/texte (votes par groupe) ; (c) AMO30 pour compléter les 55k votes manquants ; (d) lien scrutin↔dossier.
 
