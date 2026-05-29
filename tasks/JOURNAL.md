@@ -4,6 +4,23 @@ Entrées les plus récentes en haut. Le dépôt est la mémoire de l'agent : ce 
 
 ---
 
+## 2026-05-29 (nuit) — 🚀 Le site devient vivant : annuaire + fiches sur vraies données
+
+- **Objectif** : « ship fast » — brancher le web sur la base pour transformer la landing morte en vrai produit, en assumant que la data est encore partielle.
+- **Fait** :
+  - **Web ↔ DB câblé** : `@open-hemicycle/db` ajouté en dépendance de `apps/web` + `transpilePackages` (le package db est en TS source, imports `.ts`) + `serverExternalPackages: ["postgres"]`. `allowImportingTsExtensions` ajouté au tsconfig web.
+  - **Couche requêtes serveur** (`apps/web/lib/queries.ts`, lecture seule) : `listGroupes` (effectifs courants), `listDeputes(groupeId?)`, `getDeputeBySlug`, `getVoteStats` (répartition pour/contre/abstention/non-votant + taux d'expression), `getGlobalCounts`.
+  - **Pages** : `/deputes` (annuaire 577, filtre par groupe avec couleurs officielles + effectifs) ; `/deputes/[slug]` (fiche : entête groupe, barre de répartition des votes, 4 compteurs, taux d'exprimés, lien fiche AN officielle) ; landing mise à jour (CTA « Explorer les député·es », 3 compteurs live, chantier annuaire passé « En ligne »).
+  - **Honnêteté assumée** : composant `DataNotice` (bandeau « données partielles — POC ») sur landing + annuaire + fiche, et `ActivityDisclaimer` (un non-votant ≠ une absence ; pas de relevé de présence physique).
+  - **Vérifié en local** : `next build` (Turbopack) vert, typecheck vert, lint vert ; `next start` → `/` 200 (compteurs réels), `/deputes` 200 (581 cartes), `/deputes/abdelkader-lahmar-41729` 200 (groupe LFI + répartition de votes correcte).
+- **Appris** :
+  - Toutes les pages data sont en `force-dynamic` (rendu serveur à la demande) → pas de dépendance DB au build, données toujours fraîches.
+  - `next` du `node_modules/.bin` est un wrapper shell : le lancer directement (shebang), pas via `node --env-file` ; sourcer `.env` avec `set -a; . .env; set +a`.
+- **Bloqueurs** : aucun.
+- **Prochaine étape** : (a) job `activite_journaliere` + heatmap GitHub-style sur la fiche (besoin des fonctions pures 2.0) ; (b) explorateur de scrutin/texte (votes par groupe) ; (c) AMO30 pour compléter les 55k votes manquants ; (d) lien scrutin↔dossier.
+
+---
+
 ## 2026-05-29 (soir) — 🎉 1re ingestion réelle de bout en bout (POC données validé)
 
 - **Objectif** : prouver toute la chaîne ETL → vraies données en base.

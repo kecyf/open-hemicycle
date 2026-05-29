@@ -16,13 +16,20 @@ const principes = [
   },
 ];
 
+import Link from "next/link";
+import { getGlobalCounts } from "../lib/queries";
+import { DataNotice } from "./_components/data-notice";
+
+export const dynamic = "force-dynamic";
+
 const chantiers = [
-  { label: "Recherche d'un·e député·e + activité", etat: "À venir" },
+  { label: "Annuaire + activité de vote des député·es", etat: "En ligne" },
   { label: "Exploration d'un texte de loi (votes par groupe)", etat: "À venir" },
   { label: "Indice de cohérence factuel par thème", etat: "À venir" },
 ];
 
-export default function Home() {
+export default async function Home() {
+  const counts = await getGlobalCounts().catch(() => null);
   return (
     <main className="mx-auto flex min-h-screen max-w-3xl flex-col gap-16 px-6 py-20">
       <header className="flex flex-col gap-6">
@@ -44,20 +51,39 @@ export default function Home() {
           activité, et la cohérence entre leurs positions affichées et leurs actes.
         </p>
         <div className="flex flex-wrap gap-3">
+          <Link
+            href="/deputes"
+            className="rounded-lg bg-accent px-4 py-2 text-sm font-medium text-background transition-opacity hover:opacity-90"
+          >
+            Explorer les député·es
+          </Link>
           <a
             href="https://github.com/kecyf/open-hemicycle"
-            className="rounded-lg bg-accent px-4 py-2 text-sm font-medium text-background transition-opacity hover:opacity-90"
+            className="rounded-lg border border-border px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-card"
           >
             Voir le code sur GitHub
           </a>
-          <a
-            href="https://github.com/kecyf/open-hemicycle/blob/main/docs/METHODOLOGY.md"
-            className="rounded-lg border border-border px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-card"
-          >
-            Méthodologie
-          </a>
         </div>
+
+        {counts && (
+          <dl className="mt-2 flex flex-wrap gap-x-8 gap-y-2 text-sm">
+            <div className="flex items-baseline gap-2">
+              <dt className="text-muted">Député·es</dt>
+              <dd className="font-semibold tabular-nums">{counts.deputes.toLocaleString("fr-FR")}</dd>
+            </div>
+            <div className="flex items-baseline gap-2">
+              <dt className="text-muted">Scrutins</dt>
+              <dd className="font-semibold tabular-nums">{counts.scrutins.toLocaleString("fr-FR")}</dd>
+            </div>
+            <div className="flex items-baseline gap-2">
+              <dt className="text-muted">Votes nominatifs</dt>
+              <dd className="font-semibold tabular-nums">{counts.votes.toLocaleString("fr-FR")}</dd>
+            </div>
+          </dl>
+        )}
       </header>
+
+      <DataNotice />
 
       <section className="flex flex-col gap-6" aria-labelledby="principes-titre">
         <h2 id="principes-titre" className="text-sm font-semibold uppercase tracking-wider text-muted">
@@ -78,14 +104,27 @@ export default function Home() {
           Ce qui arrive
         </h2>
         <ul className="flex flex-col divide-y divide-border overflow-hidden rounded-xl border border-border bg-card">
-          {chantiers.map((c) => (
-            <li key={c.label} className="flex items-center justify-between gap-4 px-5 py-4">
-              <span className="text-sm">{c.label}</span>
-              <span className="shrink-0 rounded-full border border-border px-2.5 py-0.5 text-xs text-muted">
-                {c.etat}
-              </span>
-            </li>
-          ))}
+          {chantiers.map((c) => {
+            const live = c.etat === "En ligne";
+            return (
+              <li key={c.label} className="flex items-center justify-between gap-4 px-5 py-4">
+                {live ? (
+                  <Link href="/deputes" className="text-sm hover:text-accent">
+                    {c.label}
+                  </Link>
+                ) : (
+                  <span className="text-sm">{c.label}</span>
+                )}
+                <span
+                  className={`shrink-0 rounded-full border px-2.5 py-0.5 text-xs ${
+                    live ? "border-accent/40 bg-accent/10 text-accent" : "border-border text-muted"
+                  }`}
+                >
+                  {c.etat}
+                </span>
+              </li>
+            );
+          })}
         </ul>
       </section>
 
