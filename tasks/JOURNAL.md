@@ -18,7 +18,8 @@ Entrées les plus récentes en haut. Le dépôt est la mémoire de l'agent : ce 
   - Insertion 1,05 M lignes : batch 5000 + `onConflictDoNothing` → ~200 s sur Supabase eu-west-3. OK pour un chargement initial ; l'incrémental viendra.
 - **Limite connue** : **55 010 votes ignorés** (acteurRef hors AMO10 = députés non actifs / suppléants partis). → nécessite **AMO30** (acteurs historiques) pour 100 % de complétude. Tâche ajoutée au backlog (1.4b).
 - **Bloqueurs** : aucun.
-- **Prochaine étape** : (a) câbler le réveil quotidien ; (b) brancher le web sur la DB (server components Drizzle) pour afficher de vrais chiffres ; (c) job `activite_journaliere` (heatmap) ; (d) lien scrutin↔dossier (1.6).
+- **Réveil quotidien** : formulaire Glass Automations pré-rempli (cron `0 8 * * *`, TZ Europe/Paris, repo `kecyf/open-hemicycle`, prompt = boucle `daily-standup`). ⚠️ L'API backend des automations n'est pas appelable depuis l'agent → création via l'UI Glass ; **sauvegarde finale = action superviseur** (compute cloud récurrent). Tant que non sauvegardé, réveil possible en local via la skill `loop`.
+- **Prochaine étape** : (a) brancher le web sur la DB (server components Drizzle) pour afficher de vrais chiffres sur la landing ; (b) job `activite_journaliere` (heatmap) ; (c) lien scrutin↔dossier (1.6) ; (d) AMO30 (1.4b).
 
 ---
 

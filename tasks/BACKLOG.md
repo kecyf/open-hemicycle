@@ -16,7 +16,7 @@ Priorité : P0 (critique) · P1 · P2.
 | 0.3 | P0 | done | Harness agentique (AGENTS.md, rules, skills) |
 | 0.4 | P0 | done | Squelette monorepo pnpm (`apps/web`, `packages/etl`, configs) |
 | 0.5 | P0 | done | Repo GitHub public + push initial |
-| 0.6 | P1 | next | Câbler la Cursor Automation quotidienne |
+| 0.6 | P1 | hitl | Cursor Automation quotidienne : formulaire Glass pré-rempli (cron 08:00 Paris) → reste la sauvegarde par le superviseur |
 | 0.7 | P2 | next | Choisir/réserver un nom de domaine (HITL si payant) |
 
 ## Phase 1 — Données
