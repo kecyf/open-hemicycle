@@ -4,6 +4,21 @@ Entrées les plus récentes en haut. Le dépôt est la mémoire de l'agent : ce 
 
 ---
 
+## 2026-05-29 (fin d'après-midi) — DATABASE_URL branché → ETL débloqué
+
+- **Objectif** : récupérer les credentials DB et les câbler partout.
+- **Fait** :
+  - `DATABASE_URL` (Transaction pooler IPv4, `prepare:false`) renseigné dans `.env` local par le superviseur.
+  - **Connexion live vérifiée** : `SELECT now()` OK + 10 tables publiques bien présentes.
+  - **Vercel** : `DATABASE_URL` posé en **Production** (CLI) puis **Preview + Development** (API REST Vercel, `upsert=true`). Les 3 environnements OK.
+  - `.env.example` / `.env` clarifiés : pour Drizzle, **`DATABASE_URL` suffit** (connexion Postgres directe = tous droits + bypass RLS). Le `service_role`/`sb_secret_…` n'est utile **que** pour le SDK supabase-js (PostgREST), inutile à l'ETL → marqué optionnel.
+- **Appris** :
+  - `vercel env add` (CLI v54) en non-TTY : exige `--value … --yes`, et pour **preview** réclame un git-branch (`git_branch_required`) qu'il ne sait pas contourner proprement → passer par l'**API REST** (`POST /v10/projects/:id/env`, `target:["preview"|"development"]`).
+- **Bloqueurs** : levés. L'ingestion réelle peut commencer.
+- **Prochaine étape** : 1er script ETL (download `data/raw/` + dézip + validation Zod), puis import députés AMO10 + groupes/affiliations, puis scrutins + votes (17e).
+
+---
+
 ## 2026-05-29 (après-midi) — Infrastructure live : Supabase + Vercel
 
 🔔 Pour le superviseur :

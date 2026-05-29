@@ -25,7 +25,7 @@ Priorité : P0 (critique) · P1 · P2.
 |----|------|--------|-------|
 | 1.1 | P0 | done | Créer projet Supabase + connexion + `.env.example` |
 | 1.2 | P0 | done | Schéma Drizzle + 1re migration (tables core) — appliqué sur la DB live |
-| 1.2b | P0 | hitl | Fournir `DATABASE_URL` + `service_role` (dashboard) pour les écritures ETL |
+| 1.2b | P0 | done | `DATABASE_URL` fourni + connexion vérifiée + câblé Vercel (prod/preview/dev). `service_role` non requis pour Drizzle |
 | 1.3 | P0 | next | ETL : download util (`data/raw/`) + dézip + validation Zod |
 | 1.4 | P0 | next | ETL : import députés AMO10 + groupes/organes + affiliations |
 | 1.5 | P0 | next | ETL : import scrutins + votes individuels (17e) |
