@@ -4,6 +4,24 @@ Entrées les plus récentes en haut. Le dépôt est la mémoire de l'agent : ce 
 
 ---
 
+## 2026-05-29 (soir) — 🎉 1re ingestion réelle de bout en bout (POC données validé)
+
+- **Objectif** : prouver toute la chaîne ETL → vraies données en base.
+- **Fait** :
+  - **ETL construit** : `packages/etl/src/lib/` (download+dézip adm-zip, helpers JSON AN, slug), `import/deputes.ts`, `import/scrutins.ts`, CLI étendu (`download`, `ingest:deputes`, `ingest:scrutins`, `ingest:all`). Typecheck vert.
+  - **Compris la structure AN réelle** (JSON issus de XML : `arrayify` + `anText` pour gérer objet/array/`#text`). Acteur → `etatCivil`, `mandats.mandat[]` (GP / ASSEMBLEE) ; organe GP → `libelle`/`libelleAbrev`/`couleurAssociee` ; scrutin → `ventilationVotes.organe[].groupes.groupe[].vote.decompteNominatif.{pours,contres,abstentions,nonVotants}.votant[]`.
+  - **Chargé en base (live Supabase)** : **577 députés**, **12 groupes** (couleurs officielles), **588 affiliations**, 577 mandats, **7 074 scrutins**, **1 056 062 votes individuels**.
+  - **Vérifié** : effectifs par groupe cohérents avec le réel (RN 123, EPR 92, LFI-NFP 72, SOC 69, DR 49…) ; sanity-check Braun-Pivet = 6 986 non-votants/7 074 (le perchoir ne vote pas) → positions bien capturées.
+- **Appris** :
+  - tsx pas au root en monorepo pnpm → lancer depuis `packages/etl` avec `node --env-file=../../.env --import tsx` + `DATA_RAW_DIR` absolu pour réutiliser `data/raw`.
+  - `allowImportingTsExtensions`+`noEmit` requis dans le tsconfig ETL (imports `.ts`) ; `drizzle-orm` doit être dép. directe de l'ETL (pnpm strict).
+  - Insertion 1,05 M lignes : batch 5000 + `onConflictDoNothing` → ~200 s sur Supabase eu-west-3. OK pour un chargement initial ; l'incrémental viendra.
+- **Limite connue** : **55 010 votes ignorés** (acteurRef hors AMO10 = députés non actifs / suppléants partis). → nécessite **AMO30** (acteurs historiques) pour 100 % de complétude. Tâche ajoutée au backlog (1.4b).
+- **Bloqueurs** : aucun.
+- **Prochaine étape** : (a) câbler le réveil quotidien ; (b) brancher le web sur la DB (server components Drizzle) pour afficher de vrais chiffres ; (c) job `activite_journaliere` (heatmap) ; (d) lien scrutin↔dossier (1.6).
+
+---
+
 ## 2026-05-29 (fin d'après-midi) — DATABASE_URL branché → ETL débloqué
 
 - **Objectif** : récupérer les credentials DB et les câbler partout.

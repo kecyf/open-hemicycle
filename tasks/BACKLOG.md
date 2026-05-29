@@ -26,11 +26,12 @@ Priorité : P0 (critique) · P1 · P2.
 | 1.1 | P0 | done | Créer projet Supabase + connexion + `.env.example` |
 | 1.2 | P0 | done | Schéma Drizzle + 1re migration (tables core) — appliqué sur la DB live |
 | 1.2b | P0 | done | `DATABASE_URL` fourni + connexion vérifiée + câblé Vercel (prod/preview/dev). `service_role` non requis pour Drizzle |
-| 1.3 | P0 | next | ETL : download util (`data/raw/`) + dézip + validation Zod |
-| 1.4 | P0 | next | ETL : import députés AMO10 + groupes/organes + affiliations |
-| 1.5 | P0 | next | ETL : import scrutins + votes individuels (17e) |
-| 1.6 | P1 | next | ETL : lien scrutin ↔ dossier législatif |
-| 1.7 | P1 | next | Validation : cross-check 2–3 député·es vs NosDéputés |
+| 1.3 | P0 | done | ETL : download util (`data/raw/`) + dézip (adm-zip) + helpers parsing AN |
+| 1.4 | P0 | done | ETL : import députés AMO10 + groupes/organes + affiliations (577/12/588) |
+| 1.4b | P1 | next | ETL : import acteurs historiques AMO30 → récupérer les 55k votes ignorés (députés non actifs) |
+| 1.5 | P0 | done | ETL : import scrutins + votes individuels (7074 scrutins / 1,05M votes) |
+| 1.6 | P1 | next | ETL : lien scrutin ↔ dossier législatif (dossiersLegislatifs + scrutins.dossier_id) |
+| 1.7 | P1 | in-progress | Validation : effectifs par groupe OK ; reste cross-check nominatif vs NosDéputés |
 
 ## Phase 2 — Agrégation & API
 
