@@ -65,11 +65,11 @@ Ajouter une entrée datée en **tête** de `tasks/JOURNAL.md` avec ce format :
 - **Commits** : <hashes ou résumé>
 ```
 
-## 6. Commiter & versionner
-- Commits atomiques, messages Conventional Commits.
+## 6. Commiter, versionner & livrer par PR
+- Travailler sur une **branche** (`feat/`, `fix/`, `chore/`), jamais directement sur `main` (déployé en prod). Commits atomiques, messages Conventional Commits.
 - Reporter l'avancée dans `CHANGELOG.md` (section `[Non publié]`).
-- Si un incrément cohérent est livré (nouvelle surface / job / indicateur), **couper une version** : déplacer `[Non publié]` → `[X.Y.Z] — date`, bumper `package.json` (root), `chore(release): vX.Y.Z`, tag annoté `vX.Y.Z`, `git push --tags` (voir AGENTS.md §6 bis).
-- Pousser sur la branche de travail. Ne jamais force-push sur `main`.
+- **Ouvrir une PR** : la CI (`typecheck` + `test` + `build`) doit être **verte** et la **review automatisée** (Bugbot, `.cursor/BUGBOT.md`) traitée avant merge (voir AGENTS.md §6 ter). Ne jamais merger sur du rouge. Ne jamais force-push sur `main`.
+- Si un incrément cohérent est livré (nouvelle surface / job / indicateur), **couper une version** : déplacer `[Non publié]` → `[X.Y.Z] — date`, bumper `package.json` (root), `chore(release): vX.Y.Z`, tag annoté `vX.Y.Z`, `git push --tags` (voir AGENTS.md §6 bis). Release majeure ou indicateur sensible = merge **HITL**.
 
 ## 7. Remonter au superviseur
 - Terminer la session par un résumé court : avancement, ce qui est en ligne/testable, et **les questions/validations en attente**.

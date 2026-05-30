@@ -4,6 +4,24 @@ Entrées les plus récentes en haut. Le dépôt est la mémoire de l'agent : ce 
 
 ---
 
+## 2026-05-30 (après-midi, +2) — 🛡️ CI + cycle de PR review (le harness se discipline)
+
+🔔 Pour le superviseur : (1) **v0.6.0 vérifiée en prod** — déploiement Vercel `READY` sur le SHA `2d40273`, contenu (badge résultat + dossier) servi, DB prod OK. (2) Mise en place d'un **cycle CI + PR review** : cette PR (`chore/ci-pr-workflow`) l'amorce elle-même. **À activer côté dashboard (action superviseur)** : Cursor **Bugbot** sur le repo + (optionnel) **branch protection** sur `main` (exiger CI verte + 1 review avant merge).
+
+- **Objectif** : combler un trou identifié par le superviseur — je poussais en direct sur `main` (= prod) sans CI ni review. Risque de régression en prod.
+- **Fait** :
+  - **Vérif prod rigoureuse** : `list_deployments` Vercel → dernier déploiement prod `READY`, commit `2d40273` (= v0.6.0) ; routes 200 ; contenu v0.6.0 (Adopté/Rejeté + dossier) rendu live.
+  - **CI GitHub Actions** (`.github/workflows/ci.yml`) : `typecheck` (4 packages) + `test` (vitest core) + `build` web, sur chaque PR et push `main` (concurrency cancel-in-progress). Build sans `DATABASE_URL` (pages `force-dynamic`).
+  - **Process documenté** : `AGENTS.md` §6 ter (branche → PR → CI verte → review auto → merge ; HITL pour release majeure/indicateur sensible) + DoD §4 + skill `daily-standup`. Scripts root réels (`typecheck`/`test`/`build` récursifs).
+  - **Review auto** : `.cursor/BUGBOT.md` (priorité garde-fous éditoriaux, justesse data, sécurité) + gabarit `.github/pull_request_template.md` (check-list DoD + garde-fous).
+  - **Fix dette** : typecheck `@open-hemicycle/db` réparé (`@types/node` + tsconfig `noEmit`) → monorepo 100% vert.
+  - **Vérifié en local** (séquence CI) : `pnpm -r run typecheck` ✓ (4/4), `pnpm -r run test` ✓ (12/12), `build` web ✓ sans DB.
+- **Appris** : « poussé » ≠ « live et vérifié ». La preuve d'un déploiement prod = SHA du déploiement `READY` + contenu servi, pas un simple 200.
+- **Bloqueurs** : aucun (activation Bugbot/branch-protection = côté superviseur, non bloquant).
+- **Prochaine étape** : merger cette PR une fois CI verte ; puis reprendre la voie produit `0.7.0` (rattachement scrutins ↔ thèmes, 4.1) **via PR**.
+
+---
+
 ## 2026-05-30 (après-midi, +2) — 🔗 v0.6.0 : lien scrutin ↔ dossier législatif (+ résultat officiel)
 
 🔔 Pour le superviseur : v0.6.0 poussée → déploiement Vercel auto. Le lien scrutin↔dossier débloque la voie vers les thèmes (4.1) puis l'indice de cohérence. Décision à venir : **choix du thème pilote** (4.1).

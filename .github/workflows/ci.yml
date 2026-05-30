@@ -1,0 +1,44 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+# Annule les runs précédents d'une même branche/PR encore en cours.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    name: Typecheck · Test · Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.33.0
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Typecheck (tous les packages)
+        run: pnpm -r run typecheck
+
+      - name: Tests unitaires (fonctions pures)
+        run: pnpm -r run test
+
+      # Le frontend est en `force-dynamic` : aucune requête base au build,
+      # donc pas besoin de DATABASE_URL ici. Le build inclut le lint Next/ESLint.
+      - name: Build web
+        run: pnpm --filter @open-hemicycle/web build
