@@ -20,7 +20,7 @@ Entrées les plus récentes en haut. Le dépôt est la mémoire de l'agent : ce 
 - **Appris** : en agent cloud sans secret DB, les pages statiques de transparence sont le meilleur incrément P0 testable (build Next génère les 3 routes en ○ static).
 - **Bloqueurs** : `DATABASE_URL` manquant en cloud pour reprendre l'explorateur scrutin (2.5/3.3).
 - **Prochaine étape** : (a) explorateur scrutin/texte (votes par groupe) — **nécessite DB** ; (b) fournir `DATABASE_URL` au secret automation ; (c) AMO30 ; (d) 3 taux de participation (2.2, logique pure testable sans DB en fallback).
-- **Commits** : (à pousser)
+- **Commits** : `53ef1c1` (pages transparence), `87378b1` (journal/backlog)
 
 ---
 
