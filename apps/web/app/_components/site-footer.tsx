@@ -19,6 +19,9 @@ export function SiteFooter() {
           <Link href="/scrutins" className="hover:text-foreground">
             Scrutins
           </Link>
+          <Link href="/themes" className="hover:text-foreground">
+            Thèmes
+          </Link>
           <Link href="/methodologie" className="hover:text-foreground">
             Méthodologie
           </Link>
