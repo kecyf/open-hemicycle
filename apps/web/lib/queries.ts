@@ -202,6 +202,194 @@ export async function getActiviteJournaliere(deputeId: string): Promise<Activite
   return rows.map((r) => ({ jour: r.jour, niveau: r.niveau, nbVotes: r.nbVotes }));
 }
 
+export interface ScrutinRow {
+  uidAn: string;
+  numero: number | null;
+  dateScrutin: Date | null;
+  objet: string | null;
+  typeScrutin: string | null;
+  nbPour: number | null;
+  nbContre: number | null;
+  nbAbstention: number | null;
+}
+
+export type TypeScrutinFiltre = "solennel" | "censure" | "ordinaire";
+
+/**
+ * Liste des scrutins, les plus récents d'abord, filtrable par grande catégorie.
+ *
+ * NB : on expose `objet` (= libellé du scrutin tel que publié par l'AN). C'est
+ * un fait sourcé, repris verbatim, jamais reformulé.
+ */
+export async function listScrutins(opts?: {
+  type?: TypeScrutinFiltre;
+  limit?: number;
+  offset?: number;
+}): Promise<ScrutinRow[]> {
+  const db = getDb();
+  const limit = Math.min(opts?.limit ?? 50, 200);
+  const offset = Math.max(opts?.offset ?? 0, 0);
+  const typeFilter =
+    opts?.type === "solennel"
+      ? eq(scrutins.typeScrutin, "scrutin public solennel")
+      : opts?.type === "censure"
+        ? eq(scrutins.typeScrutin, "motion de censure")
+        : opts?.type === "ordinaire"
+          ? eq(scrutins.typeScrutin, "scrutin public ordinaire")
+          : undefined;
+
+  return db
+    .select({
+      uidAn: scrutins.uidAn,
+      numero: scrutins.numero,
+      dateScrutin: scrutins.dateScrutin,
+      objet: scrutins.objet,
+      typeScrutin: scrutins.typeScrutin,
+      nbPour: scrutins.nbPour,
+      nbContre: scrutins.nbContre,
+      nbAbstention: scrutins.nbAbstention,
+    })
+    .from(scrutins)
+    .where(and(eq(scrutins.legislature, LEGISLATURE), typeFilter))
+    .orderBy(desc(scrutins.dateScrutin), desc(scrutins.numero))
+    .limit(limit)
+    .offset(offset);
+}
+
+/** Nombre total de scrutins (pour la pagination), filtrable par catégorie. */
+export async function countScrutins(type?: TypeScrutinFiltre): Promise<number> {
+  const db = getDb();
+  const typeFilter =
+    type === "solennel"
+      ? eq(scrutins.typeScrutin, "scrutin public solennel")
+      : type === "censure"
+        ? eq(scrutins.typeScrutin, "motion de censure")
+        : type === "ordinaire"
+          ? eq(scrutins.typeScrutin, "scrutin public ordinaire")
+          : undefined;
+  const [r] = await db
+    .select({ n: sql<number>`count(*)::int` })
+    .from(scrutins)
+    .where(and(eq(scrutins.legislature, LEGISLATURE), typeFilter));
+  return r?.n ?? 0;
+}
+
+export interface GroupeVentilation {
+  groupeId: string | null;
+  sigle: string | null;
+  nom: string | null;
+  couleurHex: string | null;
+  pour: number;
+  contre: number;
+  abstention: number;
+  nonVotant: number;
+  /** Positions nominatives enregistrées pour ce groupe sur ce scrutin. */
+  total: number;
+}
+
+export interface ScrutinDetail extends ScrutinRow {
+  groupes: GroupeVentilation[];
+  /** Total de positions nominatives enregistrées (tous groupes confondus). */
+  totalNominatif: number;
+}
+
+/**
+ * Détail d'un scrutin : métadonnées + ventilation des votes par groupe.
+ *
+ * La ventilation est calculée à partir des votes nominatifs joints à
+ * l'affiliation de groupe COURANTE (pas celle à la date du scrutin — limite
+ * connue, signalée dans l'UI). Pour les scrutins ordinaires, l'AN ne liste
+ * nominativement que les votants exprimés et quelques non-votants : ce n'est
+ * donc pas un relevé d'absence.
+ */
+export async function getScrutinDetail(uidAn: string): Promise<ScrutinDetail | null> {
+  const db = getDb();
+  const [meta] = await db
+    .select({
+      uidAn: scrutins.uidAn,
+      numero: scrutins.numero,
+      dateScrutin: scrutins.dateScrutin,
+      objet: scrutins.objet,
+      typeScrutin: scrutins.typeScrutin,
+      nbPour: scrutins.nbPour,
+      nbContre: scrutins.nbContre,
+      nbAbstention: scrutins.nbAbstention,
+      id: scrutins.id,
+    })
+    .from(scrutins)
+    .where(eq(scrutins.uidAn, uidAn))
+    .limit(1);
+  if (!meta) return null;
+
+  const rows = await db
+    .select({
+      groupeId: groupesPolitiques.id,
+      sigle: groupesPolitiques.sigle,
+      nom: groupesPolitiques.nom,
+      couleurHex: groupesPolitiques.couleurHex,
+      position: votes.position,
+      n: sql<number>`count(*)::int`,
+    })
+    .from(votes)
+    .innerJoin(
+      affiliationsGroupe,
+      and(
+        eq(affiliationsGroupe.deputeId, votes.deputeId),
+        isNull(affiliationsGroupe.validTo),
+      ),
+    )
+    .innerJoin(groupesPolitiques, eq(groupesPolitiques.id, affiliationsGroupe.groupeId))
+    .where(eq(votes.scrutinId, meta.id))
+    .groupBy(
+      groupesPolitiques.id,
+      groupesPolitiques.sigle,
+      groupesPolitiques.nom,
+      groupesPolitiques.couleurHex,
+      votes.position,
+    );
+
+  const byGroup = new Map<string, GroupeVentilation>();
+  for (const r of rows) {
+    const key = r.groupeId ?? "—";
+    let g = byGroup.get(key);
+    if (!g) {
+      g = {
+        groupeId: r.groupeId,
+        sigle: r.sigle,
+        nom: r.nom,
+        couleurHex: r.couleurHex,
+        pour: 0,
+        contre: 0,
+        abstention: 0,
+        nonVotant: 0,
+        total: 0,
+      };
+      byGroup.set(key, g);
+    }
+    if (r.position === "pour") g.pour += r.n;
+    else if (r.position === "contre") g.contre += r.n;
+    else if (r.position === "abstention") g.abstention += r.n;
+    else if (r.position === "non-votant") g.nonVotant += r.n;
+    g.total += r.n;
+  }
+
+  const groupes = [...byGroup.values()].sort((a, b) => b.total - a.total);
+  const totalNominatif = groupes.reduce((s, g) => s + g.total, 0);
+
+  return {
+    uidAn: meta.uidAn,
+    numero: meta.numero,
+    dateScrutin: meta.dateScrutin,
+    objet: meta.objet,
+    typeScrutin: meta.typeScrutin,
+    nbPour: meta.nbPour,
+    nbContre: meta.nbContre,
+    nbAbstention: meta.nbAbstention,
+    groupes,
+    totalNominatif,
+  };
+}
+
 /** Quelques compteurs globaux pour le contexte (affichés sur la landing/annuaire). */
 export async function getGlobalCounts(): Promise<{
   deputes: number;

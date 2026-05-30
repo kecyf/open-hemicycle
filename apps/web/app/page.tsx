@@ -23,9 +23,9 @@ import { DataNotice } from "./_components/data-notice";
 export const dynamic = "force-dynamic";
 
 const chantiers = [
-  { label: "Annuaire + activité de vote des député·es", etat: "En ligne" },
-  { label: "Exploration d'un texte de loi (votes par groupe)", etat: "À venir" },
-  { label: "Indice de cohérence factuel par thème", etat: "À venir" },
+  { label: "Annuaire + activité de vote des député·es", etat: "En ligne", href: "/deputes" },
+  { label: "Explorateur de scrutins (votes par groupe)", etat: "En ligne", href: "/scrutins" },
+  { label: "Indice de cohérence factuel par thème", etat: "À venir", href: null },
 ];
 
 export default async function Home() {
@@ -56,6 +56,12 @@ export default async function Home() {
             className="rounded-lg bg-accent px-4 py-2 text-sm font-medium text-background transition-opacity hover:opacity-90"
           >
             Explorer les député·es
+          </Link>
+          <Link
+            href="/scrutins"
+            className="rounded-lg border border-border px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-card"
+          >
+            Explorer les scrutins
           </Link>
           <a
             href="https://github.com/kecyf/open-hemicycle"
@@ -108,8 +114,8 @@ export default async function Home() {
             const live = c.etat === "En ligne";
             return (
               <li key={c.label} className="flex items-center justify-between gap-4 px-5 py-4">
-                {live ? (
-                  <Link href="/deputes" className="text-sm hover:text-accent">
+                {live && c.href ? (
+                  <Link href={c.href} className="text-sm hover:text-accent">
                     {c.label}
                   </Link>
                 ) : (

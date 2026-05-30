@@ -4,6 +4,27 @@ Entrées les plus récentes en haut. Le dépôt est la mémoire de l'agent : ce 
 
 ---
 
+## 2026-05-30 (après-midi, +2) — 🗳️ Explorateur de scrutins : liste + votes par groupe
+
+- **Objectif** : ouvrir la 2ᵉ grande surface produit (tâches 2.5 / 3.3) — explorer les scrutins publics et la ventilation des votes par groupe, en respectant les garde-fous (fait + source + date + lien).
+- **Contexte** : l'automation quotidienne (0.6) n'a pas tourné ce matin — elle est restée `hitl` (sauvegarde Glass = action superviseur). Décision : on continue en mode accompagné, sans automation.
+- **Fait** :
+  - **Sonde data** (jetable) : 7 074 scrutins, **tous** avec titre/objet/date/type (oct. 2024 → mai 2026). `titre` == `objet` (on n'affiche qu'un libellé). Types : ordinaire 7 004 / solennel 48 / motion de censure 22. Validé la requête de ventilation par groupe (join `votes → affiliations courantes → groupes`, ~500 ms, couleurs incluses).
+  - **Requêtes serveur** (`apps/web/lib/queries.ts`) : `listScrutins({type,limit,offset})`, `countScrutins(type)` (pagination), `getScrutinDetail(uidAn)` → métadonnées + ventilation par groupe (pour/contre/abstention/non-votant + total nominatif).
+  - **Helpers** (`apps/web/lib/scrutin-format.ts`) : `typeLabel`, `urlScrutinOfficiel(numero)`, `capitalize`, `dateFr` (TZ Europe/Paris), couleurs positions partagées avec la fiche député.
+  - **Pages** : `/scrutins` (liste paginée 30/page, filtres Tous/Solennels/Motions de censure/Ordinaires, libellé verbatim + décompte officiel) ; `/scrutins/[uid]` (synthèse officielle, votes par groupe en barres empilées + compteurs, lien analyse officielle AN). Landing : CTA « Explorer les scrutins » + chantier passé « En ligne ».
+- **Garde-fous appliqués** :
+  - Libellés AN **verbatim** (jamais reformulés), **lien source** vers l'analyse officielle par numéro (`/dyn/17/scrutins/{numero}`), date affichée.
+  - **Pas d'assertion d'adoption/rejet** (on n'a pas capté le champ `sort` ni les règles de majorité → renvoi à la source).
+  - **Disclaimer non-votant** : pour les scrutins ordinaires, l'AN ne liste nominativement que les exprimés + quelques non-votants → l'absence d'un nom n'est PAS un relevé d'absence physique.
+  - **Limite affichée** : ventilation rattachée au groupe *actuel* (pas celui de la date du scrutin) — honnête sur l'approximation.
+- **Vérifié** : typecheck + build Turbopack verts ; en local (`next start`), `/scrutins` 200, `/scrutins?type=solennel` 200, détail `VTANR5L17V7040` 200 (titre, synthèse, RN/LFI-NFP, lien officiel `…/scrutins/7040`), 404 sur uid inexistant.
+- **Appris** : `next lint` est cassé sous Next 16 via pnpm (interprète « lint » comme un dossier) → la vérif ESLint passe par `next build`. À retenir pour la DoD.
+- **Bloqueurs** : aucun.
+- **Prochaine étape** : (a) page méthodologie + mentions légales + « signaler une erreur » (3.4) ; (b) lien scrutin ↔ dossier législatif (1.6, préalable aux thèmes) ; (c) AMO30 (1.4b, 55k votes manquants) ; (d) capter le champ `sort` (adopté/rejeté) à la prochaine ré-ingestion des scrutins.
+
+---
+
 ## 2026-05-29 (nuit, +2) — 📊 Heatmap d'activité (votes-only) de bout en bout
 
 - **Objectif** : rendre visible l'activité parlementaire façon « GitHub contributions », vertical slice complet (calcul pur → job → UI), v1 votes-only assumée.
