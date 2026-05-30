@@ -4,6 +4,26 @@ Entrées les plus récentes en haut. Le dépôt est la mémoire de l'agent : ce 
 
 ---
 
+## 2026-05-30 — 📄 Pages transparence : méthodologie, mentions légales, signalement
+
+🔔 Pour le superviseur :
+- **`DATABASE_URL` absent** dans l'environnement cloud de l'automation (pas de `.env` livré) → tâches ETL/DB (explorateur scrutin, AMO30, lien dossier) reportées ; ajouter `DATABASE_URL` en secret de l'automation pour débloquer.
+- **0.6** : sauvegarde finale du cron Glass Automations toujours en attente (HITL).
+
+- **Objectif du jour** : tâche 3.4 (P0, cloud-safe) — publier la méthodologie, les mentions légales et le droit de signalement d'erreur sur le site.
+- **Fait** :
+  - **3 pages statiques** (sans DB) : `/methodologie`, `/mentions-legales`, `/signaler-une-erreur` — contenu aligné sur `docs/METHODOLOGY.md` et `docs/legal-guardrails.md` (faits sourcés, pas de jugement, symétrie, limites heatmap, règles indice de cohérence).
+  - **Composants partagés** : `SiteHeader` / `SiteFooter` (nav Annuaire · Méthodologie · Signaler) + `DocPage` pour le rendu prose.
+  - **Navigation** : CTA « Méthodologie » sur la landing ; footer unifié sur landing, annuaire et fiche député·e.
+  - **Signalement** : lien GitHub Issues pré-rempli (`labels=signalement`) + checklist des infos à fournir.
+  - **Backlog/roadmap** : 2.4 et 3.4 → `done`.
+- **Appris** : en agent cloud sans secret DB, les pages statiques de transparence sont le meilleur incrément P0 testable (build Next génère les 3 routes en ○ static).
+- **Bloqueurs** : `DATABASE_URL` manquant en cloud pour reprendre l'explorateur scrutin (2.5/3.3).
+- **Prochaine étape** : (a) explorateur scrutin/texte (votes par groupe) — **nécessite DB** ; (b) fournir `DATABASE_URL` au secret automation ; (c) AMO30 ; (d) 3 taux de participation (2.2, logique pure testable sans DB en fallback).
+- **Commits** : (à pousser)
+
+---
+
 ## 2026-05-29 (nuit, +2) — 📊 Heatmap d'activité (votes-only) de bout en bout
 
 - **Objectif** : rendre visible l'activité parlementaire façon « GitHub contributions », vertical slice complet (calcul pur → job → UI), v1 votes-only assumée.

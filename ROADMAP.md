@@ -34,7 +34,7 @@ Horizon de référence : **Jalon M1 à ~1 mois** (POC public fonctionnel). Le d�
 - [x] Page recherche/annuaire des député·es (filtre groupe, couleurs + effectifs) — **en ligne**.
 - [x] Fiche député·e : **heatmap d'activité (votes)** + détail votes (pour/contre/abstention/non-votant) + contexte + légende.
 - [ ] Explorateur d'un texte de loi : qui a voté quoi, par groupe.
-- [ ] Page méthodologie + mentions légales + bouton « signaler une erreur ».
+- [x] Page méthodologie + mentions légales + bouton « signaler une erreur ».
 - [x] Déploiement continu Vercel depuis `main` (landing + pages data).
 
 ## Phase 4 — Indice de cohérence v0 (fin M1, sous validation HITL)

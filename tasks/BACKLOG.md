@@ -41,7 +41,7 @@ Priorité : P0 (critique) · P1 · P2.
 | 2.1 | P0 | done | Job `activite_journaliere` (heatmap) — branché sur la DB (66 080 lignes, seuils 2/9/22) |
 | 2.2 | P1 | next | Calcul des 3 taux de participation |
 | 2.3 | P0 | done | Accès données : recherche/liste député·es (server component Drizzle) |
-| 2.4 | P0 | in-progress | Accès données : fiche député·e — votes faits ; reste la heatmap (dépend 2.1) |
+| 2.4 | P0 | done | Accès données : fiche député·e — votes + heatmap d'activité |
 | 2.5 | P0 | next | API/page : scrutin + votes par groupe |
 
 ## Phase 3 — Frontend POC
@@ -51,7 +51,7 @@ Priorité : P0 (critique) · P1 · P2.
 | 3.1 | P0 | done | Annuaire/recherche député·es (filtre groupe, couleurs + effectifs) — en ligne |
 | 3.2 | P0 | done | Fiche député·e : heatmap d'activité (votes) + votes par position + contexte + légende |
 | 3.3 | P0 | next | Explorateur texte de loi (votes par groupe) |
-| 3.4 | P0 | next | Page méthodologie + mentions légales + signaler une erreur |
+| 3.4 | P0 | done | Page méthodologie + mentions légales + signaler une erreur |
 | 3.5 | P1 | hitl | Déploiement Vercel + Supabase (validation humaine) |
 
 ## Phase 4 — Indice de cohérence v0
