@@ -1,6 +1,8 @@
 # Roadmap — Open Hémicycle
 
-Horizon de référence : **Jalon M1 à ~1 mois** (POC public fonctionnel). Le détail opérationnel vit dans [`tasks/BACKLOG.md`](tasks/BACKLOG.md) ; l'historique dans [`tasks/JOURNAL.md`](tasks/JOURNAL.md).
+Horizon de référence : **Jalon M1 à ~1 mois** (POC public fonctionnel). Le détail opérationnel vit dans [`tasks/BACKLOG.md`](tasks/BACKLOG.md) ; l'historique dans [`tasks/JOURNAL.md`](tasks/JOURNAL.md) ; les versions livrées dans [`CHANGELOG.md`](CHANGELOG.md).
+
+**Version courante : `0.5.0`** — POC public en ligne (annuaire + fiches + heatmap d'activité + explorateur de scrutins + socle garde-fous). Cible `1.0.0` = jalon M1 (1er indice de cohérence sourcé).
 
 ---
 
@@ -28,13 +30,13 @@ Horizon de référence : **Jalon M1 à ~1 mois** (POC public fonctionnel). Le d�
 - [x] Calcul `activite_journaliere` (heatmap) selon METHODOLOGY §2 — job ETL, 66 080 lignes (votes-only).
 - [ ] Calcul des 3 taux de participation (METHODOLOGY §3).
 - [x] Accès données (server components Drizzle) : liste/recherche député·es, fiche député·e + répartition des votes.
-- [ ] Scrutin + votes par groupe.
+- [x] Scrutin + votes par groupe (`listScrutins` / `countScrutins` / `getScrutinDetail`).
 
 ## Phase 3 — Frontend POC (semaine 3–4)
 - [x] Page recherche/annuaire des député·es (filtre groupe, couleurs + effectifs) — **en ligne**.
 - [x] Fiche député·e : **heatmap d'activité (votes)** + détail votes (pour/contre/abstention/non-votant) + contexte + légende.
-- [ ] Explorateur d'un texte de loi : qui a voté quoi, par groupe.
-- [ ] Page méthodologie + mentions légales + bouton « signaler une erreur ».
+- [x] Explorateur de scrutins : liste filtrable + qui a voté quoi par groupe — **en ligne** (`/scrutins`).
+- [x] Page méthodologie + mentions légales + « signaler une erreur » + footer global — **en ligne**.
 - [x] Déploiement continu Vercel depuis `main` (landing + pages data).
 
 ## Phase 4 — Indice de cohérence v0 (fin M1, sous validation HITL)

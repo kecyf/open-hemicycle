@@ -59,6 +59,7 @@ Une tâche est « done » si :
 - [ ] Les **garde-fous juridiques** sont respectés (check-list si indicateur sensible).
 - [ ] Les **sources** sont attribuées.
 - [ ] `tasks/JOURNAL.md` et `tasks/BACKLOG.md` sont à jour.
+- [ ] Le **`CHANGELOG.md`** est à jour (au minimum la section `[Non publié]`) ; voir §6 bis.
 - [ ] Commit(s) atomiques poussés.
 
 ## 5. Ligne rouge éditoriale (jamais, sous aucun prétexte)
@@ -81,6 +82,19 @@ Voir `docs/legal-guardrails.md` pour le détail. En cas de tension entre « impa
 - Données brutes : **jamais commitées** (cf. `.gitignore`, dossier `data/raw/`).
 - Secrets : **jamais commités** ; `.env` local, `.env.example` documenté.
 - Source de données live : **data.assemblee-nationale.fr** (pas le miroir data.gouv).
+
+## 6 bis. Versionnage (suivi des avancées)
+
+Le projet suit **[SemVer](https://semver.org)** en `0.x` jusqu'au POC public complet (jalon M1 = `1.0.0`). La référence unique est [`CHANGELOG.md`](CHANGELOG.md) (format *Keep a Changelog*) ; la version vit dans `package.json` (root) et chaque version publiée est un **tag git annoté** `vX.Y.Z`.
+
+Règles simples :
+- **Pendant le travail** : ajouter ce qui est fait sous la section **`[Non publié]`** du `CHANGELOG.md` (catégories `Ajouté` / `Modifié` / `Corrigé` / `Supprimé` / `Données` / `Garde-fous`). C'est dans la DoD (§4).
+- **Quand un incrément cohérent est livré** (une nouvelle surface, un job data, un indicateur) → **couper une version** :
+  1. déplacer `[Non publié]` vers `[X.Y.Z] — YYYY-MM-DD` ;
+  2. bumper `version` dans `package.json` (root) ;
+  3. commiter (`chore(release): vX.Y.Z`) puis **tag annoté** `git tag -a vX.Y.Z -m "…"` et pousser les tags (`git push --tags`).
+- **Choix du numéro** (tant qu'on est en `0.x`) : `MINOR` (0.**Y**.0) pour une nouvelle capacité visible (page, job, indicateur) ; `PATCH` (0.y.**Z**) pour correctif/ajustement sans nouvelle capacité. On réserve `1.0.0` au premier POC public complet (cf. ROADMAP / Jalon M1).
+- **HITL** : couper une version ne dispense **pas** des règles §3 (un déploiement public reste à valider ; ici l'utilisateur déclenche le push/déploiement).
 
 ## 7. Indicateurs de succès (à ~1 mois)
 

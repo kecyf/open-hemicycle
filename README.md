@@ -36,7 +36,9 @@ Source primaire : [data.assemblee-nationale.fr](https://data.assemblee-nationale
 
 ## État du projet
 
-🚧 **Phase d'amorçage.** Le projet démarre. Voir [`ROADMAP.md`](ROADMAP.md) pour les jalons et [`tasks/`](tasks/) pour le backlog et le journal de bord.
+🌱 **POC public en ligne — version `0.5.0`** (vers le jalon M1). En ligne sur la 17e législature : annuaire + fiches député·es, heatmap d'activité, explorateur de scrutins, méthodologie & mentions légales. Prochaine grande étape : 1er indice de cohérence sourcé (`1.0.0`).
+
+Voir [`CHANGELOG.md`](CHANGELOG.md) pour les versions livrées, [`ROADMAP.md`](ROADMAP.md) pour les jalons, et [`tasks/`](tasks/) pour le backlog et le journal de bord.
 
 ## Stack (prévue)
 

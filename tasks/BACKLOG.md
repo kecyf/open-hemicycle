@@ -4,6 +4,8 @@ Statuts : `next` (à prendre) · `in-progress` · `blocked` · `done` · `hitl` 
 Priorité : P0 (critique) · P1 · P2.
 
 > L'agent prend la tâche `next` de plus haute priorité **faisable en autonomie**. Les tâches `hitl` attendent une validation humaine (voir AGENTS.md §3).
+>
+> **Version courante : `0.5.0`** (voir [`CHANGELOG.md`](../CHANGELOG.md)). Une tâche `done` qui livre une capacité visible doit apparaître dans le `CHANGELOG` ; un incrément cohérent → couper une version (AGENTS.md §6 bis).
 
 ---
 
@@ -41,7 +43,7 @@ Priorité : P0 (critique) · P1 · P2.
 | 2.1 | P0 | done | Job `activite_journaliere` (heatmap) — branché sur la DB (66 080 lignes, seuils 2/9/22) |
 | 2.2 | P1 | next | Calcul des 3 taux de participation |
 | 2.3 | P0 | done | Accès données : recherche/liste député·es (server component Drizzle) |
-| 2.4 | P0 | in-progress | Accès données : fiche député·e — votes faits ; reste la heatmap (dépend 2.1) |
+| 2.4 | P0 | done | Accès données : fiche député·e — votes + heatmap d'activité (v0.3.0) |
 | 2.5 | P0 | done | API/page : scrutin + votes par groupe (`listScrutins`/`countScrutins`/`getScrutinDetail`) |
 
 ## Phase 3 — Frontend POC

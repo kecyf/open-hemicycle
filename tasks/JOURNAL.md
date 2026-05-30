@@ -4,6 +4,23 @@ Entrées les plus récentes en haut. Le dépôt est la mémoire de l'agent : ce 
 
 ---
 
+## 2026-05-30 (après-midi, +2) — 🏷️ Versioning + mise au net roadmap, et 1er push public
+
+🔔 Pour le superviseur : **push effectué** sur `main` (3 commits produit + ce commit de release) → déploiement Vercel auto déclenché. C'était ta consigne explicite. À surveiller : que `/scrutins`, `/methodologie`, `/mentions-legales`, `/signaler` répondent 200 en prod.
+
+- **Objectif** : refléter l'état réel dans roadmap/tasks, **introduire le versionnage** dans le harness pour tracker versions et avancées, pousser, documenter.
+- **Fait** :
+  - **Versionnage SemVer + `CHANGELOG.md`** (format *Keep a Changelog*) : historique reconstruit depuis git en 5 versions — `0.1.0` amorçage+infra, `0.2.0` données+annuaire/fiches, `0.3.0` heatmap, `0.4.0` scrutins, `0.5.0` garde-fous publics. `package.json` (root) bumpé `0.0.0 → 0.5.0`.
+  - **Harness** : `AGENTS.md` §6 bis (règles de versionnage : `[Non publié]` pendant le travail, couper une version + tag annoté `vX.Y.Z` à chaque incrément cohérent, `1.0.0` = M1) + ajout à la DoD §4 ; skill `daily-standup` mise à jour (lire la version au réveil, reporter dans le CHANGELOG, couper/tagger au commit).
+  - **Tags git annotés** `v0.1.0..v0.5.0` posés sur les commits correspondants et poussés.
+  - **Mise au net** : `ROADMAP.md` (Phase 2 « scrutin par groupe » + Phase 3 « explorateur » & « méthodo/mentions » passés `[x]`, en-tête version courante) ; `README.md` état du projet (« amorçage » → POC public `0.5.0`) ; `BACKLOG.md` (2.4 → done, note versionnage).
+  - **Push** : `main` poussé (les 3 commits produit en attente + ce `chore(release)`), tags poussés.
+- **Appris** : le dépôt manquait d'un fil « version » lisible d'un coup d'œil ; le CHANGELOG comble le trou entre le JOURNAL (narratif, daté) et le BACKLOG (tâches). SemVer `0.x` évite de sur-promettre avant le POC complet (`1.0.0` = M1).
+- **Bloqueurs** : aucun.
+- **Prochaine étape** : `0.6.0` visé = **lien scrutin ↔ dossier législatif (1.6)**, prérequis des thèmes donc de l'indice de cohérence ; puis AMO30 (1.4b) et 3 taux de participation (2.2).
+
+---
+
 ## 2026-05-30 (après-midi, +2) — ⚖️ Pages méthodologie + mentions légales + signaler une erreur
 
 - **Objectif** : poser le socle garde-fous côté public (tâche 3.4) maintenant que deux surfaces de données nominatives sont en ligne — méthodologie liée, mentions légales/RGPD, droit de réponse accessible.

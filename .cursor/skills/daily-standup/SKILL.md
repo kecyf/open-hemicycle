@@ -30,6 +30,7 @@ Dans tous les cas : **un incrément testable et committé vaut mieux qu'une gros
 - Lire la **dernière entrée** de `tasks/JOURNAL.md` : où en était-on, quels bloqueurs, quelle « prochaine étape » était notée.
 - Lire `tasks/BACKLOG.md` : tâches `next` / `in-progress`.
 - Survoler `ROADMAP.md` : sommes-nous alignés sur le jalon courant ?
+- Repérer la **version courante** : `package.json` (root) + section `[Non publié]` de `CHANGELOG.md` (qu'est-ce qui est livré mais pas encore taggé ?).
 
 ## 2. Choisir l'objectif du jour
 - Prendre la tâche **la plus prioritaire faisable en autonomie** (voir AGENTS.md §2).
@@ -46,6 +47,7 @@ Dans tous les cas : **un incrément testable et committé vaut mieux qu'une gros
 - Comportement vérifié (exécution, test, capture).
 - Méthodologie & attribution à jour si nécessaire.
 - Check-list juridique si un indicateur sensible est touché.
+- `CHANGELOG.md` à jour (section `[Non publié]` au minimum).
 
 ## 5. Journaliser (obligatoire — ne jamais sauter)
 Ajouter une entrée datée en **tête** de `tasks/JOURNAL.md` avec ce format :
@@ -63,8 +65,10 @@ Ajouter une entrée datée en **tête** de `tasks/JOURNAL.md` avec ce format :
 - **Commits** : <hashes ou résumé>
 ```
 
-## 6. Commiter
+## 6. Commiter & versionner
 - Commits atomiques, messages Conventional Commits.
+- Reporter l'avancée dans `CHANGELOG.md` (section `[Non publié]`).
+- Si un incrément cohérent est livré (nouvelle surface / job / indicateur), **couper une version** : déplacer `[Non publié]` → `[X.Y.Z] — date`, bumper `package.json` (root), `chore(release): vX.Y.Z`, tag annoté `vX.Y.Z`, `git push --tags` (voir AGENTS.md §6 bis).
 - Pousser sur la branche de travail. Ne jamais force-push sur `main`.
 
 ## 7. Remonter au superviseur
