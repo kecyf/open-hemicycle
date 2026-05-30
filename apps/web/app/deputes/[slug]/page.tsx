@@ -1,8 +1,8 @@
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getActiviteJournaliere, getDeputeBySlug, getVoteStats } from "../../../lib/queries";
 import { ActivityDisclaimer, DataNotice } from "../../_components/data-notice";
 import { ActivityHeatmap } from "../../_components/activity-heatmap";
+import { SiteFooter, SiteHeader } from "../../_components/site-chrome";
 
 export const dynamic = "force-dynamic";
 
@@ -54,9 +54,7 @@ export default async function DeputePage({
 
   return (
     <main className="mx-auto flex min-h-screen max-w-3xl flex-col gap-10 px-6 py-16">
-      <Link href="/deputes" className="w-fit text-sm text-muted hover:text-foreground">
-        ← Annuaire
-      </Link>
+      <SiteHeader backHref="/deputes" backLabel="Annuaire" />
 
       <header className="flex flex-col gap-3">
         <span className="flex items-center gap-2 text-sm text-muted">
@@ -166,6 +164,8 @@ export default async function DeputePage({
       </section>
 
       <DataNotice />
+
+      <SiteFooter />
     </main>
   );
 }

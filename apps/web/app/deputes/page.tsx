@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { listDeputes, listGroupes } from "../../lib/queries";
 import { DataNotice } from "../_components/data-notice";
+import { SiteFooter, SiteHeader } from "../_components/site-chrome";
 
 export const dynamic = "force-dynamic";
 
@@ -28,10 +29,8 @@ export default async function DeputesPage({
 
   return (
     <main className="mx-auto flex min-h-screen max-w-5xl flex-col gap-10 px-6 py-16">
+      <SiteHeader />
       <header className="flex flex-col gap-4">
-        <Link href="/" className="w-fit text-sm text-muted hover:text-foreground">
-          ← Open Hémicycle
-        </Link>
         <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">
           Annuaire des député·es
         </h1>
@@ -89,6 +88,8 @@ export default async function DeputesPage({
       {deputes.length === 0 && (
         <p className="text-sm text-muted">Aucun·e député·e pour ce filtre.</p>
       )}
+
+      <SiteFooter />
     </main>
   );
 }

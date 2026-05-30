@@ -19,6 +19,7 @@ const principes = [
 import Link from "next/link";
 import { getGlobalCounts } from "../lib/queries";
 import { DataNotice } from "./_components/data-notice";
+import { SiteFooter } from "./_components/site-chrome";
 
 export const dynamic = "force-dynamic";
 
@@ -56,6 +57,12 @@ export default async function Home() {
             className="rounded-lg bg-accent px-4 py-2 text-sm font-medium text-background transition-opacity hover:opacity-90"
           >
             Explorer les député·es
+          </Link>
+          <Link
+            href="/methodologie"
+            className="rounded-lg border border-border px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-card"
+          >
+            Méthodologie
           </Link>
           <a
             href="https://github.com/kecyf/open-hemicycle"
@@ -139,11 +146,7 @@ export default async function Home() {
       </section>
 
       <footer className="flex flex-col gap-2 border-t border-border pt-8 text-xs text-muted">
-        <p>
-          Données : Assemblée nationale (data.assemblee-nationale.fr, Licence Ouverte
-          Etalab 2.0), NosDéputés.fr (Regards Citoyens), Datan, HATVP.
-        </p>
-        <p>Code sous licence AGPL-3.0. Un projet d'utilité publique, indépendant.</p>
+        <SiteFooter />
       </footer>
     </main>
   );
