@@ -7,8 +7,9 @@
  *   check             Vérifie l'accessibilité (HTTP HEAD) des jeux "core".
  *   download          Télécharge + décompresse les jeux "core" dans data/raw/.
  *   ingest:deputes    Importe députés + groupes + affiliations (AMO10).
- *   ingest:scrutins   Importe scrutins + votes individuels.
- *   ingest:all        Enchaîne deputes puis scrutins.
+ *   ingest:dossiers   Importe les dossiers législatifs.
+ *   ingest:scrutins   Importe scrutins + votes individuels (+ lien dossier, sort).
+ *   ingest:all        Enchaîne deputes, dossiers, scrutins, puis activite.
  *   job:activite      (Re)calcule la table activite_journaliere (heatmap).
  *
  * Les commandes d'ingestion nécessitent DATABASE_URL (voir .env.example).
@@ -17,6 +18,7 @@
 import { AN_DATASETS, AN_DAILY_PUBLICATION_INDEX, datasetUrl } from "./sources.ts";
 import { downloadDataset } from "./lib/download.ts";
 import { importDeputes } from "./import/deputes.ts";
+import { importDossiers } from "./import/dossiers.ts";
 import { importScrutins } from "./import/scrutins.ts";
 import { computeActiviteJournaliere } from "./jobs/activite.ts";
 
@@ -74,11 +76,15 @@ async function main(): Promise<void> {
     case "ingest:deputes":
       await importDeputes(LEGISLATURE);
       break;
+    case "ingest:dossiers":
+      await importDossiers(LEGISLATURE);
+      break;
     case "ingest:scrutins":
       await importScrutins(LEGISLATURE);
       break;
     case "ingest:all":
       await importDeputes(LEGISLATURE);
+      await importDossiers(LEGISLATURE);
       await importScrutins(LEGISLATURE);
       await computeActiviteJournaliere();
       break;
@@ -87,7 +93,7 @@ async function main(): Promise<void> {
       break;
     default:
       console.error(
-        `Commande inconnue: ${cmd}\nUsage: oh-etl [sources|check|download|ingest:deputes|ingest:scrutins|ingest:all|job:activite]`,
+        `Commande inconnue: ${cmd}\nUsage: oh-etl [sources|check|download|ingest:deputes|ingest:dossiers|ingest:scrutins|ingest:all|job:activite]`,
       );
       process.exit(1);
   }

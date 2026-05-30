@@ -11,7 +11,7 @@
 import { readdir } from "node:fs/promises";
 import path from "node:path";
 import { sql } from "drizzle-orm";
-import { getDb, scrutins, votes, deputes, syncRuns } from "@open-hemicycle/db";
+import { getDb, scrutins, votes, deputes, dossiersLegislatifs, syncRuns } from "@open-hemicycle/db";
 import { AN_DATASETS } from "../sources.ts";
 import { downloadDataset } from "../lib/download.ts";
 import { arrayify, anText, readJson } from "../lib/json.ts";
@@ -35,6 +35,8 @@ interface ScrutinMeta {
   titre: string | null;
   objet: string | null;
   typeScrutin: string | null;
+  sort: string | null;
+  dossierRef: string | null;
   nbPour: number | null;
   nbContre: number | null;
   nbAbstention: number | null;
@@ -59,6 +61,8 @@ function parseScrutinMeta(raw: any): ScrutinMeta | null {
     titre: anText(s.titre),
     objet: anText(s.objet?.libelle) ?? anText(s.objet),
     typeScrutin: anText(s.typeVote?.libelleTypeVote),
+    sort: anText(s.sort?.code), // "adopté" | "rejeté"
+    dossierRef: anText(s.objet?.dossierLegislatif?.dossierRef), // DLR5L17N* ou null
     nbPour: toInt(anText(decompte.pour)),
     nbContre: toInt(anText(decompte.contre)),
     nbAbstention: toInt(anText(decompte.abstentions)),
@@ -112,31 +116,53 @@ export async function importScrutins(legislature: string): Promise<void> {
     throw new Error("Aucun député en base — lancer d'abord `ingest:deputes`.");
   }
 
+  // Map dossiers (uidAn DLR* -> id technique) pour rattacher les scrutins.
+  const dosRows = await db
+    .select({ id: dossiersLegislatifs.id, uidAn: dossiersLegislatifs.uidAn })
+    .from(dossiersLegislatifs);
+  const dossierId = new Map(dosRows.map((r) => [r.uidAn, r.id]));
+  if (dossierId.size === 0) {
+    console.warn("[scrutins] ⚠ Aucun dossier en base — lancer `ingest:dossiers` pour activer le lien scrutin↔dossier.");
+  }
+
   // Passe 1 : upsert métadonnées des scrutins.
   let metaBuf: ScrutinMeta[] = [];
+  let linked = 0;
+  let refMiss = 0;
   const flushMeta = async () => {
     if (!metaBuf.length) return;
     await db
       .insert(scrutins)
       .values(
-        metaBuf.map((m) => ({
-          uidAn: m.uidAn,
-          legislature: legNum,
-          numero: m.numero,
-          dateScrutin: m.dateScrutin ? new Date(m.dateScrutin) : null,
-          titre: m.titre,
-          objet: m.objet,
-          typeScrutin: m.typeScrutin,
-          nbPour: m.nbPour,
-          nbContre: m.nbContre,
-          nbAbstention: m.nbAbstention,
-        })),
+        metaBuf.map((m) => {
+          const dId = m.dossierRef ? dossierId.get(m.dossierRef) ?? null : null;
+          if (m.dossierRef) {
+            if (dId) linked++;
+            else refMiss++;
+          }
+          return {
+            uidAn: m.uidAn,
+            legislature: legNum,
+            numero: m.numero,
+            dateScrutin: m.dateScrutin ? new Date(m.dateScrutin) : null,
+            titre: m.titre,
+            objet: m.objet,
+            typeScrutin: m.typeScrutin,
+            sort: m.sort,
+            dossierId: dId,
+            nbPour: m.nbPour,
+            nbContre: m.nbContre,
+            nbAbstention: m.nbAbstention,
+          };
+        }),
       )
       .onConflictDoUpdate({
         target: scrutins.uidAn,
         set: {
           titre: sql`excluded.titre`,
           objet: sql`excluded.objet`,
+          sort: sql`excluded.sort`,
+          dossierId: sql`excluded.dossier_id`,
           nbPour: sql`excluded.nb_pour`,
           nbContre: sql`excluded.nb_contre`,
           nbAbstention: sql`excluded.nb_abstention`,
@@ -151,7 +177,7 @@ export async function importScrutins(legislature: string): Promise<void> {
     if (metaBuf.length >= SCRUTIN_BATCH) await flushMeta();
   }
   await flushMeta();
-  console.log(`[scrutins] Métadonnées upsertées.`);
+  console.log(`[scrutins] Métadonnées upsertées. Liés à un dossier : ${linked} · réf. non résolue : ${refMiss}`);
 
   // Map scrutins (uidAn -> id).
   const scrRows = await db.select({ id: scrutins.id, uidAn: scrutins.uidAn }).from(scrutins);

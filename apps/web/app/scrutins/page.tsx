@@ -5,7 +5,7 @@ import {
   type TypeScrutinFiltre,
 } from "../../lib/queries";
 import { DataNotice } from "../_components/data-notice";
-import { capitalize, dateFr, typeLabel } from "../../lib/scrutin-format";
+import { capitalize, dateFr, sortBadge, typeLabel } from "../../lib/scrutin-format";
 
 export const dynamic = "force-dynamic";
 
@@ -101,18 +101,24 @@ export default async function ScrutinsPage({
         {scrutins.map((s) => {
           const exprimes =
             (s.nbPour ?? 0) + (s.nbContre ?? 0) + (s.nbAbstention ?? 0);
+          const badge = sortBadge(s.sort);
           return (
             <li key={s.uidAn}>
               <Link
                 href={`/scrutins/${s.uidAn}`}
                 className="flex flex-col gap-2 px-5 py-4 transition-colors hover:bg-border/30"
               >
-                <span className="flex items-center gap-3 text-xs text-muted">
+                <span className="flex flex-wrap items-center gap-3 text-xs text-muted">
                   <span className="rounded-full border border-border px-2 py-0.5">
                     {typeLabel(s.typeScrutin)}
                   </span>
                   <span>n°{s.numero}</span>
                   <span>{dateFr(s.dateScrutin)}</span>
+                  {badge && (
+                    <span className={`rounded-full border px-2 py-0.5 font-medium ${badge.classes}`}>
+                      {badge.label}
+                    </span>
+                  )}
                 </span>
                 <span className="text-sm leading-snug">{capitalize(s.objet)}</span>
                 {exprimes > 0 && (

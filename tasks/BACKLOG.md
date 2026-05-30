@@ -5,7 +5,7 @@ Priorité : P0 (critique) · P1 · P2.
 
 > L'agent prend la tâche `next` de plus haute priorité **faisable en autonomie**. Les tâches `hitl` attendent une validation humaine (voir AGENTS.md §3).
 >
-> **Version courante : `0.5.0`** (voir [`CHANGELOG.md`](../CHANGELOG.md)). Une tâche `done` qui livre une capacité visible doit apparaître dans le `CHANGELOG` ; un incrément cohérent → couper une version (AGENTS.md §6 bis).
+> **Version courante : `0.6.0`** (voir [`CHANGELOG.md`](../CHANGELOG.md)). Une tâche `done` qui livre une capacité visible doit apparaître dans le `CHANGELOG` ; un incrément cohérent → couper une version (AGENTS.md §6 bis).
 
 ---
 
@@ -31,8 +31,8 @@ Priorité : P0 (critique) · P1 · P2.
 | 1.3 | P0 | done | ETL : download util (`data/raw/`) + dézip (adm-zip) + helpers parsing AN |
 | 1.4 | P0 | done | ETL : import députés AMO10 + groupes/organes + affiliations (577/12/588) |
 | 1.4b | P1 | next | ETL : import acteurs historiques AMO30 → récupérer les 55k votes ignorés (députés non actifs) |
-| 1.5 | P0 | done | ETL : import scrutins + votes individuels (7074 scrutins / 1,05M votes) |
-| 1.6 | P1 | next | ETL : lien scrutin ↔ dossier législatif (dossiersLegislatifs + scrutins.dossier_id) |
+| 1.5 | P0 | done | ETL : import scrutins + votes individuels (7205 scrutins / 1,07M votes) + résultat `sort` |
+| 1.6 | P1 | done | ETL : lien scrutin ↔ dossier législatif (2609 dossiers ; 1375 scrutins liés) + web (v0.6.0) |
 | 1.7 | P1 | in-progress | Validation : effectifs par groupe OK ; reste cross-check nominatif vs NosDéputés |
 
 ## Phase 2 — Agrégation & API

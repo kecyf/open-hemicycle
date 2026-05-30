@@ -13,6 +13,7 @@
     "check": "tsx src/cli.ts check",
     "download": "tsx src/cli.ts download",
     "ingest:deputes": "tsx src/cli.ts ingest:deputes",
+    "ingest:dossiers": "tsx src/cli.ts ingest:dossiers",
     "ingest:scrutins": "tsx src/cli.ts ingest:scrutins",
     "ingest:all": "tsx src/cli.ts ingest:all",
     "job:activite": "tsx src/cli.ts job:activite",

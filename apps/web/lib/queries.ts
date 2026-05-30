@@ -14,6 +14,7 @@ import {
   affiliationsGroupe,
   votes,
   scrutins,
+  dossiersLegislatifs,
   activiteJournaliere,
   type Position,
 } from "@open-hemicycle/db";
@@ -208,6 +209,8 @@ export interface ScrutinRow {
   dateScrutin: Date | null;
   objet: string | null;
   typeScrutin: string | null;
+  /** Résultat officiel AN : "adopté" | "rejeté" (verbatim, sourcé). */
+  sort: string | null;
   nbPour: number | null;
   nbContre: number | null;
   nbAbstention: number | null;
@@ -245,6 +248,7 @@ export async function listScrutins(opts?: {
       dateScrutin: scrutins.dateScrutin,
       objet: scrutins.objet,
       typeScrutin: scrutins.typeScrutin,
+      sort: scrutins.sort,
       nbPour: scrutins.nbPour,
       nbContre: scrutins.nbContre,
       nbAbstention: scrutins.nbAbstention,
@@ -287,10 +291,20 @@ export interface GroupeVentilation {
   total: number;
 }
 
+/** Dossier législatif rattaché à un scrutin. */
+export interface DossierLien {
+  uidAn: string;
+  titre: string;
+  procedure: string | null;
+  urlAn: string | null;
+}
+
 export interface ScrutinDetail extends ScrutinRow {
   groupes: GroupeVentilation[];
   /** Total de positions nominatives enregistrées (tous groupes confondus). */
   totalNominatif: number;
+  /** Dossier législatif rattaché (null si scrutin de procédure / non rattaché). */
+  dossier: DossierLien | null;
 }
 
 /**
@@ -311,15 +325,30 @@ export async function getScrutinDetail(uidAn: string): Promise<ScrutinDetail | n
       dateScrutin: scrutins.dateScrutin,
       objet: scrutins.objet,
       typeScrutin: scrutins.typeScrutin,
+      sort: scrutins.sort,
       nbPour: scrutins.nbPour,
       nbContre: scrutins.nbContre,
       nbAbstention: scrutins.nbAbstention,
       id: scrutins.id,
+      dossierUidAn: dossiersLegislatifs.uidAn,
+      dossierTitre: dossiersLegislatifs.titre,
+      dossierProcedure: dossiersLegislatifs.procedure,
+      dossierUrlAn: dossiersLegislatifs.urlAn,
     })
     .from(scrutins)
+    .leftJoin(dossiersLegislatifs, eq(dossiersLegislatifs.id, scrutins.dossierId))
     .where(eq(scrutins.uidAn, uidAn))
     .limit(1);
   if (!meta) return null;
+
+  const dossier: DossierLien | null = meta.dossierUidAn
+    ? {
+        uidAn: meta.dossierUidAn,
+        titre: meta.dossierTitre!,
+        procedure: meta.dossierProcedure,
+        urlAn: meta.dossierUrlAn,
+      }
+    : null;
 
   const rows = await db
     .select({
@@ -382,11 +411,13 @@ export async function getScrutinDetail(uidAn: string): Promise<ScrutinDetail | n
     dateScrutin: meta.dateScrutin,
     objet: meta.objet,
     typeScrutin: meta.typeScrutin,
+    sort: meta.sort,
     nbPour: meta.nbPour,
     nbContre: meta.nbContre,
     nbAbstention: meta.nbAbstention,
     groupes,
     totalNominatif,
+    dossier,
   };
 }
 

@@ -2,7 +2,7 @@
 
 Horizon de référence : **Jalon M1 à ~1 mois** (POC public fonctionnel). Le détail opérationnel vit dans [`tasks/BACKLOG.md`](tasks/BACKLOG.md) ; l'historique dans [`tasks/JOURNAL.md`](tasks/JOURNAL.md) ; les versions livrées dans [`CHANGELOG.md`](CHANGELOG.md).
 
-**Version courante : `0.5.0`** — POC public en ligne (annuaire + fiches + heatmap d'activité + explorateur de scrutins + socle garde-fous). Cible `1.0.0` = jalon M1 (1er indice de cohérence sourcé).
+**Version courante : `0.6.0`** — POC public en ligne (annuaire + fiches + heatmap d'activité + explorateur de scrutins + résultat & dossier législatif). Cible `1.0.0` = jalon M1 (1er indice de cohérence sourcé).
 
 ---
 
@@ -20,9 +20,9 @@ Horizon de référence : **Jalon M1 à ~1 mois** (POC public fonctionnel). Le d�
 - [x] Setup Supabase (Postgres) + Drizzle + migrations.
 - [x] Schéma de base : `deputes`, `groupes`, `affiliations_groupe`, `mandats`, `scrutins`, `votes`, `dossiers`, `textes`, `activite_journaliere`, `sync_runs`.
 - [x] ETL : import députés (AMO10) + groupes/organes (577 / 12 / 588 affiliations).
-- [x] ETL : import scrutins + votes individuels (17e lég.) — 7074 scrutins / 1,05M votes.
+- [x] ETL : import scrutins + votes individuels (17e lég.) — 7205 scrutins / 1,07M votes + résultat `sort`.
 - [ ] ETL : import acteurs historiques (AMO30) → récupérer les 55k votes de députés non actifs.
-- [ ] ETL : lien scrutin ↔ dossier législatif.
+- [x] ETL : lien scrutin ↔ dossier législatif (2609 dossiers ; 1375 scrutins liés à 40 dossiers).
 - [~] Validation : effectifs par groupe cohérents ; reste cross-check nominatif vs NosDéputés.
 
 ## Phase 2 — Agrégation & API (semaine 2–3)

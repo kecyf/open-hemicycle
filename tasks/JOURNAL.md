@@ -4,6 +4,24 @@ Entrées les plus récentes en haut. Le dépôt est la mémoire de l'agent : ce 
 
 ---
 
+## 2026-05-30 (après-midi, +2) — 🔗 v0.6.0 : lien scrutin ↔ dossier législatif (+ résultat officiel)
+
+🔔 Pour le superviseur : v0.6.0 poussée → déploiement Vercel auto. Le lien scrutin↔dossier débloque la voie vers les thèmes (4.1) puis l'indice de cohérence. Décision à venir : **choix du thème pilote** (4.1).
+
+- **Objectif** : tâche 1.6 — rattacher chaque scrutin à son dossier législatif (prérequis des thèmes), et au passage capter le résultat officiel `sort`.
+- **Fait** :
+  - **Sonde data** : sur 7 205 scrutins, le lien vit dans `objet.dossierLegislatif.dossierRef` (1 247→1 375 scrutins avec réf., 100 % résolus, 40 dossiers distincts) ; `referenceLegislative` toujours null ; `sort = {code,libelle}` présent partout (adopté 2 515 / rejeté 4 690).
+  - **Schéma (additif, ALTER idempotents sur la live)** : `scrutins.sort`, `dossiers_legislatifs.procedure`, `dossiers_legislatifs.url_an`. Mis à jour aussi dans `schema.ts` (source de vérité).
+  - **ETL** : nouveau `import/dossiers.ts` (`DLR5L{leg}*` → titre + procédure + URL officielle `dyn/{leg}/dossiers/{chemin}`), commande CLI `ingest:dossiers`, intégrée dans `ingest:all` **avant** scrutins. `import/scrutins.ts` capte `dossierRef`+`sort` et set `dossier_id` (map dossiers chargé au démarrage). Upsert étendu (`sort`, `dossier_id`).
+  - **Chargé en base** : 2 609 dossiers L17 ; re-ingestion scrutins → 7 205 avec `sort`, 1 375 liés à un dossier (3 réfs non résolues, négligeable).
+  - **Web** : badge résultat **Adopté/Rejeté** (couleur informative, terme verbatim) sur `/scrutins` et le détail ; bloc « Dossier législatif » avec lien vers la page officielle du dossier. Disclaimer synthèse ajusté (le résultat est désormais affiché et sourcé).
+  - **Vérifié** : typecheck (etl+web) + build Turbopack verts ; en local, `/scrutins` & `/scrutins?type=solennel` 200 (badges), détail `VTANR5L17V6753` 200 → « Adopté », dossier Nouvelle-Calédonie + lien AN, ventilation par groupe. Captures OK. URLs dossier (forme chemin ET forme uid) → 200.
+- **Appris** : seulement 40 dossiers concentrent les 1 375 scrutins nominatifs (≈ gros textes très débattus) — c'est exactement la matière utile pour les thèmes. `titreChemin` vaut parfois l'uid `DLR*` : l'URL AN résout dans les deux cas.
+- **Bloqueurs** : aucun.
+- **Prochaine étape** : `0.7.0` = **rattachement scrutins ↔ thèmes (4.1)** sur un thème pilote (en attente du choix superviseur), puis composante « cohérence vote/ligne de groupe » (4.2). En parallèle : AMO30 (1.4b) et 3 taux de participation (2.2).
+
+---
+
 ## 2026-05-30 (après-midi, +2) — 🏷️ Versioning + mise au net roadmap, et 1er push public
 
 🔔 Pour le superviseur : **push effectué** sur `main` (3 commits produit + ce commit de release) → déploiement Vercel auto déclenché. C'était ta consigne explicite. À surveiller : que `/scrutins`, `/methodologie`, `/mentions-legales`, `/signaler` répondent 200 en prod.

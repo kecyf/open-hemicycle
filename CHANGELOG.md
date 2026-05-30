@@ -13,7 +13,26 @@ Catégories : `Ajouté` · `Modifié` · `Corrigé` · `Supprimé` · `Données`
 
 ## [Non publié]
 
-_Rien pour l'instant. Prochaines pistes : lien scrutin ↔ dossier législatif (1.6), import AMO30 (1.4b), 3 taux de participation (2.2)._
+_Prochaines pistes : rattachement scrutins ↔ thèmes (4.1), import AMO30 (1.4b), 3 taux de participation (2.2)._
+
+---
+
+## [0.6.0] — 2026-05-30
+
+Lien scrutin ↔ dossier législatif : prérequis du regroupement par thème (donc de l'indice de cohérence). Capture aussi le résultat officiel des scrutins.
+
+### Ajouté
+- ETL `ingest:dossiers` : import des dossiers législatifs (2 609 dossiers de la 17ᵉ lég.) avec titre, procédure parlementaire et URL officielle du dossier.
+- Rattachement automatique des scrutins à leur dossier (`scrutins.dossier_id` via `objet.dossierLegislatif.dossierRef`) — 1 375 scrutins liés à 40 dossiers.
+- Capture du résultat officiel `sort` (adopté / rejeté) pour les 7 205 scrutins.
+- Web : badge résultat (Adopté/Rejeté) sur la liste et le détail des scrutins ; bloc « Dossier législatif » avec lien vers la page officielle du dossier.
+
+### Données
+- Schéma (additif) : `scrutins.sort`, `dossiers_legislatifs.procedure`, `dossiers_legislatifs.url_an`.
+- Re-ingestion scrutins (dump frais : 7 205 scrutins).
+
+### Garde-fous
+- Résultat `sort` affiché verbatim (terme officiel AN), sans interprétation des règles de majorité (renvoi à la source). Lien dossier vers la page officielle.
 
 ---
 
@@ -86,7 +105,8 @@ Amorçage et infrastructure live : le projet existe, est documenté et déployé
 ### En ligne
 - Landing publique : <https://open-hemicycle.vercel.app>
 
-[Non publié]: https://github.com/kecyf/open-hemicycle/compare/v0.5.0...HEAD
+[Non publié]: https://github.com/kecyf/open-hemicycle/compare/v0.6.0...HEAD
+[0.6.0]: https://github.com/kecyf/open-hemicycle/releases/tag/v0.6.0
 [0.5.0]: https://github.com/kecyf/open-hemicycle/releases/tag/v0.5.0
 [0.4.0]: https://github.com/kecyf/open-hemicycle/releases/tag/v0.4.0
 [0.3.0]: https://github.com/kecyf/open-hemicycle/releases/tag/v0.3.0

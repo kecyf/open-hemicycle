@@ -24,6 +24,24 @@ export function typeLabel(type: string | null): string {
   }
 }
 
+/**
+ * Présentation neutre du résultat officiel (`sort` AN : "adopté" | "rejeté").
+ * Fait sourcé, repris verbatim. Couleur informative, sans jugement.
+ */
+export function sortBadge(
+  sort: string | null,
+): { label: string; classes: string } | null {
+  if (!sort) return null;
+  const s = sort.toLowerCase();
+  if (s === "adopté") {
+    return { label: "Adopté", classes: "border-emerald-500/40 bg-emerald-500/10 text-emerald-300" };
+  }
+  if (s === "rejeté") {
+    return { label: "Rejeté", classes: "border-rose-500/40 bg-rose-500/10 text-rose-300" };
+  }
+  return { label: capitalize(sort), classes: "border-border text-muted" };
+}
+
 /** Lien vers la page officielle d'analyse du scrutin (par numéro). */
 export function urlScrutinOfficiel(numero: number | null): string | null {
   if (numero == null) return null;

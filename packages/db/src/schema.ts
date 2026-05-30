@@ -89,9 +89,11 @@ export const mandats = pgTable("mandats", {
 /** Dossiers législatifs. */
 export const dossiersLegislatifs = pgTable("dossiers_legislatifs", {
   id: uuid("id").primaryKey().defaultRandom(),
-  uidAn: text("uid_an").notNull().unique(),
+  uidAn: text("uid_an").notNull().unique(), // DLR5L17N*
   titre: text("titre").notNull(),
   statut: text("statut"),
+  procedure: text("procedure"), // libellé procédure parlementaire (PPL, PJL...)
+  urlAn: text("url_an"), // page officielle du dossier (dyn/{leg}/dossiers/{chemin})
   legislature: integer("legislature").notNull(),
 });
 
@@ -117,6 +119,7 @@ export const scrutins = pgTable(
     titre: text("titre"),
     objet: text("objet"),
     typeScrutin: text("type_scrutin"), // ex. "solennel"
+    sort: text("sort"), // résultat officiel AN : "adopté" | "rejeté"
     nbPour: integer("nb_pour"),
     nbContre: integer("nb_contre"),
     nbAbstention: integer("nb_abstention"),

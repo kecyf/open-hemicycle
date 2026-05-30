@@ -7,6 +7,7 @@ import {
   capitalize,
   dateFr,
   groupColor,
+  sortBadge,
   typeLabel,
   urlScrutinOfficiel,
 } from "../../../lib/scrutin-format";
@@ -44,6 +45,7 @@ export default async function ScrutinPage({
   if (!scrutin) notFound();
 
   const urlOfficiel = urlScrutinOfficiel(scrutin.numero);
+  const badge = sortBadge(scrutin.sort);
   const synthese = [
     { label: "Pour", value: scrutin.nbPour ?? 0, color: POSITION_COLORS.pour },
     { label: "Contre", value: scrutin.nbContre ?? 0, color: POSITION_COLORS.contre },
@@ -63,10 +65,33 @@ export default async function ScrutinPage({
           </span>
           <span>Scrutin n°{scrutin.numero}</span>
           <span>{dateFr(scrutin.dateScrutin)}</span>
+          {badge && (
+            <span className={`rounded-full border px-2.5 py-0.5 text-xs font-medium ${badge.classes}`}>
+              {badge.label}
+            </span>
+          )}
         </span>
         <h1 className="text-2xl font-semibold leading-tight tracking-tight sm:text-3xl">
           {capitalize(scrutin.objet)}
         </h1>
+        {scrutin.dossier && (
+          <p className="text-sm text-muted">
+            Dossier législatif :{" "}
+            {scrutin.dossier.urlAn ? (
+              <a
+                href={scrutin.dossier.urlAn}
+                className="text-accent hover:underline"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {scrutin.dossier.titre} ↗
+              </a>
+            ) : (
+              <span className="text-foreground">{scrutin.dossier.titre}</span>
+            )}
+            {scrutin.dossier.procedure ? ` · ${scrutin.dossier.procedure}` : ""}
+          </p>
+        )}
         {urlOfficiel && (
           <a
             href={urlOfficiel}
@@ -97,8 +122,8 @@ export default async function ScrutinPage({
           ))}
         </ul>
         <p className="text-xs leading-relaxed text-muted">
-          Décompte tel que publié par l'Assemblée nationale. Le résultat officiel
-          (adoption ou rejet) et les règles de majorité figurent sur la page source liée
+          Décompte et résultat ({scrutin.sort ?? "—"}) tels que publiés par l'Assemblée
+          nationale. Les règles de majorité applicables figurent sur la page source liée
           ci-dessus.
         </p>
       </section>
