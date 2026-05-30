@@ -4,6 +4,21 @@ Entrées les plus récentes en haut. Le dépôt est la mémoire de l'agent : ce 
 
 ---
 
+## 2026-05-30 (après-midi, +2) — ⚖️ Pages méthodologie + mentions légales + signaler une erreur
+
+- **Objectif** : poser le socle garde-fous côté public (tâche 3.4) maintenant que deux surfaces de données nominatives sont en ligne — méthodologie liée, mentions légales/RGPD, droit de réponse accessible.
+- **Fait** :
+  - **Footer global** (`SiteFooter`, monté dans `layout.tsx`) → liens Accueil / Député·es / Scrutins / Méthodologie / Mentions légales / Signaler / GitHub + attribution sources & licence, présent sur **toutes** les pages. Footer dédié de la landing supprimé (anti-doublon).
+  - **`/methodologie`** : fidèle à `docs/METHODOLOGY.md` (principes, activité détectée + score/quantiles + limites, 3 taux de participation, indice de cohérence à venir + règles de publication, incertitude/corrections, « ce qu'on ne calcule pas »). Lien vers le doc versionné.
+  - **`/mentions-legales`** : éditeur/nature (indépendant, AGPL-3.0), sources & licences (Etalab 2.0, ODbL share-alike), RGPD (base légale mission d'intérêt public, minimisation, **aucune donnée privée/santé**, droit de rectification), immunité parlementaire (art. 26), garde-fous éditoriaux (no adjectif, no score unique, no top-pires, non-vote ≠ opposition, symétrie), droit de réponse.
+  - **`/signaler`** : deux parcours (corriger une donnée / droit de réponse) via **issues GitHub pré-remplies** (labels `correction` / `droit-de-reponse`, gabarit page+donnée+source) + explication du traitement public et tracé. Pas d'email inventé : canal = issues publiques (traçabilité).
+- **Garde-fous** : tout le contenu reste factuel et symétrique ; la page méthodo rend chaque indicateur cliquable/critiquable ; le signalement satisfait l'exigence « droit de réponse accessible » de `legal-guardrails.md` §7.
+- **Vérifié** : typecheck + build verts (3 nouvelles routes statiques ○) ; en local, `/methodologie` `/mentions-legales` `/signaler` → 200 ; footer (méthodo/mentions/signaler) présent sur `/scrutins` ; liens issues pré-remplis corrects (`issues/new?labels=…`). Capture méthodo OK.
+- **Bloqueurs** : aucun.
+- **Prochaine étape** : (a) lien scrutin ↔ dossier législatif (1.6, préalable aux thèmes) ; (b) AMO30 (1.4b, 55k votes manquants) ; (c) calcul des 3 taux de participation (2.2) ; (d) capter `sort` (adopté/rejeté) des scrutins. Décision en attente : **push/déploiement prod** (HITL).
+
+---
+
 ## 2026-05-30 (après-midi, +2) — 🗳️ Explorateur de scrutins : liste + votes par groupe
 
 - **Objectif** : ouvrir la 2ᵉ grande surface produit (tâches 2.5 / 3.3) — explorer les scrutins publics et la ventilation des votes par groupe, en respectant les garde-fous (fait + source + date + lien).

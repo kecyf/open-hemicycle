@@ -51,7 +51,7 @@ Priorité : P0 (critique) · P1 · P2.
 | 3.1 | P0 | done | Annuaire/recherche député·es (filtre groupe, couleurs + effectifs) — en ligne |
 | 3.2 | P0 | done | Fiche député·e : heatmap d'activité (votes) + votes par position + contexte + légende |
 | 3.3 | P0 | done | Explorateur de scrutins : liste filtrable + détail votes par groupe — en ligne (`/scrutins`) |
-| 3.4 | P0 | next | Page méthodologie + mentions légales + signaler une erreur |
+| 3.4 | P0 | done | Pages méthodologie + mentions légales + signaler une erreur + footer global — en ligne |
 | 3.5 | P1 | hitl | Déploiement Vercel + Supabase (validation humaine) |
 
 ## Phase 4 — Indice de cohérence v0

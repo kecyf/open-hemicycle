@@ -143,14 +143,6 @@ export default async function Home() {
         affichons est une <em>activité parlementaire détectée</em> (votes, amendements,
         questions, interventions, commissions) — jamais une « présence » au sens strict.
       </section>
-
-      <footer className="flex flex-col gap-2 border-t border-border pt-8 text-xs text-muted">
-        <p>
-          Données : Assemblée nationale (data.assemblee-nationale.fr, Licence Ouverte
-          Etalab 2.0), NosDéputés.fr (Regards Citoyens), Datan, HATVP.
-        </p>
-        <p>Code sous licence AGPL-3.0. Un projet d'utilité publique, indépendant.</p>
-      </footer>
     </main>
   );
 }
