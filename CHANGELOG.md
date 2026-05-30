@@ -13,15 +13,32 @@ Catégories : `Ajouté` · `Modifié` · `Corrigé` · `Supprimé` · `Données`
 
 ## [Non publié]
 
+_Prochaines pistes produit : indice de cohérence vote / ligne de groupe (4.2), import AMO30 (1.4b), 3 taux de participation (2.2), extension de la classification thématique._
+
+---
+
+## [0.7.0] — 2026-05-30
+
+Regroupement des scrutins par **thème** (classification éditoriale, manuelle et auditable) — premier pas vers l'indice de cohérence par thème. Inclut aussi la mise en place du cycle de livraison par PR + CI.
+
 ### Ajouté
+- **Thèmes** : tables `themes` + `dossiers_themes`, rattachement au niveau du dossier législatif (un scrutin hérite du thème de son dossier).
+- ETL `seed:themes` : (re)pose la classification depuis un fichier **versionné et auditable** (`packages/etl/src/data/themes.ts`), source de vérité unique.
+- Page **`/themes`** (liste des thèmes + nombre de scrutins) ; filtre `?theme=` sur l'explorateur de scrutins ; pastilles de thème cliquables sur le détail d'un scrutin ; lien « Thèmes » dans le pied de page.
+- Méthodologie : section dédiée à la classification thématique (règle conservatrice, périmètre, lien vers le mapping auditable).
 - **CI GitHub Actions** (`typecheck` + `test` + `build`) sur chaque PR et push `main`.
 - **Cycle de livraison par PR** documenté (AGENTS.md §6 ter + skill standup) : branche → PR → CI verte → review automatisée → merge.
 - Guide de **review automatisée** (`.cursor/BUGBOT.md`, priorité aux garde-fous éditoriaux) + gabarit de PR.
 
+### Données
+- Schéma (additif) : tables `themes`, `dossiers_themes` (RLS + lecture publique).
+- Pilote : 2 thèmes — `budget-finances` (2 dossiers, ~168 scrutins) et `securite-immigration` (1 dossier, ~101 scrutins).
+
+### Garde-fous
+- Classification **conservatrice** (un dossier n'entre dans un thème que si son titre officiel le justifie sans ambiguïté) ; thème = regroupement neutre, jamais un jugement ; mapping public et traçable par PR ; périmètre symétrique.
+
 ### Corrigé
 - Typecheck du package `@open-hemicycle/db` (ajout `@types/node`, tsconfig `noEmit`) — le monorepo typecheck désormais entièrement au vert.
-
-_Prochaines pistes produit : rattachement scrutins ↔ thèmes (4.1), import AMO30 (1.4b), 3 taux de participation (2.2)._
 
 ---
 

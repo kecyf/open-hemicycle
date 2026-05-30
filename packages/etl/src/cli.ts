@@ -9,7 +9,8 @@
  *   ingest:deputes    Importe députés + groupes + affiliations (AMO10).
  *   ingest:dossiers   Importe les dossiers législatifs.
  *   ingest:scrutins   Importe scrutins + votes individuels (+ lien dossier, sort).
- *   ingest:all        Enchaîne deputes, dossiers, scrutins, puis activite.
+ *   seed:themes       (Re)pose la classification thématique des dossiers (fichier versionné).
+ *   ingest:all        Enchaîne deputes, dossiers, scrutins, themes, puis activite.
  *   job:activite      (Re)calcule la table activite_journaliere (heatmap).
  *
  * Les commandes d'ingestion nécessitent DATABASE_URL (voir .env.example).
@@ -20,6 +21,7 @@ import { downloadDataset } from "./lib/download.ts";
 import { importDeputes } from "./import/deputes.ts";
 import { importDossiers } from "./import/dossiers.ts";
 import { importScrutins } from "./import/scrutins.ts";
+import { seedThemes } from "./import/themes.ts";
 import { computeActiviteJournaliere } from "./jobs/activite.ts";
 
 const LEGISLATURE = process.env.AN_LEGISLATURE ?? "17";
@@ -82,10 +84,14 @@ async function main(): Promise<void> {
     case "ingest:scrutins":
       await importScrutins(LEGISLATURE);
       break;
+    case "seed:themes":
+      await seedThemes();
+      break;
     case "ingest:all":
       await importDeputes(LEGISLATURE);
       await importDossiers(LEGISLATURE);
       await importScrutins(LEGISLATURE);
+      await seedThemes();
       await computeActiviteJournaliere();
       break;
     case "job:activite":
@@ -93,7 +99,7 @@ async function main(): Promise<void> {
       break;
     default:
       console.error(
-        `Commande inconnue: ${cmd}\nUsage: oh-etl [sources|check|download|ingest:deputes|ingest:dossiers|ingest:scrutins|ingest:all|job:activite]`,
+        `Commande inconnue: ${cmd}\nUsage: oh-etl [sources|check|download|ingest:deputes|ingest:dossiers|ingest:scrutins|seed:themes|ingest:all|job:activite]`,
       );
       process.exit(1);
   }

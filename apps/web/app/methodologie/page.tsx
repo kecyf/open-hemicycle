@@ -81,7 +81,37 @@ export default function MethodologiePage() {
         </Callout>
       </Section>
 
-      <Section titre="4. Indice de cohérence (à venir)">
+      <Section titre="4. Classification thématique">
+        <p>
+          Les scrutins sont regroupés par <strong className="text-foreground">thème</strong> pour
+          permettre de suivre un sujet de bout en bout. Le rattachement se fait{" "}
+          <strong className="text-foreground">au niveau du dossier législatif</strong> (un scrutin
+          hérite du thème de son dossier), à partir du lien officiel scrutin → dossier publié par
+          l'Assemblée nationale.
+        </p>
+        <p>
+          La classification est <strong className="text-foreground">manuelle</strong> et suit une
+          règle <strong className="text-foreground">conservatrice</strong> : un dossier n'entre
+          dans un thème que si son <em>titre officiel</em> (verbatim AN) concerne sans ambiguïté le
+          cœur du thème. <strong className="text-foreground">En cas de doute, on n'inclut pas.</strong>{" "}
+          Un dossier peut n'appartenir à aucun thème.
+        </p>
+        <p className="text-sm text-muted">
+          Le mapping complet (thème → dossiers, avec leur titre officiel) est{" "}
+          <strong className="text-foreground">versionné et auditable</strong> dans le dépôt
+          (<code className="rounded bg-border/50 px-1.5 py-0.5 text-xs">packages/etl/src/data/themes.ts</code>) ;
+          toute modification passe par une revue. <strong className="text-foreground">Phase pilote :</strong>{" "}
+          deux thèmes seulement (« Budget &amp; finances publiques », « Sécurité &amp; immigration »),
+          la liste s'étoffera progressivement.
+        </p>
+        <Callout>
+          Un thème est un simple <strong className="text-foreground">regroupement neutre</strong>,
+          pas un jugement. Le périmètre est volontairement restreint et symétrique : aucun sujet
+          n'est mis en avant ni minoré, et le détail des dossiers retenus reste public.
+        </Callout>
+      </Section>
+
+      <Section titre="5. Indice de cohérence (à venir)">
         <p>
           L'indice de cohérence mesure l'<strong className="text-foreground">écart entre des positions affichées et des votes effectifs</strong>{" "}
           sur un thème donné. Il ne mesure pas l'honnêteté ; il mesure une <em>distance entre
@@ -97,7 +127,7 @@ export default function MethodologiePage() {
         </p>
       </Section>
 
-      <Section titre="5. Incertitude et corrections">
+      <Section titre="6. Incertitude et corrections">
         <p>
           Chaque indicateur affiche sa taille d'échantillon et sa période. Les données AN
           peuvent contenir des erreurs ; toute correction signalée et vérifiée est tracée
@@ -106,7 +136,7 @@ export default function MethodologiePage() {
         </p>
       </Section>
 
-      <Section titre="6. Ce que nous ne calculerons pas">
+      <Section titre="7. Ce que nous ne calculerons pas">
         <ul className="flex list-disc flex-col gap-2 pl-5">
           <li>Un « classement des pires députés ».</li>
           <li>Un score de moralité, d'intelligence ou de mérite.</li>

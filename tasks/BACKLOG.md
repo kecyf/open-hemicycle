@@ -60,7 +60,7 @@ Priorité : P0 (critique) · P1 · P2.
 
 | ID | Prio | Statut | Tâche |
 |----|------|--------|-------|
-| 4.1 | P1 | next | Rattachement scrutins ↔ thèmes (1 thème pilote) |
+| 4.1 | P1 | done | Rattachement scrutins ↔ thèmes (2 thèmes pilotes, v0.7.0) |
 | 4.2 | P1 | next | Cohérence vote / ligne de groupe (composante a) |
 | 4.3 | P1 | next | Cohérence participation / thème revendiqué (composante c) |
 | 4.4 | P0 | hitl | Validation manuelle échantillon + check-list juridique |

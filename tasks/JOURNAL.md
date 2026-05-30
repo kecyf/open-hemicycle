@@ -4,6 +4,24 @@ Entrées les plus récentes en haut. Le dépôt est la mémoire de l'agent : ce 
 
 ---
 
+## 2026-05-30 (fin d'après-midi, +2) — 🗂️ v0.7.0 : regroupement des scrutins par thème (pilote)
+
+🔔 Pour le superviseur : feature **thèmes** livrée en PR (`feat/themes-pilote`) — première brique vers l'indice de cohérence par thème. Classification **manuelle, conservatrice et auditable** (mapping versionné dans le code, modifiable seulement par PR). Pilote volontairement restreint à **2 thèmes** et **3 dossiers** (titres officiels sans ambiguïté). Rien de nominatif, aucun jugement. La PR attend la CI verte + review Bugbot avant merge.
+
+- **Objectif du jour** : tâche 4.1 (rattachement scrutins ↔ thèmes), avec 2 thèmes pilotes validés par le superviseur : « Budget & finances publiques » et « Sécurité & immigration ».
+- **Fait** :
+  - **Exploration** des 40 dossiers porteurs de votes → sélection conservatrice par titre officiel : `budget-finances` = `DLR5L17N52985` (fraudes sociales et fiscales) + `DLR5L17N53720` (responsabilité financière des opérateurs de l'État) ; `securite-immigration` = `DLR5L17N53284` (sécurité, rétention administrative, prévention des attentats).
+  - **Schéma** : tables `themes` + `dossiers_themes` (RLS + lecture publique) ; rattachement au niveau du dossier (un scrutin hérite du thème de son dossier).
+  - **ETL** : commande `seed:themes` qui (re)pose la classification depuis `packages/etl/src/data/themes.ts` (source de vérité versionnée et commentée) ; ajoutée à `ingest:all`.
+  - **Web** : page `/themes` (liste + nb scrutins), filtre `?theme=` sur l'explorateur, pastilles cliquables sur le détail d'un scrutin, entrée « Thèmes » dans le footer.
+  - **Méthodologie** : nouvelle section (UI + `docs/METHODOLOGY.md`) sur la classification thématique (règle conservatrice, périmètre pilote, mapping auditable).
+  - **Vérifié en local** (navigateur dev) : `/themes` (Budget 168, Sécurité 101), filtre `?theme=securite-immigration` (101 scrutins), pastille « Sécurité & immigration » + lien dossier sur le scrutin solennel n°6318.
+  - **Vérifié CI en local** : `pnpm -r typecheck` ✓ (4/4), `pnpm -r test` ✓ (12/12), `build` web ✓ (route `/themes` listée).
+- **Appris** : aucun PLF/PLFSS dans les 40 dossiers porteurs de votes du dump courant → le thème budget repose surtout sur la loi anti-fraude ; le pilote prouve le pipeline (thème → dossier → scrutins → votes), l'exhaustivité viendra avec plus de dossiers liés.
+- **Prochaine étape** : CI verte + review Bugbot → merge → tag `v0.7.0`. Puis 4.2 (cohérence vote / ligne de groupe) en s'appuyant sur ces thèmes.
+
+---
+
 ## 2026-05-30 (après-midi, +2) — 🛡️ CI + cycle de PR review (le harness se discipline)
 
 🔔 Pour le superviseur : (1) **v0.6.0 vérifiée en prod** — déploiement Vercel `READY` sur le SHA `2d40273`, contenu (badge résultat + dossier) servi, DB prod OK. (2) Mise en place d'un **cycle CI + PR review** : cette PR (`chore/ci-pr-workflow`) l'amorce elle-même. **À activer côté dashboard (action superviseur)** : Cursor **Bugbot** sur le repo + (optionnel) **branch protection** sur `main` (exiger CI verte + 1 review avant merge).

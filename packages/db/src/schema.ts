@@ -97,6 +97,37 @@ export const dossiersLegislatifs = pgTable("dossiers_legislatifs", {
   legislature: integer("legislature").notNull(),
 });
 
+/**
+ * Thèmes (classification éditoriale des dossiers).
+ *
+ * Classification MANUELLE et conservatrice, au niveau du dossier législatif
+ * (un scrutin hérite du thème de son dossier). Le mapping est versionné et
+ * auditable (packages/etl/src/data/themes.ts). Voir docs/METHODOLOGY.md.
+ */
+export const themes = pgTable("themes", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  slug: text("slug").notNull().unique(),
+  nom: text("nom").notNull(),
+  description: text("description"),
+});
+
+/** Rattachement dossier ↔ thème (plusieurs thèmes possibles par dossier). */
+export const dossiersThemes = pgTable(
+  "dossiers_themes",
+  {
+    dossierId: uuid("dossier_id")
+      .notNull()
+      .references(() => dossiersLegislatifs.id),
+    themeId: uuid("theme_id")
+      .notNull()
+      .references(() => themes.id),
+  },
+  (t) => [
+    primaryKey({ columns: [t.dossierId, t.themeId] }),
+    index("idx_dossiers_themes_theme").on(t.themeId),
+  ],
+);
+
 /** Textes de loi rattachés à un dossier. */
 export const textesDeLoi = pgTable("textes_de_loi", {
   id: uuid("id").primaryKey().defaultRandom(),
