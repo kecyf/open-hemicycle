@@ -13,7 +13,15 @@ Catégories : `Ajouté` · `Modifié` · `Corrigé` · `Supprimé` · `Données`
 
 ## [Non publié]
 
-_Prochaines pistes : rattachement scrutins ↔ thèmes (4.1), import AMO30 (1.4b), 3 taux de participation (2.2)._
+### Ajouté
+- **CI GitHub Actions** (`typecheck` + `test` + `build`) sur chaque PR et push `main`.
+- **Cycle de livraison par PR** documenté (AGENTS.md §6 ter + skill standup) : branche → PR → CI verte → review automatisée → merge.
+- Guide de **review automatisée** (`.cursor/BUGBOT.md`, priorité aux garde-fous éditoriaux) + gabarit de PR.
+
+### Corrigé
+- Typecheck du package `@open-hemicycle/db` (ajout `@types/node`, tsconfig `noEmit`) — le monorepo typecheck désormais entièrement au vert.
+
+_Prochaines pistes produit : rattachement scrutins ↔ thèmes (4.1), import AMO30 (1.4b), 3 taux de participation (2.2)._
 
 ---
 

@@ -60,7 +60,7 @@ Une tâche est « done » si :
 - [ ] Les **sources** sont attribuées.
 - [ ] `tasks/JOURNAL.md` et `tasks/BACKLOG.md` sont à jour.
 - [ ] Le **`CHANGELOG.md`** est à jour (au minimum la section `[Non publié]`) ; voir §6 bis.
-- [ ] Commit(s) atomiques poussés.
+- [ ] Commit(s) atomiques sur une **branche**, **PR ouverte**, **CI verte** et **review traitée** avant merge ; voir §6 ter.
 
 ## 5. Ligne rouge éditoriale (jamais, sous aucun prétexte)
 
@@ -95,6 +95,22 @@ Règles simples :
   3. commiter (`chore(release): vX.Y.Z`) puis **tag annoté** `git tag -a vX.Y.Z -m "…"` et pousser les tags (`git push --tags`).
 - **Choix du numéro** (tant qu'on est en `0.x`) : `MINOR` (0.**Y**.0) pour une nouvelle capacité visible (page, job, indicateur) ; `PATCH` (0.y.**Z**) pour correctif/ajustement sans nouvelle capacité. On réserve `1.0.0` au premier POC public complet (cf. ROADMAP / Jalon M1).
 - **HITL** : couper une version ne dispense **pas** des règles §3 (un déploiement public reste à valider ; ici l'utilisateur déclenche le push/déploiement).
+
+## 6 ter. Cycle de livraison (branches, PR, CI, review)
+
+`main` est **déployé automatiquement en production** (Vercel). On ne pousse donc plus une fonctionnalité directement sur `main` : tout passe par une **branche + Pull Request** avec **CI verte** et **review automatisée** avant merge.
+
+Boucle standard :
+1. **Brancher** : `feat/...`, `fix/...`, `chore/...` (jamais travailler directement sur `main`).
+2. **Implémenter** par petits incréments testables (respecter §4 DoD et les garde-fous éditoriaux).
+3. **Ouvrir une PR** (le gabarit `.github/pull_request_template.md` se charge ; cocher la check-list DoD + garde-fous).
+4. **CI** (`.github/workflows/ci.yml`) : `typecheck` + `test` + `build` doivent être **verts**. Ne jamais merger sur du rouge.
+5. **Review automatisée** : Bugbot relit la PR selon `.cursor/BUGBOT.md` (priorité aux garde-fous éditoriaux). Traiter les remarques.
+6. **Merge** : sur CI verte + review OK → merge dans `main` (= release/déploiement). Pour une **release majeure** (cut de version §6 bis) ou un **indicateur sensible** (§3), la décision de merge est **HITL**.
+
+Exceptions tolérées (direct sur `main`) : uniquement les changements **triviaux et sans risque** (typo de doc, journal). En cas de doute → PR.
+
+Outils disponibles : skills `new-branch-and-pr`, `loop-on-ci`, `review-and-ship`, `babysit` ; sous-agents `ci-watcher` / `ci-investigator`.
 
 ## 7. Indicateurs de succès (à ~1 mois)
 
