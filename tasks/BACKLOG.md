@@ -41,7 +41,7 @@ Priorité : P0 (critique) · P1 · P2.
 |----|------|--------|-------|
 | 2.0 | P0 | done | `@open-hemicycle/core` : fonctions pures (score jour, seuils quantiles 0–4, participation) + 12 tests vitest |
 | 2.1 | P0 | done | Job `activite_journaliere` (heatmap) — branché sur la DB (66 080 lignes, seuils 2/9/22) |
-| 2.2 | P1 | next | Calcul des 3 taux de participation |
+| 2.2 | P1 | done | Calcul des 3 taux de participation (core + fiche ; commission en attente ingestion PO*) |
 | 2.3 | P0 | done | Accès données : recherche/liste député·es (server component Drizzle) |
 | 2.4 | P0 | done | Accès données : fiche député·e — votes + heatmap d'activité (v0.3.0) |
 | 2.5 | P0 | done | API/page : scrutin + votes par groupe (`listScrutins`/`countScrutins`/`getScrutinDetail`) |

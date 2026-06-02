@@ -13,7 +13,11 @@ Catégories : `Ajouté` · `Modifié` · `Corrigé` · `Supprimé` · `Données`
 
 ## [Non publié]
 
-_Prochaines pistes produit : indice de cohérence vote / ligne de groupe (4.2), import AMO30 (1.4b), 3 taux de participation (2.2), extension de la classification thématique._
+### Ajouté
+- **`@open-hemicycle/core`** : trois taux de participation aux votes (solennel, commission, tous) selon METHODOLOGY §3 — 5 tests vitest.
+- **Fiche député·e** : bloc « Participation aux votes » (les 3 périmètres affichés ensemble) ; périmètre commission en attente d'ingestion des organes.
+
+_Prochaines pistes produit : indice de cohérence vote / ligne de groupe (4.2), import AMO30 (1.4b), extension de la classification thématique._
 
 ---
 
