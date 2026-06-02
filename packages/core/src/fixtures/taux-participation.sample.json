@@ -1,0 +1,8 @@
+[
+  { "typeScrutin": "scrutin public solennel", "position": "pour" },
+  { "typeScrutin": "scrutin public solennel", "position": "non-votant" },
+  { "typeScrutin": "scrutin public ordinaire", "position": "contre" },
+  { "typeScrutin": "scrutin public ordinaire", "position": "abstention" },
+  { "typeScrutin": "scrutin public ordinaire", "position": "pour", "commissionUidAn": "PO420123" },
+  { "typeScrutin": "motion de censure", "position": "pour" }
+]

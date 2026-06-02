@@ -1,8 +1,14 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getActiviteJournaliere, getDeputeBySlug, getVoteStats } from "../../../lib/queries";
+import {
+  getActiviteJournaliere,
+  getDeputeBySlug,
+  getTauxParticipation,
+  getVoteStats,
+} from "../../../lib/queries";
 import { ActivityDisclaimer, DataNotice } from "../../_components/data-notice";
 import { ActivityHeatmap } from "../../_components/activity-heatmap";
+import { ParticipationRates } from "../../_components/participation-rates";
 
 export const dynamic = "force-dynamic";
 
@@ -40,9 +46,10 @@ export default async function DeputePage({
   const depute = await getDeputeBySlug(slug);
   if (!depute) notFound();
 
-  const [stats, activite] = await Promise.all([
+  const [stats, activite, tauxParticipation] = await Promise.all([
     getVoteStats(depute.id),
     getActiviteJournaliere(depute.id),
+    getTauxParticipation(depute.id),
   ]);
   const color = groupColor(depute.couleurHex);
   const segments = [
@@ -150,17 +157,10 @@ export default async function DeputePage({
               ))}
             </ul>
 
-            <div className="rounded-xl border border-border bg-card p-4 text-sm">
-              <span className="text-muted">Votes exprimés (pour + contre + abstention) : </span>
-              <strong className="tabular-nums">
-                {stats.tauxExpression != null ? `${(stats.tauxExpression * 100).toFixed(1)} %` : "—"}
-              </strong>
-              <span className="text-muted">
-                {" "}des {stats.total.toLocaleString("fr-FR")} positions enregistrées.
-              </span>
-            </div>
           </>
         )}
+
+        {stats.total > 0 ? <ParticipationRates taux={tauxParticipation} /> : null}
 
         <ActivityDisclaimer />
       </section>

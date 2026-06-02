@@ -12,6 +12,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@open-hemicycle/core": "workspace:*",
     "@open-hemicycle/db": "workspace:*",
     "drizzle-orm": "^0.38.0",
     "next": "16.2.6",
