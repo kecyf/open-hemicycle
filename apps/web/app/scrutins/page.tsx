@@ -2,6 +2,7 @@ import Link from "next/link";
 import {
   countScrutins,
   listScrutins,
+  getThemeBySlug,
   type TypeScrutinFiltre,
 } from "../../lib/queries";
 import { DataNotice } from "../_components/data-notice";
@@ -31,22 +32,25 @@ function isType(v: string | undefined): TypeScrutinFiltre | undefined {
 export default async function ScrutinsPage({
   searchParams,
 }: {
-  searchParams: Promise<{ type?: string; page?: string }>;
+  searchParams: Promise<{ type?: string; page?: string; theme?: string }>;
 }) {
   const sp = await searchParams;
   const type = isType(sp.type);
+  const themeSlug = sp.theme?.trim() || undefined;
   const page = Math.max(1, Number(sp.page ?? "1") || 1);
   const offset = (page - 1) * PAGE_SIZE;
 
-  const [scrutins, total] = await Promise.all([
-    listScrutins({ type, limit: PAGE_SIZE, offset }),
-    countScrutins(type),
+  const [scrutins, total, theme] = await Promise.all([
+    listScrutins({ type, theme: themeSlug, limit: PAGE_SIZE, offset }),
+    countScrutins(type, themeSlug),
+    themeSlug ? getThemeBySlug(themeSlug) : Promise.resolve(null),
   ]);
   const lastPage = Math.max(1, Math.ceil(total / PAGE_SIZE));
 
   const qs = (next: { type?: string; page?: number }) => {
     const params = new URLSearchParams();
     if (next.type) params.set("type", next.type);
+    if (themeSlug) params.set("theme", themeSlug);
     if (next.page && next.page > 1) params.set("page", String(next.page));
     const s = params.toString();
     return s ? `/scrutins?${s}` : "/scrutins";
@@ -72,6 +76,20 @@ export default async function ScrutinsPage({
           ).toLowerCase()})` : " — 17ᵉ législature"}.
           Cliquez sur un scrutin pour voir le détail des votes par groupe.
         </p>
+        {themeSlug && (
+          <div className="flex flex-wrap items-center gap-2 text-sm">
+            <span className="inline-flex items-center gap-2 rounded-full border border-accent bg-accent/10 px-3 py-1">
+              <span className="text-xs uppercase tracking-wider text-muted">Thème</span>
+              <span className="font-medium">{theme?.nom ?? themeSlug}</span>
+            </span>
+            <Link href="/scrutins" className="text-muted hover:text-foreground">
+              ✕ retirer le filtre
+            </Link>
+            <Link href="/themes" className="text-accent hover:underline">
+              tous les thèmes →
+            </Link>
+          </div>
+        )}
       </header>
 
       <DataNotice />

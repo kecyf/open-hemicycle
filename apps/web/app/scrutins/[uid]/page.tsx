@@ -74,6 +74,19 @@ export default async function ScrutinPage({
         <h1 className="text-2xl font-semibold leading-tight tracking-tight sm:text-3xl">
           {capitalize(scrutin.objet)}
         </h1>
+        {scrutin.themes.length > 0 && (
+          <div className="flex flex-wrap items-center gap-2">
+            {scrutin.themes.map((t) => (
+              <Link
+                key={t.slug}
+                href={`/scrutins?theme=${t.slug}`}
+                className="inline-flex items-center rounded-full border border-accent bg-accent/10 px-2.5 py-0.5 text-xs text-foreground transition-colors hover:bg-accent/20"
+              >
+                {t.nom}
+              </Link>
+            ))}
+          </div>
+        )}
         {scrutin.dossier && (
           <p className="text-sm text-muted">
             Dossier législatif :{" "}

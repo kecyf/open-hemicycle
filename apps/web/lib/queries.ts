@@ -6,7 +6,7 @@
  * côté client (la connexion porte tous les droits).
  */
 
-import { and, asc, desc, eq, isNull, sql } from "drizzle-orm";
+import { and, asc, desc, eq, inArray, isNull, sql } from "drizzle-orm";
 import {
   getDb,
   deputes,
@@ -15,6 +15,8 @@ import {
   votes,
   scrutins,
   dossiersLegislatifs,
+  themes,
+  dossiersThemes,
   activiteJournaliere,
   type Position,
 } from "@open-hemicycle/db";
@@ -203,6 +205,48 @@ export async function getActiviteJournaliere(deputeId: string): Promise<Activite
   return rows.map((r) => ({ jour: r.jour, niveau: r.niveau, nbVotes: r.nbVotes }));
 }
 
+export interface ThemeRow {
+  slug: string;
+  nom: string;
+  description: string | null;
+  /** Nombre de scrutins rattachés (via leurs dossiers). */
+  nbScrutins: number;
+}
+
+/** Liste des thèmes avec le nombre de scrutins rattachés (via dossiers). */
+export async function listThemes(): Promise<ThemeRow[]> {
+  const db = getDb();
+  const rows = await db
+    .select({
+      slug: themes.slug,
+      nom: themes.nom,
+      description: themes.description,
+      nbScrutins: sql<number>`count(distinct ${scrutins.id})::int`,
+    })
+    .from(themes)
+    .leftJoin(dossiersThemes, eq(dossiersThemes.themeId, themes.id))
+    .leftJoin(scrutins, eq(scrutins.dossierId, dossiersThemes.dossierId))
+    .groupBy(themes.slug, themes.nom, themes.description)
+    .orderBy(desc(sql`count(distinct ${scrutins.id})`));
+  return rows;
+}
+
+/** Un thème par slug (pour l'en-tête d'une vue filtrée). */
+export async function getThemeBySlug(slug: string): Promise<ThemeRow | null> {
+  const all = await listThemes();
+  return all.find((t) => t.slug === slug) ?? null;
+}
+
+/** Sous-requête : ids de dossiers rattachés à un thème (par slug). */
+function dossierIdsForTheme(slug: string) {
+  const db = getDb();
+  return db
+    .select({ id: dossiersThemes.dossierId })
+    .from(dossiersThemes)
+    .innerJoin(themes, eq(themes.id, dossiersThemes.themeId))
+    .where(eq(themes.slug, slug));
+}
+
 export interface ScrutinRow {
   uidAn: string;
   numero: number | null;
@@ -224,22 +268,29 @@ export type TypeScrutinFiltre = "solennel" | "censure" | "ordinaire";
  * NB : on expose `objet` (= libellé du scrutin tel que publié par l'AN). C'est
  * un fait sourcé, repris verbatim, jamais reformulé.
  */
+function typeCondition(type?: TypeScrutinFiltre) {
+  return type === "solennel"
+    ? eq(scrutins.typeScrutin, "scrutin public solennel")
+    : type === "censure"
+      ? eq(scrutins.typeScrutin, "motion de censure")
+      : type === "ordinaire"
+        ? eq(scrutins.typeScrutin, "scrutin public ordinaire")
+        : undefined;
+}
+
+function themeCondition(theme?: string) {
+  return theme ? inArray(scrutins.dossierId, dossierIdsForTheme(theme)) : undefined;
+}
+
 export async function listScrutins(opts?: {
   type?: TypeScrutinFiltre;
+  theme?: string;
   limit?: number;
   offset?: number;
 }): Promise<ScrutinRow[]> {
   const db = getDb();
   const limit = Math.min(opts?.limit ?? 50, 200);
   const offset = Math.max(opts?.offset ?? 0, 0);
-  const typeFilter =
-    opts?.type === "solennel"
-      ? eq(scrutins.typeScrutin, "scrutin public solennel")
-      : opts?.type === "censure"
-        ? eq(scrutins.typeScrutin, "motion de censure")
-        : opts?.type === "ordinaire"
-          ? eq(scrutins.typeScrutin, "scrutin public ordinaire")
-          : undefined;
 
   return db
     .select({
@@ -254,27 +305,34 @@ export async function listScrutins(opts?: {
       nbAbstention: scrutins.nbAbstention,
     })
     .from(scrutins)
-    .where(and(eq(scrutins.legislature, LEGISLATURE), typeFilter))
+    .where(
+      and(
+        eq(scrutins.legislature, LEGISLATURE),
+        typeCondition(opts?.type),
+        themeCondition(opts?.theme),
+      ),
+    )
     .orderBy(desc(scrutins.dateScrutin), desc(scrutins.numero))
     .limit(limit)
     .offset(offset);
 }
 
-/** Nombre total de scrutins (pour la pagination), filtrable par catégorie. */
-export async function countScrutins(type?: TypeScrutinFiltre): Promise<number> {
+/** Nombre total de scrutins (pour la pagination), filtrable par catégorie et thème. */
+export async function countScrutins(
+  type?: TypeScrutinFiltre,
+  theme?: string,
+): Promise<number> {
   const db = getDb();
-  const typeFilter =
-    type === "solennel"
-      ? eq(scrutins.typeScrutin, "scrutin public solennel")
-      : type === "censure"
-        ? eq(scrutins.typeScrutin, "motion de censure")
-        : type === "ordinaire"
-          ? eq(scrutins.typeScrutin, "scrutin public ordinaire")
-          : undefined;
   const [r] = await db
     .select({ n: sql<number>`count(*)::int` })
     .from(scrutins)
-    .where(and(eq(scrutins.legislature, LEGISLATURE), typeFilter));
+    .where(
+      and(
+        eq(scrutins.legislature, LEGISLATURE),
+        typeCondition(type),
+        themeCondition(theme),
+      ),
+    );
   return r?.n ?? 0;
 }
 
@@ -305,6 +363,8 @@ export interface ScrutinDetail extends ScrutinRow {
   totalNominatif: number;
   /** Dossier législatif rattaché (null si scrutin de procédure / non rattaché). */
   dossier: DossierLien | null;
+  /** Thèmes hérités du dossier (classification éditoriale). */
+  themes: { slug: string; nom: string }[];
 }
 
 /**
@@ -330,6 +390,7 @@ export async function getScrutinDetail(uidAn: string): Promise<ScrutinDetail | n
       nbContre: scrutins.nbContre,
       nbAbstention: scrutins.nbAbstention,
       id: scrutins.id,
+      dossierId: scrutins.dossierId,
       dossierUidAn: dossiersLegislatifs.uidAn,
       dossierTitre: dossiersLegislatifs.titre,
       dossierProcedure: dossiersLegislatifs.procedure,
@@ -349,6 +410,15 @@ export async function getScrutinDetail(uidAn: string): Promise<ScrutinDetail | n
         urlAn: meta.dossierUrlAn,
       }
     : null;
+
+  const themesRows = meta.dossierId
+    ? await db
+        .select({ slug: themes.slug, nom: themes.nom })
+        .from(dossiersThemes)
+        .innerJoin(themes, eq(themes.id, dossiersThemes.themeId))
+        .where(eq(dossiersThemes.dossierId, meta.dossierId))
+        .orderBy(asc(themes.nom))
+    : [];
 
   const rows = await db
     .select({
@@ -418,6 +488,7 @@ export async function getScrutinDetail(uidAn: string): Promise<ScrutinDetail | n
     groupes,
     totalNominatif,
     dossier,
+    themes: themesRows,
   };
 }
 
