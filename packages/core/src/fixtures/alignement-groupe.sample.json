@@ -1,0 +1,18 @@
+[
+  {
+    "position": "pour",
+    "ventilationGroupe": { "pour": 40, "contre": 5, "abstention": 2, "nonVotant": 10 }
+  },
+  {
+    "position": "contre",
+    "ventilationGroupe": { "pour": 38, "contre": 8, "abstention": 1, "nonVotant": 10 }
+  },
+  {
+    "position": "pour",
+    "ventilationGroupe": { "pour": 20, "contre": 20, "abstention": 5, "nonVotant": 0 }
+  },
+  {
+    "position": "non-votant",
+    "ventilationGroupe": { "pour": 30, "contre": 0, "abstention": 0, "nonVotant": 50 }
+  }
+]
