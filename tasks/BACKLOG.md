@@ -5,7 +5,7 @@ Priorité : P0 (critique) · P1 · P2.
 
 > L'agent prend la tâche `next` de plus haute priorité **faisable en autonomie**. Les tâches `hitl` attendent une validation humaine (voir AGENTS.md §3).
 >
-> **Version courante : `0.6.0`** (voir [`CHANGELOG.md`](../CHANGELOG.md)). Une tâche `done` qui livre une capacité visible doit apparaître dans le `CHANGELOG` ; un incrément cohérent → couper une version (AGENTS.md §6 bis).
+> **Version courante : `0.7.0`** (voir [`CHANGELOG.md`](../CHANGELOG.md)). Une tâche `done` qui livre une capacité visible doit apparaître dans le `CHANGELOG` ; un incrément cohérent → couper une version (AGENTS.md §6 bis).
 
 ---
 
@@ -61,7 +61,7 @@ Priorité : P0 (critique) · P1 · P2.
 | ID | Prio | Statut | Tâche |
 |----|------|--------|-------|
 | 4.1 | P1 | done | Rattachement scrutins ↔ thèmes (2 thèmes pilotes, v0.7.0) |
-| 4.2 | P1 | next | Cohérence vote / ligne de groupe (composante a) |
+| 4.2 | P1 | in-progress | Cohérence vote / ligne de groupe (composante a) — logique pure `@open-hemicycle/core` ; reste ETL + affichage fiche |
 | 4.3 | P1 | next | Cohérence participation / thème revendiqué (composante c) |
 | 4.4 | P0 | hitl | Validation manuelle échantillon + check-list juridique |
 | 4.5 | P0 | hitl | Relecture humaine avant publication nominative |

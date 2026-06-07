@@ -4,6 +4,24 @@ Entrées les plus récentes en haut. Le dépôt est la mémoire de l'agent : ce 
 
 ---
 
+## 2026-06-07 — 📐 4.2 : logique pure alignement sur la ligne de groupe
+
+🔔 Pour le superviseur : (1) **`DATABASE_URL` absent** en automation cloud — les tâches ETL/DB (1.4b AMO30, branchement alignement en base, job participation) restent bloquées tant que le secret n'est pas fourni dans l'automation. (2) PR **`feat/alignement-groupe-core`** ouverte — logique pure uniquement, **aucune surface nominative publiée** (pas de HITL requis pour ce merge). (3) PR #3 (`feat/participation-taux`, tâche 2.2) toujours en attente de merge — à traiter en priorité si on veut les 3 taux sur la fiche député·e.
+
+- **Objectif du jour** : tâche 4.2 (cohérence vote / ligne de groupe, composante a) — incrément cloud-safe : fonctions pures testées, sans base.
+- **Fait** :
+  - **`@open-hemicycle/core`** : module `alignement-groupe.ts` conforme à METHODOLOGY §4.a — `positionMajoritaireGroupe` (modalité exprimée la plus fréquente ; égalité → `null`), `voteAligneSurGroupe`, `computeTauxAlignementGroupe` (taux + compteurs + scrutins exclus sans majorité claire).
+  - Type partagé `PositionVote` ajouté à `participation.ts`.
+  - **4 tests vitest** + fixture JSON `alignement-groupe.sample.json` (cas aligné, désaligné, égalité groupe, non-votant député·e).
+  - **Vérifié** : `pnpm -r typecheck` ✓ (4/4), `pnpm -r test` ✓ (16/16), `build` web ✓.
+  - Docs : `CHANGELOG`, `BACKLOG` (4.2 → in-progress), `ROADMAP` (v0.7.0 + thèmes done).
+- **Appris** : une branche `feat/alignement-groupe-core` existait déjà (commit `6daee32`) mais sans PR — reprise et adaptation (import `PositionVote` depuis `participation.ts` plutôt que `taux-participation.ts` non mergé).
+- **Bloqueurs** : `DATABASE_URL` absent → pas de branchement ETL ni affichage fiche pour l'instant.
+- **Prochaine étape** : merge PR alignement-groupe → requête SQL + affichage sur fiche député·e par thème (HITL avant publication nominative, cf. 4.5) ; en parallèle traiter PR #3 (2.2 participation).
+- **Commits** : `feat(core): taux d'alignement sur la ligne de groupe (4.2, logique pure)`
+
+---
+
 ## 2026-05-30 (fin d'après-midi, +2) — 🗂️ v0.7.0 : regroupement des scrutins par thème (pilote)
 
 🔔 Pour le superviseur : feature **thèmes** livrée en PR (`feat/themes-pilote`) — première brique vers l'indice de cohérence par thème. Classification **manuelle, conservatrice et auditable** (mapping versionné dans le code, modifiable seulement par PR). Pilote volontairement restreint à **2 thèmes** et **3 dossiers** (titres officiels sans ambiguïté). Rien de nominatif, aucun jugement. La PR attend la CI verte + review Bugbot avant merge.

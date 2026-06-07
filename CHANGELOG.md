@@ -13,7 +13,10 @@ Catégories : `Ajouté` · `Modifié` · `Corrigé` · `Supprimé` · `Données`
 
 ## [Non publié]
 
-_Prochaines pistes produit : indice de cohérence vote / ligne de groupe (4.2), import AMO30 (1.4b), 3 taux de participation (2.2), extension de la classification thématique._
+### Ajouté
+- **`@open-hemicycle/core`** : logique pure du taux d'alignement sur la ligne de groupe (METHODOLOGY §4.a) — `positionMajoritaireGroupe`, `voteAligneSurGroupe`, `computeTauxAlignementGroupe` + 4 tests vitest sur fixture JSON.
+
+_Prochaines pistes : branchement ETL/UI de l'alignement groupe (4.2), import AMO30 (1.4b), 3 taux de participation (2.2, PR #3 en attente), extension thématique._
 
 ---
 
