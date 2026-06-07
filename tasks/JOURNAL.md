@@ -18,7 +18,7 @@ Entrées les plus récentes en haut. Le dépôt est la mémoire de l'agent : ce 
 - **Appris** : une branche `feat/alignement-groupe-core` existait déjà (commit `6daee32`) mais sans PR — reprise et adaptation (import `PositionVote` depuis `participation.ts` plutôt que `taux-participation.ts` non mergé).
 - **Bloqueurs** : `DATABASE_URL` absent → pas de branchement ETL ni affichage fiche pour l'instant.
 - **Prochaine étape** : merge PR alignement-groupe → requête SQL + affichage sur fiche député·e par thème (HITL avant publication nominative, cf. 4.5) ; en parallèle traiter PR #3 (2.2 participation).
-- **Commits** : `feat(core): taux d'alignement sur la ligne de groupe (4.2, logique pure)`
+- **Commits** : `3e7bb5a` (feat core), `1ba013f` (docs) — branche `feat/alignement-groupe-core` poussée ; ouverture PR via `gh` refusée (permissions integration) → à ouvrir manuellement vers `main`.
 
 ---
 
