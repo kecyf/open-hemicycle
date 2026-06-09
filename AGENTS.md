@@ -98,15 +98,19 @@ Règles simples :
 
 ## 6 ter. Cycle de livraison (branches, PR, CI, review)
 
-`main` est **déployé automatiquement en production** (Vercel). On ne pousse donc plus une fonctionnalité directement sur `main` : tout passe par une **branche + Pull Request** avec **CI verte** et **review automatisée** avant merge.
+`main` est **déployé automatiquement en production** (Vercel). On ne pousse donc plus une fonctionnalité directement sur `main` : tout passe par une **branche + Pull Request** avec **CI verte** avant merge.
+
+`main` est **protégée** : la CI `Typecheck · Test · Build` doit être verte pour merger (pas de review humaine *obligatoire* côté GitHub, sinon l'auto-merge se bloquerait — la review reste un garde-fou, pas un verrou). Le repo a **auto-merge activé** et **suppression auto de la branche** après merge. L'agent peut désormais **ouvrir des PR lui-même** (outil activé dans l'automation), **commenter** une PR, et **demander un reviewer** — mais **jamais s'auto-approuver**.
 
 Boucle standard :
 1. **Brancher** : `feat/...`, `fix/...`, `chore/...` (jamais travailler directement sur `main`).
 2. **Implémenter** par petits incréments testables (respecter §4 DoD et les garde-fous éditoriaux).
 3. **Ouvrir une PR** (le gabarit `.github/pull_request_template.md` se charge ; cocher la check-list DoD + garde-fous).
 4. **CI** (`.github/workflows/ci.yml`) : `typecheck` + `test` + `build` doivent être **verts**. Ne jamais merger sur du rouge.
-5. **Review automatisée** : Bugbot relit la PR selon `.cursor/BUGBOT.md` (priorité aux garde-fous éditoriaux). Traiter les remarques.
-6. **Merge** : sur CI verte + review OK → merge dans `main` (= release/déploiement). Pour une **release majeure** (cut de version §6 bis) ou un **indicateur sensible** (§3), la décision de merge est **HITL**.
+5. **Décider du mode de merge selon la nature du travail** :
+   - **Travail sûr** (logique pure testée, docs, outillage, refactor non visible) → **activer l'auto-merge** : `gh pr merge --auto --squash`. La PR se merge seule dès que la CI passe ; la branche est supprimée automatiquement. Pas besoin d'attendre un humain.
+   - **Indicateur sensible / nominatif** (§3), **release majeure** (§6 bis), ou **toute nouvelle surface publique** → **PAS d'auto-merge**. À la place : **demander le superviseur en reviewer** + **commenter la PR** avec le flag « 🔔 superviseur » (décision, contexte, lien). Le merge est **HITL**.
+6. **Review automatisée** : Bugbot relit la PR selon `.cursor/BUGBOT.md` (priorité aux garde-fous éditoriaux). Traiter les remarques avant merge (y compris sur les PR en auto-merge : corriger relance la CI).
 
 Exceptions tolérées (direct sur `main`) : uniquement les changements **triviaux et sans risque** (typo de doc, journal). En cas de doute → PR.
 

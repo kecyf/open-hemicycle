@@ -68,8 +68,12 @@ Ajouter une entrée datée en **tête** de `tasks/JOURNAL.md` avec ce format :
 ## 6. Commiter, versionner & livrer par PR
 - Travailler sur une **branche** (`feat/`, `fix/`, `chore/`), jamais directement sur `main` (déployé en prod). Commits atomiques, messages Conventional Commits.
 - Reporter l'avancée dans `CHANGELOG.md` (section `[Non publié]`).
-- **Ouvrir une PR** : la CI (`typecheck` + `test` + `build`) doit être **verte** et la **review automatisée** (Bugbot, `.cursor/BUGBOT.md`) traitée avant merge (voir AGENTS.md §6 ter). Ne jamais merger sur du rouge. Ne jamais force-push sur `main`.
+- **Ouvrir une PR toi-même** (l'outil « Open Pull Request » est activé). `main` est protégée : seule la **CI verte** (`typecheck` + `test` + `build`) est requise pour merger. Ne jamais merger sur du rouge. Ne jamais force-push sur `main`. **Ne jamais t'auto-approuver.**
+- **Choisir le mode de merge selon la nature du travail** (voir AGENTS.md §6 ter) :
+  - **Travail sûr** (logique pure testée, docs, outillage, refactor non visible) → **active l'auto-merge** : `gh pr merge <n> --auto --squash`. La PR se merge seule dès CI verte, branche supprimée automatiquement. Tu n'attends personne.
+  - **Indicateur sensible / nominatif** (AGENTS.md §3), **release majeure**, ou **nouvelle surface publique** → **PAS d'auto-merge**. **Demande le superviseur en reviewer** + **commente la PR** avec le flag « 🔔 superviseur » (décision attendue, contexte, lien scrutin/doc). Le merge est **HITL** : tu laisses la PR ouverte et tu enchaînes sur la tâche autonome suivante.
 - Si un incrément cohérent est livré (nouvelle surface / job / indicateur), **couper une version** : déplacer `[Non publié]` → `[X.Y.Z] — date`, bumper `package.json` (root), `chore(release): vX.Y.Z`, tag annoté `vX.Y.Z`, `git push --tags` (voir AGENTS.md §6 bis). Release majeure ou indicateur sensible = merge **HITL**.
+- **Avant de réécrire un module, vérifie qu'il n'existe pas déjà** (sur `main` ou dans une PR ouverte) : faute de merge, des indicateurs ont été réécrits sous plusieurs noms. Une PR ouverte non mergée = travail déjà fait, à reprendre, pas à refaire.
 
 ## 7. Remonter au superviseur
 - Terminer la session par un résumé court : avancement, ce qui est en ligne/testable, et **les questions/validations en attente**.

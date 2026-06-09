@@ -4,6 +4,21 @@ Entrées les plus récentes en haut. Le dépôt est la mémoire de l'agent : ce 
 
 ---
 
+## 2026-06-09 (suite) — 🔁 Boucle de livraison fermée + nettoyage
+
+🔔 Pour le superviseur : la chaîne d'automation est réparée de bout en bout. Reste **2 réglages dashboard** de ton côté pour l'autonomie complète : (1) l'outil « Open Pull Request » sur l'Automation (fait par toi) + permission GitHub App ; (2) secret `DATABASE_URL` dans Cloud Agents → Secrets (pour débloquer l'ETL/data en cloud).
+
+- **Fait** :
+  - **GitHub** : auto-merge activé + suppression auto des branches mergées ; `main` protégée (CI `Typecheck · Test · Build` verte requise, pas de review bloquante pour ne pas figer l'auto-merge, bypass admin conservé).
+  - **Consolidation mergée** : PR #4 (2.2 participation + 4.2a alignement) → `main` (`b7ebb0e`). CI verte. PR #3 fermée (remplacée).
+  - **Nettoyage** : suppression des 11 branches `cursor/proc-dure-...` consommées + `feat/participation-taux` + `feat/alignement-groupe-core`. Restent `main` + branches de travail vivantes. Les doublons jamais mergés (`coherence.ts`, `coherence-groupe.ts`) disparaissent avec leurs branches.
+  - **Boucle scellée dans le harness** (cette PR) : `AGENTS.md` §6 ter + skill `daily-standup` §6 décrivent le nouveau protocole — ouvrir la PR soi-même, **auto-merge sur le travail sûr** (`gh pr merge --auto --squash`), **HITL + reviewer demandé + commentaire** sur le sensible, jamais d'auto-approbation. Ajout d'un garde-fou anti-doublon (vérifier qu'un module n'existe pas déjà avant de le réécrire).
+- **Appris** : la panne n'était pas la génération de code mais la **livraison** (token sans droit PR + aucun merge des PR vertes). Une automation sans fermeture de boucle empile du travail jumeau au lieu de cumuler du progrès.
+- **Bloqueurs** : permission GitHub App « Pull requests = write » + secret `DATABASE_URL` (réglages dashboard, côté superviseur).
+- **Prochaine étape** : 1er run autonome avec pouvoir de PR (demain 08:00) à observer ; reprendre la voie produit (4.2 UI sous HITL, AMO30 1.4b, extension thématique).
+
+---
+
 ## 2026-06-09 — 🧹 Consolidation des travaux d'automation de juin (PR unique de review)
 
 🔔 Pour le superviseur : enquête sur l'automation cloud → **deux ruptures de boucle** identifiées : (1) le token de l'automation n'a **pas le droit `createPullRequest`** (l'agent pushe une branche chaque matin puis s'arrête, en notant « ouvrir PR manuellement ») ; (2) **rien ne merge les PR vertes** (PR #3 mergeable depuis 7 j, jamais mergée ; pas de branch protection ni de review Bugbot active). Effet de bord : faute de merge, l'agent repartait chaque jour d'un `main` figé au 02/06, ne voyait pas son travail de la veille, et **réécrivait le même indicateur 4.2a sous 3 noms** (`coherence.ts` → `coherence-groupe.ts` → `alignement-groupe.ts`). Cette branche **consolide l'utile** dans une PR unique à reviewer. La plomberie (token/auto-merge) reste à décider (HITL).
