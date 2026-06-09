@@ -5,7 +5,7 @@ Priorité : P0 (critique) · P1 · P2.
 
 > L'agent prend la tâche `next` de plus haute priorité **faisable en autonomie**. Les tâches `hitl` attendent une validation humaine (voir AGENTS.md §3).
 >
-> **Version courante : `0.6.0`** (voir [`CHANGELOG.md`](../CHANGELOG.md)). Une tâche `done` qui livre une capacité visible doit apparaître dans le `CHANGELOG` ; un incrément cohérent → couper une version (AGENTS.md §6 bis).
+> **Version courante : `0.7.0`** (voir [`CHANGELOG.md`](../CHANGELOG.md)). Une tâche `done` qui livre une capacité visible doit apparaître dans le `CHANGELOG` ; un incrément cohérent → couper une version (AGENTS.md §6 bis).
 
 ---
 
@@ -41,7 +41,7 @@ Priorité : P0 (critique) · P1 · P2.
 |----|------|--------|-------|
 | 2.0 | P0 | done | `@open-hemicycle/core` : fonctions pures (score jour, seuils quantiles 0–4, participation) + 12 tests vitest |
 | 2.1 | P0 | done | Job `activite_journaliere` (heatmap) — branché sur la DB (66 080 lignes, seuils 2/9/22) |
-| 2.2 | P1 | next | Calcul des 3 taux de participation |
+| 2.2 | P1 | done | Calcul des 3 taux de participation (core + fiche ; commission en attente ingestion PO*) |
 | 2.3 | P0 | done | Accès données : recherche/liste député·es (server component Drizzle) |
 | 2.4 | P0 | done | Accès données : fiche député·e — votes + heatmap d'activité (v0.3.0) |
 | 2.5 | P0 | done | API/page : scrutin + votes par groupe (`listScrutins`/`countScrutins`/`getScrutinDetail`) |
@@ -61,7 +61,7 @@ Priorité : P0 (critique) · P1 · P2.
 | ID | Prio | Statut | Tâche |
 |----|------|--------|-------|
 | 4.1 | P1 | done | Rattachement scrutins ↔ thèmes (2 thèmes pilotes, v0.7.0) |
-| 4.2 | P1 | next | Cohérence vote / ligne de groupe (composante a) |
+| 4.2 | P1 | in-progress | Cohérence vote / ligne de groupe (composante a) — logique pure `@open-hemicycle/core` ; reste ETL + affichage fiche |
 | 4.3 | P1 | next | Cohérence participation / thème revendiqué (composante c) |
 | 4.4 | P0 | hitl | Validation manuelle échantillon + check-list juridique |
 | 4.5 | P0 | hitl | Relecture humaine avant publication nominative |

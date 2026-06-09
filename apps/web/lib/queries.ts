@@ -6,6 +6,11 @@
  * côté client (la connexion porte tous les droits).
  */
 
+import {
+  computeTauxParticipationTriple,
+  type EnregistrementVote,
+  type TauxParticipationTriple,
+} from "@open-hemicycle/core";
 import { and, asc, desc, eq, inArray, isNull, sql } from "drizzle-orm";
 import {
   getDb,
@@ -152,6 +157,37 @@ export interface VoteStats {
  * NB : compte uniquement les scrutins où une position nominative a été
  * enregistrée à la source. Ce n'est PAS un taux de présence physique.
  */
+export type { TauxParticipationTriple };
+
+/**
+ * Trois taux de participation (METHODOLOGY §3) pour un·e député·e.
+ *
+ * Basé sur les positions nominatives enregistrées à la source. Le périmètre
+ * « commission » reste vide tant que les mandats commission et le lien
+ * scrutin↔commission ne sont pas ingérés (ETL à venir).
+ */
+export async function getTauxParticipation(
+  deputeId: string,
+  commissionsDuDepute: string[] = [],
+): Promise<TauxParticipationTriple> {
+  const db = getDb();
+  const rows = await db
+    .select({
+      typeScrutin: scrutins.typeScrutin,
+      position: votes.position,
+    })
+    .from(votes)
+    .innerJoin(scrutins, eq(scrutins.id, votes.scrutinId))
+    .where(eq(votes.deputeId, deputeId));
+
+  const enregistrements: EnregistrementVote[] = rows.map((r) => ({
+    typeScrutin: r.typeScrutin,
+    position: r.position as EnregistrementVote["position"],
+  }));
+
+  return computeTauxParticipationTriple(enregistrements, commissionsDuDepute);
+}
+
 export async function getVoteStats(deputeId: string): Promise<VoteStats> {
   const db = getDb();
   const rows = await db
