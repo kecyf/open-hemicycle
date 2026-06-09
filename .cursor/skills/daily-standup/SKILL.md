@@ -66,9 +66,11 @@ Ajouter une entrée datée en **tête** de `tasks/JOURNAL.md` avec ce format :
 ```
 
 ## 6. Commiter, versionner & livrer par PR
-- Travailler sur une **branche** (`feat/`, `fix/`, `chore/`), jamais directement sur `main` (déployé en prod). Commits atomiques, messages Conventional Commits.
+- Travailler sur **une seule branche par run** (`feat/`, `fix/`, `chore/`), jamais directement sur `main` (déployé en prod). Commits atomiques, messages Conventional Commits. Ne pas éparpiller le travail sur plusieurs branches.
 - Reporter l'avancée dans `CHANGELOG.md` (section `[Non publié]`).
+- **Pousser la branche AVANT d'ouvrir la PR** : l'outil « Open Pull Request » échoue si la branche n'est pas encore sur le remote (`git push -u origin <branche>` d'abord, PR ensuite).
 - **Ouvrir une PR toi-même** (l'outil « Open Pull Request » est activé). `main` est protégée : seule la **CI verte** (`typecheck` + `test` + `build`) est requise pour merger. Ne jamais merger sur du rouge. Ne jamais force-push sur `main`. **Ne jamais t'auto-approuver.**
+- **Écriture en base de prod** (jobs ETL) : autorisée en autonomie **si additive et idempotente** (cf. AGENTS.md §2) ; journaliser les compteurs avant/après. Toute opération **destructive** (DELETE/TRUNCATE/DDL, migration, reconstruction) = **HITL** (cf. §3). Le code ETL peut auto-merger comme le reste : la donnée est écrite au **run**, pas au merge — le garde-fou est le rôle DB limité + la règle additif/idempotent, pas une revue de merge.
 - **Choisir le mode de merge selon la nature du travail** (voir AGENTS.md §6 ter) :
   - **Travail sûr** (logique pure testée, docs, outillage, refactor non visible) → **active l'auto-merge** : `gh pr merge <n> --auto --squash`. La PR se merge seule dès CI verte, branche supprimée automatiquement. Tu n'attends personne.
   - **Indicateur sensible / nominatif** (AGENTS.md §3), **release majeure**, ou **nouvelle surface publique** → **PAS d'auto-merge**. **Demande le superviseur en reviewer** + **commente la PR** avec le flag « 🔔 superviseur » (décision attendue, contexte, lien scrutin/doc). Le merge est **HITL** : tu laisses la PR ouverte et tu enchaînes sur la tâche autonome suivante.

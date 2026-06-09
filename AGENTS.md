@@ -34,8 +34,8 @@ Ne jamais terminer une session sans avoir mis à jour `tasks/JOURNAL.md`.
 - Créer / modifier code, docs, tests, configuration du projet.
 - Choisir des détails d'implémentation (nommage, structure, libs équivalentes).
 - Lancer des recherches (web, sous-agents) pour lever une incertitude technique.
-- Écrire et exécuter des scripts d'ingestion **en lecture seule** sur les sources publiques.
-- Commiter et pousser sur des branches de travail ; ouvrir des PR.
+- Lire les sources publiques (`data.assemblee-nationale.fr`) et **écrire en base de production** des données via les jobs ETL, **à condition** qu'ils soient **additifs et idempotents** (upsert `INSERT`/`UPDATE`, jamais de suppression). En cloud, l'écriture passe par le rôle DB à **droits limités** `oh_agent` (INSERT/SELECT/UPDATE uniquement, pas de DELETE/TRUNCATE/DDL) → le rayon de souffle est plafonné même en cas de bug. Journaliser les **compteurs avant/après**.
+- Commiter et pousser sur des branches de travail ; **ouvrir des PR soi-même** (pousser la branche **avant** d'appeler l'outil « Open PR »). Auto-merge sur le travail sûr, y compris le **code ETL** (cf. §6 ter).
 - Mettre à jour la roadmap, le backlog, le journal.
 
 ## 3. Ce qui remonte au humain (human-in-the-loop obligatoire)
@@ -45,7 +45,7 @@ Demander validation **avant** d'agir si :
 - **Mise en ligne publique** d'une nouvelle surface (déploiement prod, communication).
 - **Dépense** d'argent (passage en tier payant Vercel/Supabase, achat de domaine, etc.).
 - **Changement de périmètre** (ajouter le casier judiciaire, le Sénat, etc.).
-- **Action destructive ou irréversible** (force-push sur `main`, suppression de données, changement de licence).
+- **Action destructive ou irréversible sur les données** : `DELETE` / `TRUNCATE` / DDL (`DROP`, `ALTER`), **migration de schéma**, ou **reconstruction complète** d'une table (≠ ETL additif/idempotent, qui est autonome — cf. §2). Aussi : force-push sur `main`, changement de licence.
 - **Tout doute éthique/juridique** : dans le doute, on s'arrête et on demande.
 
 Mécanisme de remontée : section « 🔔 Pour le superviseur » en tête de la dernière entrée de `tasks/JOURNAL.md`, + résumé clair en fin de session.
