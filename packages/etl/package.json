@@ -13,6 +13,8 @@
     "check": "tsx src/cli.ts check",
     "download": "tsx src/cli.ts download",
     "ingest:deputes": "tsx src/cli.ts ingest:deputes",
+    "ingest:acteurs-historique": "tsx src/cli.ts ingest:acteurs-historique",
+    "backfill:votes": "tsx src/cli.ts backfill:votes",
     "ingest:dossiers": "tsx src/cli.ts ingest:dossiers",
     "ingest:scrutins": "tsx src/cli.ts ingest:scrutins",
     "seed:themes": "tsx src/cli.ts seed:themes",

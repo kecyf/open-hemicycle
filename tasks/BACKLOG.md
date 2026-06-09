@@ -30,7 +30,7 @@ Priorité : P0 (critique) · P1 · P2.
 | 1.2b | P0 | done | `DATABASE_URL` fourni + connexion vérifiée + câblé Vercel (prod/preview/dev). `service_role` non requis pour Drizzle |
 | 1.3 | P0 | done | ETL : download util (`data/raw/`) + dézip (adm-zip) + helpers parsing AN |
 | 1.4 | P0 | done | ETL : import députés AMO10 + groupes/organes + affiliations (577/12/588) |
-| 1.4b | P1 | next | ETL : import acteurs historiques AMO30 → récupérer les 55k votes ignorés (députés non actifs) |
+| 1.4b | P1 | done | ETL : import acteurs historiques AMO30 → récupérer les 55k votes ignorés (députés non actifs) |
 | 1.5 | P0 | done | ETL : import scrutins + votes individuels (7205 scrutins / 1,07M votes) + résultat `sort` |
 | 1.6 | P1 | done | ETL : lien scrutin ↔ dossier législatif (2609 dossiers ; 1375 scrutins liés) + web (v0.6.0) |
 | 1.7 | P1 | in-progress | Validation : effectifs par groupe OK ; reste cross-check nominatif vs NosDéputés |
