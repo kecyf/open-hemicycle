@@ -4,6 +4,25 @@ Entrées les plus récentes en haut. Le dépôt est la mémoire de l'agent : ce 
 
 ---
 
+## 2026-06-09 — 🧹 Consolidation des travaux d'automation de juin (PR unique de review)
+
+🔔 Pour le superviseur : enquête sur l'automation cloud → **deux ruptures de boucle** identifiées : (1) le token de l'automation n'a **pas le droit `createPullRequest`** (l'agent pushe une branche chaque matin puis s'arrête, en notant « ouvrir PR manuellement ») ; (2) **rien ne merge les PR vertes** (PR #3 mergeable depuis 7 j, jamais mergée ; pas de branch protection ni de review Bugbot active). Effet de bord : faute de merge, l'agent repartait chaque jour d'un `main` figé au 02/06, ne voyait pas son travail de la veille, et **réécrivait le même indicateur 4.2a sous 3 noms** (`coherence.ts` → `coherence-groupe.ts` → `alignement-groupe.ts`). Cette branche **consolide l'utile** dans une PR unique à reviewer. La plomberie (token/auto-merge) reste à décider (HITL).
+
+- **Objectif** : recouper tout le travail réellement utile dispersé sur ~12 branches et le rassembler dans une seule PR analysable.
+- **Fait** :
+  - **Audit** des branches (merge-base + diff de contenu, md5) : tri travail réel vs bruit journal/docs vs branches périmées (basées sur le 29-30/05).
+  - **Travail canonique retenu** (basé sur `main` actuel, non redondant) :
+    - **2.2** — Taux de participation (3 périmètres, METHODOLOGY §3) : `@open-hemicycle/core/taux-participation.ts` + UI fiche député·e (`ParticipationRates`) + requêtes. (= PR #3, identique sur 3 branches.)
+    - **4.2a** — Alignement vote / ligne de groupe (logique pure, METHODOLOGY §4.a) : `@open-hemicycle/core/alignement-groupe.ts`. (Identique sur 4 branches ; itération finale retenue.)
+  - **Écarté** : `coherence.ts` (03/06) et `coherence-groupe.ts` (06/06) — itérations antérieures du **même** indicateur 4.2a, superflues une fois `alignement-groupe.ts` retenu.
+  - **Intégration propre** : `PositionVote` ramené à **une seule source de vérité** (`participation.ts`) ; suppression des redéfinitions/réexports dans `taux-participation.ts` et `alignement-groupe.ts` (conflit de barrel `index.ts` corrigé).
+  - **Vérifié (séquence CI locale)** : `pnpm -r typecheck` ✓ (4/4), `pnpm -r test` ✓ (**21/21**), `build` web ✓.
+- **Appris** : sans fermeture de boucle (merge), une automation quotidienne ne produit pas de progrès cumulé — elle produit du **travail jumeau** qui s'empile. Le blocage n'était pas la génération de code mais la **livraison**.
+- **Bloqueurs** : droits du token automation (createPullRequest) ; absence d'auto-merge/branch-protection ; `DATABASE_URL` non fourni en cloud (tâches ETL/DB).
+- **Prochaine étape** : review de cette PR → merge ; puis décider la correction durable de la chaîne (token, auto-merge, branch protection). Brancher l'UI de 4.2a reste **HITL** (indicateur nominatif, cf. 4.5).
+
+---
+
 ## 2026-06-08 — 🔀 4.2 : PR alignement-groupe ouverte + CI vérifiée
 
 🔔 Pour le superviseur : (1) **`DATABASE_URL` toujours absent** en automation cloud — fournir le secret dans l'automation Cursor pour débloquer ETL/DB (1.4b AMO30, branchement alignement en requête SQL, affichage fiche). (2) **PR alignement-groupe à ouvrir manuellement** (`feat/alignement-groupe-core` → `main`, CI locale verte) — logique pure uniquement, **aucune surface nominative** (merge sans HITL). (3) **PR #3** (`feat/participation-taux`, tâche 2.2) : CI verte depuis le 2026-06-02 — **merge recommandé** pour afficher les 3 taux sur la fiche député·e.

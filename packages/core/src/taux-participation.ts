@@ -11,6 +11,7 @@
 
 import {
   type Decompte,
+  type PositionVote,
   totalPositions,
   votesExprimes,
 } from "./participation.ts";
@@ -19,8 +20,6 @@ import {
 export const TYPE_SCRUTIN_SOLENNEL = "scrutin public solennel";
 
 export type PerimetreParticipation = "solennel" | "commission" | "tous";
-
-export type PositionVote = "pour" | "contre" | "abstention" | "non-votant";
 
 /** Une position nominative enregistrée pour un scrutin. */
 export interface EnregistrementVote {

@@ -11,8 +11,6 @@
 import type { Decompte, PositionVote } from "./participation.ts";
 import { votesExprimes } from "./participation.ts";
 
-export type { PositionVote };
-
 /** Ventilation nominative d'un groupe sur un scrutin. */
 export interface VentilationGroupe {
   pour: number;
