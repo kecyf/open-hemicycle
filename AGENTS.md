@@ -159,6 +159,12 @@ Pages statiques (`/`, `/methodologie`, `/mentions-legales`, `/signaler`) fonctio
 
 Copier `.env.example` → `.env` **ou** fournir `DATABASE_URL` dans **Cursor Cloud Agents → Secrets** (chaîne pooler Supabase, port **6543**, `prepare:false` si besoin). C’est la **seule** variable réellement utilisée par le code aujourd’hui.
 
+**Attention format** : `DATABASE_URL` doit être une chaîne **`postgresql://…`** (pooler, ex. `…pooler.supabase.com:6543/postgres`), **pas** l’URL dashboard `https://….supabase.co`. Test rapide :
+
+```bash
+node -e "const u=process.env.DATABASE_URL||''; console.log(u.startsWith('postgresql')?'OK':'MAUVAIS FORMAT — voir .env.example')"
+```
+
 Sans `DATABASE_URL` : privilégier les tâches sans base (logique pure dans `packages/core`, docs, UI statique). Voir `.cursor/skills/daily-standup/SKILL.md`.
 
 Avec `DATABASE_URL` :
