@@ -95,6 +95,77 @@ function* iterVotes(raw: any): Generator<{ acteurRef: string; position: Position
   }
 }
 
+/** Ré-insère les votes individuels manquants (après import AMO30). Idempotent. */
+export async function backfillVotes(legislature: string): Promise<void> {
+  const db = getDb();
+  const started = new Date();
+  console.log(`\n[scrutins] Backfill votes législature ${legislature}\n`);
+
+  const before = await db.execute(sql`SELECT count(*)::int AS c FROM votes`);
+  const countBefore = Number((before as unknown as { c: number }[])[0]?.c ?? 0);
+
+  const dataset = AN_DATASETS.find((d) => d.id === "scrutins")!;
+  const { dir, fromCache } = await downloadDataset(dataset, legislature);
+  console.log(`[scrutins] Dump : ${dir} ${fromCache ? "(cache)" : "(téléchargé)"}`);
+
+  const jsonDir = path.join(dir, "json");
+  const files = (await readdir(jsonDir)).filter((f) => f.endsWith(".json"));
+
+  const depRows = await db.select({ id: deputes.id, uidAn: deputes.uidAn }).from(deputes);
+  const depId = new Map(depRows.map((r) => [r.uidAn, r.id]));
+  const scrRows = await db.select({ id: scrutins.id, uidAn: scrutins.uidAn }).from(scrutins);
+  const scrId = new Map(scrRows.map((r) => [r.uidAn, r.id]));
+
+  let voteBuf: (typeof votes.$inferInsert)[] = [];
+  let attempted = 0;
+  let skipped = 0;
+  const flushVotes = async () => {
+    if (!voteBuf.length) return;
+    await db.insert(votes).values(voteBuf).onConflictDoNothing();
+    attempted += voteBuf.length;
+    voteBuf = [];
+    if (attempted % 100_000 < VOTE_BATCH) console.log(`[scrutins] ...${attempted} votes tentés`);
+  };
+
+  for (const f of files) {
+    const raw = await readJson(path.join(jsonDir, f));
+    const uidAn = anText((raw as any)?.scrutin?.uid);
+    const sId = uidAn ? scrId.get(uidAn) : undefined;
+    if (!sId) continue;
+    for (const v of iterVotes(raw)) {
+      const dId = depId.get(v.acteurRef);
+      if (!dId) {
+        skipped++;
+        continue;
+      }
+      voteBuf.push({
+        scrutinId: sId,
+        deputeId: dId,
+        position: v.position,
+        parDelegation: v.parDelegation ? 1 : 0,
+      });
+      if (voteBuf.length >= VOTE_BATCH) await flushVotes();
+    }
+  }
+  await flushVotes();
+
+  const after = await db.execute(sql`SELECT count(*)::int AS c FROM votes`);
+  const countAfter = Number((after as unknown as { c: number }[])[0]?.c ?? 0);
+  const added = countAfter - countBefore;
+
+  await db.insert(syncRuns).values({
+    dataset: "scrutins-backfill",
+    startedAt: started,
+    finishedAt: new Date(),
+    recordsProcessed: files.length,
+    errors: skipped,
+    notes: `${added} votes ajoutés (${countBefore} → ${countAfter}), ${skipped} ignorés (député inconnu)`,
+  });
+  console.log(
+    `[scrutins] Backfill OK — ${added} votes ajoutés (${countBefore} → ${countAfter}) · ignorés : ${skipped}\n`,
+  );
+}
+
 export async function importScrutins(legislature: string): Promise<void> {
   const db = getDb();
   const legNum = Number(legislature);

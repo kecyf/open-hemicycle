@@ -37,7 +37,7 @@ interface ParsedActeur {
   assemblee: { debut: string | null; fin: string | null } | null;
 }
 
-function parseActeur(raw: any, legislature: string): ParsedActeur | null {
+export function parseActeur(raw: any, legislature: string): ParsedActeur | null {
   const a = raw?.acteur;
   if (!a) return null;
   const uidAn = anText(a.uid);
@@ -96,7 +96,7 @@ interface ParsedGroupe {
   couleurHex: string | null;
 }
 
-function parseGroupe(raw: any): ParsedGroupe | null {
+export function parseGroupe(raw: any): ParsedGroupe | null {
   const o = raw?.organe;
   if (!o || o.codeType !== "GP") return null;
   const uidAn = anText(o.uid);

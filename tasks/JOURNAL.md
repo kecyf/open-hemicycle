@@ -4,6 +4,24 @@ Entrées les plus récentes en haut. Le dépôt est la mémoire de l'agent : ce 
 
 ---
 
+## 2026-06-09 — 📥 ETL AMO30 : 55k votes récupérés (1.4b)
+
+🔔 Pour le superviseur : rien — travail ETL/outillage, merge auto prévu. Prochaine étape sensible : **UI alignement groupe (4.2)** → HITL avant publication nominative. Optionnel : relancer `job:activite` pour inclure les 68 députés historiques dans la heatmap.
+
+- **Objectif du jour** : tâche 1.4b — import acteurs historiques AMO30 + récupération des votes ignorés.
+- **Contexte** : `DATABASE_URL` présent en cloud ✓ (connexion vérifiée : 1 068 900 votes / 577 députés au départ). Premier run autonome avec pouvoir de PR.
+- **Fait** :
+  - **`ingest:acteurs-historique`** : module `acteurs-historique.ts` — complète les députés lég. 17 absents d'AMO10 (mandats terminés), additif (n'écrase pas AMO10).
+  - **`backfill:votes`** : ré-insère les votes manquants (idempotent, `onConflictDoNothing`).
+  - **Exécution live** : 68 députés ajoutés (645 total) · **55 010 votes** récupérés (1 123 910 total, **0 ignoré**).
+  - **Vérifié** : `pnpm -r typecheck` ✓, `pnpm test` ✓ (21/21), `pnpm build` ✓.
+- **Appris** : AMO30 contient 645 députés lég. 17 (vs 577 actifs AMO10) — l'écart de 68 personnes correspond exactement aux 55 010 votes ignorés lors de l'import initial.
+- **Bloqueurs** : aucun.
+- **Prochaine étape** : branchement requête SQL + affichage alignement groupe sur fiche (4.2, **HITL**) ; extension classification thématique ; relancer `job:activite` si heatmap des députés historiques souhaitée.
+- **Commits** : `a926f1e` (feat etl AMO30 + backfill)
+
+---
+
 ## 2026-06-09 (suite) — 🔁 Boucle de livraison fermée + nettoyage
 
 🔔 Pour le superviseur : la chaîne d'automation est réparée de bout en bout. Reste **2 réglages dashboard** de ton côté pour l'autonomie complète : (1) l'outil « Open Pull Request » sur l'Automation (fait par toi) + permission GitHub App ; (2) secret `DATABASE_URL` dans Cloud Agents → Secrets (pour débloquer l'ETL/data en cloud).
