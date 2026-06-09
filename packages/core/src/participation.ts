@@ -13,6 +13,9 @@ export interface Decompte {
   nonVotant: number;
 }
 
+/** Position nominative enregistrée par l'AN (libellés exacts). */
+export type PositionVote = "pour" | "contre" | "abstention" | "non-votant";
+
 /** Votes exprimés = pour + contre + abstention (le non-votant n'est pas exprimé). */
 export function votesExprimes(d: Decompte): number {
   return d.pour + d.contre + d.abstention;

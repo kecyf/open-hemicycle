@@ -16,8 +16,9 @@ Catégories : `Ajouté` · `Modifié` · `Corrigé` · `Supprimé` · `Données`
 ### Ajouté
 - **`@open-hemicycle/core`** : trois taux de participation aux votes (solennel, commission, tous) selon METHODOLOGY §3 — 5 tests vitest.
 - **Fiche député·e** : bloc « Participation aux votes » (les 3 périmètres affichés ensemble) ; périmètre commission en attente d'ingestion des organes.
+- **`@open-hemicycle/core`** : logique pure du taux d'alignement sur la ligne de groupe (METHODOLOGY §4.a) — `positionMajoritaireGroupe`, `voteAligneSurGroupe`, `computeTauxAlignementGroupe` + 4 tests vitest sur fixture JSON.
 
-_Prochaines pistes produit : indice de cohérence vote / ligne de groupe (4.2), import AMO30 (1.4b), extension de la classification thématique._
+_Consolidation des travaux d'automation de juin 2026 : indicateurs 2.2 (participation) et 4.2a (alignement de groupe, logique pure). Prochaines pistes : branchement ETL/UI de l'alignement groupe (4.2), import AMO30 (1.4b), extension de la classification thématique._
 
 ---
 

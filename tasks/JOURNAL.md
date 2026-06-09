@@ -4,6 +4,41 @@ Entrées les plus récentes en haut. Le dépôt est la mémoire de l'agent : ce 
 
 ---
 
+## 2026-06-08 — 🔀 4.2 : PR alignement-groupe ouverte + CI vérifiée
+
+🔔 Pour le superviseur : (1) **`DATABASE_URL` toujours absent** en automation cloud — fournir le secret dans l'automation Cursor pour débloquer ETL/DB (1.4b AMO30, branchement alignement en requête SQL, affichage fiche). (2) **PR alignement-groupe à ouvrir manuellement** (`feat/alignement-groupe-core` → `main`, CI locale verte) — logique pure uniquement, **aucune surface nominative** (merge sans HITL). (3) **PR #3** (`feat/participation-taux`, tâche 2.2) : CI verte depuis le 2026-06-02 — **merge recommandé** pour afficher les 3 taux sur la fiche député·e.
+
+- **Objectif du jour** : reprendre 4.2 (session 2026-06-07) — finaliser livraison : CI locale + ouverture PR bloquée hier (permissions `gh`).
+- **Fait** :
+  - Reprise branche `feat/alignement-groupe-core` (commits `3e7bb5a`/`1ba013f`/`9535895`).
+  - **Vérifié CI locale** : `pnpm install` + `pnpm -r typecheck` ✓ (4/4), `pnpm -r test` ✓ (16/16, dont 4 tests `alignement-groupe`), `pnpm --filter web build` ✓.
+  - **PR à ouvrir manuellement** vers `main` (`gh pr create` refusé — permissions integration, même blocage qu'hier).
+  - Journal mis à jour (cette entrée).
+- **Appris** : l'incrément 4.2 « logique pure » était déjà complet hier ; la valeur du standup d'aujourd'hui = débloquer le cycle PR (CI + ouverture). PR #3 attend merge depuis 6 jours avec CI verte.
+- **Bloqueurs** : `DATABASE_URL` absent → pas de requête SQL ni UI alignement sur fiche ; étape suivante 4.2 (ETL/UI) reste cloud-blocked.
+- **Prochaine étape** : **ouvrir PR manuellement** (feat/alignement-groupe-core → main) → merge → branchement requête + affichage par thème sur fiche (HITL 4.5 avant publication nominative) ; merger PR #3 (2.2 participation) ; configurer `DATABASE_URL` en secret automation.
+- **Commits** : entrée journal uniquement (code inchangé depuis 2026-06-07).
+
+---
+
+## 2026-06-07 — 📐 4.2 : logique pure alignement sur la ligne de groupe
+
+🔔 Pour le superviseur : (1) **`DATABASE_URL` absent** en automation cloud — les tâches ETL/DB (1.4b AMO30, branchement alignement en base, job participation) restent bloquées tant que le secret n'est pas fourni dans l'automation. (2) PR **`feat/alignement-groupe-core`** ouverte — logique pure uniquement, **aucune surface nominative publiée** (pas de HITL requis pour ce merge). (3) PR #3 (`feat/participation-taux`, tâche 2.2) toujours en attente de merge — à traiter en priorité si on veut les 3 taux sur la fiche député·e.
+
+- **Objectif du jour** : tâche 4.2 (cohérence vote / ligne de groupe, composante a) — incrément cloud-safe : fonctions pures testées, sans base.
+- **Fait** :
+  - **`@open-hemicycle/core`** : module `alignement-groupe.ts` conforme à METHODOLOGY §4.a — `positionMajoritaireGroupe` (modalité exprimée la plus fréquente ; égalité → `null`), `voteAligneSurGroupe`, `computeTauxAlignementGroupe` (taux + compteurs + scrutins exclus sans majorité claire).
+  - Type partagé `PositionVote` ajouté à `participation.ts`.
+  - **4 tests vitest** + fixture JSON `alignement-groupe.sample.json` (cas aligné, désaligné, égalité groupe, non-votant député·e).
+  - **Vérifié** : `pnpm -r typecheck` ✓ (4/4), `pnpm -r test` ✓ (16/16), `build` web ✓.
+  - Docs : `CHANGELOG`, `BACKLOG` (4.2 → in-progress), `ROADMAP` (v0.7.0 + thèmes done).
+- **Appris** : une branche `feat/alignement-groupe-core` existait déjà (commit `6daee32`) mais sans PR — reprise et adaptation (import `PositionVote` depuis `participation.ts` plutôt que `taux-participation.ts` non mergé).
+- **Bloqueurs** : `DATABASE_URL` absent → pas de branchement ETL ni affichage fiche pour l'instant.
+- **Prochaine étape** : merge PR alignement-groupe → requête SQL + affichage sur fiche député·e par thème (HITL avant publication nominative, cf. 4.5) ; en parallèle traiter PR #3 (2.2 participation).
+- **Commits** : `3e7bb5a` (feat core), `1ba013f` (docs) — branche `feat/alignement-groupe-core` poussée ; ouverture PR via `gh` refusée (permissions integration) → à ouvrir manuellement vers `main`.
+
+---
+
 ## 2026-05-30 (fin d'après-midi, +2) — 🗂️ v0.7.0 : regroupement des scrutins par thème (pilote)
 
 🔔 Pour le superviseur : feature **thèmes** livrée en PR (`feat/themes-pilote`) — première brique vers l'indice de cohérence par thème. Classification **manuelle, conservatrice et auditable** (mapping versionné dans le code, modifiable seulement par PR). Pilote volontairement restreint à **2 thèmes** et **3 dossiers** (titres officiels sans ambiguïté). Rien de nominatif, aucun jugement. La PR attend la CI verte + review Bugbot avant merge.

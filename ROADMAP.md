@@ -2,7 +2,7 @@
 
 Horizon de référence : **Jalon M1 à ~1 mois** (POC public fonctionnel). Le détail opérationnel vit dans [`tasks/BACKLOG.md`](tasks/BACKLOG.md) ; l'historique dans [`tasks/JOURNAL.md`](tasks/JOURNAL.md) ; les versions livrées dans [`CHANGELOG.md`](CHANGELOG.md).
 
-**Version courante : `0.6.0`** — POC public en ligne (annuaire + fiches + heatmap d'activité + explorateur de scrutins + résultat & dossier législatif). Cible `1.0.0` = jalon M1 (1er indice de cohérence sourcé).
+**Version courante : `0.7.0`** — POC public en ligne (annuaire + fiches + heatmap + explorateur de scrutins + thèmes pilotes). Cible `1.0.0` = jalon M1 (1er indice de cohérence sourcé).
 
 ---
 
@@ -40,8 +40,8 @@ Horizon de référence : **Jalon M1 à ~1 mois** (POC public fonctionnel). Le d�
 - [x] Déploiement continu Vercel depuis `main` (landing + pages data).
 
 ## Phase 4 — Indice de cohérence v0 (fin M1, sous validation HITL)
-- [ ] Rattachement scrutins ↔ thèmes (au moins 1 thème pilote).
-- [ ] Cohérence vote / ligne de groupe (composante a).
+- [x] Rattachement scrutins ↔ thèmes (2 thèmes pilotes, v0.7.0).
+- [~] Cohérence vote / ligne de groupe (composante a) — logique pure en cours ; ETL + UI à venir.
 - [ ] Cohérence participation / thème revendiqué (composante c).
 - [ ] Validation manuelle d'un échantillon + check-list juridique.
 - [ ] **HITL : relecture humaine avant toute publication nominative.**
