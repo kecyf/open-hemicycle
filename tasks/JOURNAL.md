@@ -4,6 +4,27 @@ Entrées les plus récentes en haut. Le dépôt est la mémoire de l'agent : ce 
 
 ---
 
+## 2026-06-10 — 📐 4.2 : requête alignement groupe + composant préparé (HITL UI)
+
+🔔 Pour le superviseur :
+1. **Publication nominative 4.2** : requête SQL + composant `AlignementGroupe` prêts ; **pas branchés** sur `/deputes/[slug]` — merge de cette PR = backend seulement. Pour afficher l'indicateur sur la fiche, valider via check-list `docs/legal-guardrails.md` §7 puis ouvrir une PR dédiée (merge HITL).
+2. **Secret `oh_agent`** : toujours en attente — connexion cloud utilise encore `postgres` (645 députés, 1 123 910 votes vérifiés).
+3. **Heatmap députés historiques** : `job:activite` reconstruit la table (`DELETE` puis insert) → HITL si souhaité en prod.
+
+- **Objectif du jour** : tâche 4.2 — couche requête alignement groupe (backend, sans surface nominative nouvelle).
+- **Contexte** : `DATABASE_URL` présent en cloud ✓ ; aucune PR ouverte sur `main`.
+- **Fait** :
+  - **`getTauxAlignementGroupe`** dans `apps/web/lib/queries.ts` — ventilation groupe par scrutin (affiliation courante), filtre `themeSlug` optionnel, délègue à `computeTauxAlignementGroupe` (core).
+  - **Composant `AlignementGroupe`** : libellés conformes garde-fous (fait statistique, pas jugement ; lien méthodologie ; limite affiliation courante).
+  - **Vérifié live** : député test `alain-david-1008` — taux global ~91,6 % (451 exprimés / 413 alignés) ; thème budget 100 % (2/2).
+  - **CI locale** : `pnpm typecheck` ✓, `pnpm test` ✓ (21/21), `pnpm build` ✓.
+- **Appris** : la logique pure 4.2a mergée en juin se branche en ~80 lignes de requête ; le goulot reste la **décision éditoriale** pour l'affichage nominatif, pas le calcul.
+- **Bloqueurs** : aucun technique ; publication UI = HITL.
+- **Prochaine étape** : validation superviseur pour brancher `AlignementGroupe` sur la fiche (par thème pilote ?) ; bascule secret `oh_agent` ; extension classification thématique (4.3).
+- **Commits** : (cette session)
+
+---
+
 ## 2026-06-09 (soir) — 🔒 Politique d'écriture en prod + hygiène de la boucle
 
 🔔 Pour le superviseur : suite au 1er run autonome (qui a **écrit en prod** seul : 577→645 députés, +55 010 votes, vérifié et bénin). Action **à finaliser de ton côté** : basculer le secret `DATABASE_URL` du cloud sur le **rôle limité `oh_agent`** (étapes en bas). Le code ne change pas, juste les droits de la connexion cloud.

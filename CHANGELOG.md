@@ -14,6 +14,7 @@ Catégories : `Ajouté` · `Modifié` · `Corrigé` · `Supprimé` · `Données`
 ## [Non publié]
 
 ### Ajouté
+- **Requête alignement groupe (4.2)** : `getTauxAlignementGroupe` dans `apps/web/lib/queries.ts` (filtre thème optionnel, affiliation courante) ; composant `AlignementGroupe` préparé mais **non branché** sur la fiche (publication nominative → HITL).
 - **ETL AMO30** : commandes `ingest:acteurs-historique` (complète les députés absents d'AMO10) et `backfill:votes` (ré-insère les votes ignorés, idempotent).
 - **`@open-hemicycle/core`** : trois taux de participation aux votes (solennel, commission, tous) selon METHODOLOGY §3 — 5 tests vitest.
 - **Fiche député·e** : bloc « Participation aux votes » (les 3 périmètres affichés ensemble) ; périmètre commission en attente d'ingestion des organes.
