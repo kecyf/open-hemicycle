@@ -25,7 +25,7 @@ Entrées les plus récentes en haut. Le dépôt est la mémoire de l'agent : ce 
 - **Appris** : la boucle code fonctionne (run matin = preuve) ; les trous restants sont protocole (reprise), data (cron ETL), et garde-fous (Bugbot, oh_agent).
 - **Bloqueurs** : secrets `oh_agent` (cloud + GitHub Actions) = action superviseur.
 - **Prochaine étape** : merge PR infra → release 0.8.0 ; configurer secrets ; activer Bugbot ; décision UI 4.2.
-- **Commits** : (cette session)
+- **Commits** : PR #10 (auto-merge, CI verte)
 
 ---
 

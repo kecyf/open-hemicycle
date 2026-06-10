@@ -13,6 +13,12 @@ Catégories : `Ajouté` · `Modifié` · `Corrigé` · `Supprimé` · `Données`
 
 ## [Non publié]
 
+---
+
+## [0.8.0] — 2026-06-10
+
+Participation aux votes (3 périmètres), alignement groupe (logique + requête), import AMO30, et boucle d'autonomie agent (reprise, cron ETL, smoke prod).
+
 ### Ajouté
 - **Boucle d'autonomie** : étape « reprise » (§0 bis) dans la skill `daily-standup` ; prompt `automation/daily-prompt.md` aligné sur le protocole PR/auto-merge.
 - **CI** : workflow `etl-refresh.yml` (cron quotidien, ingestion additif/idempotent, compteurs avant/après) ; workflow `post-merge-smoke.yml` (vérif routes prod après merge `main`).
@@ -22,8 +28,6 @@ Catégories : `Ajouté` · `Modifié` · `Corrigé` · `Supprimé` · `Données`
 - **`@open-hemicycle/core`** : trois taux de participation aux votes (solennel, commission, tous) selon METHODOLOGY §3 — 5 tests vitest.
 - **Fiche député·e** : bloc « Participation aux votes » (les 3 périmètres affichés ensemble) ; périmètre commission en attente d'ingestion des organes.
 - **`@open-hemicycle/core`** : logique pure du taux d'alignement sur la ligne de groupe (METHODOLOGY §4.a) — `positionMajoritaireGroupe`, `voteAligneSurGroupe`, `computeTauxAlignementGroupe` + 4 tests vitest sur fixture JSON.
-
-_Consolidation des travaux d'automation de juin 2026 : indicateurs 2.2 (participation) et 4.2a (alignement de groupe, logique pure). Prochaines pistes : branchement ETL/UI de l'alignement groupe (4.2), extension de la classification thématique._
 
 ### Données
 - Import AMO30 (lég. 17) : **68 députés** historiques ajoutés (645 total) ; **55 010 votes** récupérés (1 123 910 total, 0 ignoré).

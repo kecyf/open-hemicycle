@@ -2,7 +2,7 @@
 
 Horizon de référence : **Jalon M1 à ~1 mois** (POC public fonctionnel). Le détail opérationnel vit dans [`tasks/BACKLOG.md`](tasks/BACKLOG.md) ; l'historique dans [`tasks/JOURNAL.md`](tasks/JOURNAL.md) ; les versions livrées dans [`CHANGELOG.md`](CHANGELOG.md).
 
-**Version courante : `0.7.0`** — POC public en ligne (annuaire + fiches + heatmap + explorateur de scrutins + thèmes pilotes). Cible `1.0.0` = jalon M1 (1er indice de cohérence sourcé).
+**Version courante : `0.8.0`** — POC public en ligne (annuaire + fiches + heatmap + explorateur de scrutins + thèmes pilotes + participation + alignement backend). Cible `1.0.0` = jalon M1 (1er indice de cohérence sourcé publié).
 
 ---
 
