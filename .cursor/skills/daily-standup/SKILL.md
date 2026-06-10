@@ -25,6 +25,17 @@ Tu peux tourner dans deux contextes très différents. **Détecte-le avant de ch
 
 Dans tous les cas : **un incrément testable et committé vaut mieux qu'une grosse tâche bloquée.**
 
+## 0 bis. Reprise — trier l'existant avant d'empiler du neuf
+
+**Avant de choisir une nouvelle tâche**, vérifie que la boucle de livraison est saine. C'est le mécanisme de relance sur CI rouge : le run du lendemain répare avant de produire.
+
+1. **PR ouvertes** (`gh pr list --state open`) :
+   - CI rouge ou checks en échec → **priorité absolue** : babysitter la PR (skills `loop-on-ci` / `babysit`), corriger, relancer la CI. Ne pas ouvrir une nouvelle branche tant que la PR bloquée n'est pas résolue ou fermée explicitement.
+   - PR HITL en attente de review superviseur → ne pas dupliquer le travail ; enchaîner sur une tâche autonome différente.
+2. **Branches orphelines** (`git branch -a`) : branches locales/remotes non mergées et sans PR ouverte → consolider dans une PR, merger, ou supprimer si périmées.
+3. **Travail de la veille sur `main`** : le merge de la PR précédente est-il bien sur `main` ? Si tu retrouves du code déjà fait sur une branche non mergée, **reprends la branche/PR existante** au lieu de réécrire (anti-« travail jumeau »).
+4. **Smoke prod** (optionnel si accès réseau) : après un merge récent sur `main`, les routes clés de https://open-hemicycle.vercel.app répondent-elles en 200 ? Un échec du workflow `post-merge-smoke` dans GitHub Actions = signal à traiter en priorité.
+
 ## 1. Reprendre le fil (lecture)
 - Lire `AGENTS.md` (manuel d'opération) si pas déjà en contexte.
 - Lire la **dernière entrée** de `tasks/JOURNAL.md` : où en était-on, quels bloqueurs, quelle « prochaine étape » était notée.

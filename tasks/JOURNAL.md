@@ -4,6 +4,31 @@ Entrées les plus récentes en haut. Le dépôt est la mémoire de l'agent : ce 
 
 ---
 
+## 2026-06-10 (après-midi) — 🔁 Boucle d'autonomie : reprise, cron ETL, smoke prod
+
+🔔 Pour le superviseur :
+1. **Secret `DATABASE_URL` cloud** : basculer sur le rôle limité `oh_agent` (Cursor Cloud Agents → Secrets) — toujours en attente.
+2. **Secret GitHub Actions** : créer `DATABASE_URL` (rôle `oh_agent`) pour activer le cron ETL nightly (tâche backlog 0.8).
+3. **Bugbot** : activer sur le repo — la PR #9 n'a reçu aucune review automatisée malgré `.cursor/BUGBOT.md`.
+4. **Décision 4.2 UI** : brancher `AlignementGroupe` sur la fiche député (check-list `docs/legal-guardrails.md` §7) — reportée volontairement hors de cette session.
+
+- **Objectif** : boucler la boucle d'autonomie quotidienne (infra, pas de surface nominative).
+- **Contexte** : enquête post-run du 2026-06-10 matin (PR #9 mergée avec succès) ; plan validé par le superviseur.
+- **Fait** :
+  - **Prompt** `automation/daily-prompt.md` aligné sur AGENTS.md §6 ter (push-avant-PR, auto-merge, HITL).
+  - **Skill standup §0 bis** : étape « reprise » (PR ouvertes/CI rouge, branches orphelines, anti-travail-jumeau, smoke prod).
+  - **Workflow `etl-refresh.yml`** : cron 04:30 UTC, ingestion additif (exclut `job:activite`), compteurs avant/après via `pnpm etl stats`.
+  - **Workflow `post-merge-smoke.yml`** : vérif HTTP 200 sur `/`, `/deputes`, `/scrutins`, `/themes` après merge `main`.
+  - **ETL** : commande `stats` pour les compteurs DB.
+  - **Docs** : `automation/README.md` Option C opérationnelle ; BACKLOG (0.6, 3.5 → done ; 0.8 hitl) ; ROADMAP (participation cochée).
+  - **Hygiène git** : pull main, branches locales mergées supprimées, stash orphelin (typo AGENTS.md) droppé.
+- **Appris** : la boucle code fonctionne (run matin = preuve) ; les trous restants sont protocole (reprise), data (cron ETL), et garde-fous (Bugbot, oh_agent).
+- **Bloqueurs** : secrets `oh_agent` (cloud + GitHub Actions) = action superviseur.
+- **Prochaine étape** : merge PR infra → release 0.8.0 ; configurer secrets ; activer Bugbot ; décision UI 4.2.
+- **Commits** : (cette session)
+
+---
+
 ## 2026-06-10 — 📐 4.2 : requête alignement groupe + composant préparé (HITL UI)
 
 🔔 Pour le superviseur :
@@ -21,7 +46,7 @@ Entrées les plus récentes en haut. Le dépôt est la mémoire de l'agent : ce 
 - **Appris** : la logique pure 4.2a mergée en juin se branche en ~80 lignes de requête ; le goulot reste la **décision éditoriale** pour l'affichage nominatif, pas le calcul.
 - **Bloqueurs** : aucun technique ; publication UI = HITL.
 - **Prochaine étape** : validation superviseur pour brancher `AlignementGroupe` sur la fiche (par thème pilote ?) ; bascule secret `oh_agent` ; extension classification thématique (4.3).
-- **Commits** : (cette session)
+- **Commits** : PR #9 (auto-merge, CI verte)
 
 ---
 
