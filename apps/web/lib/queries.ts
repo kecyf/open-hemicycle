@@ -7,9 +7,13 @@
  */
 
 import {
+  computeTauxAlignementGroupe,
   computeTauxParticipationTriple,
   type EnregistrementVote,
+  type PositionVote,
+  type TauxAlignementGroupe,
   type TauxParticipationTriple,
+  type VentilationGroupe,
 } from "@open-hemicycle/core";
 import { and, asc, desc, eq, inArray, isNull, sql } from "drizzle-orm";
 import {
@@ -186,6 +190,103 @@ export async function getTauxParticipation(
   }));
 
   return computeTauxParticipationTriple(enregistrements, commissionsDuDepute);
+}
+
+export type { TauxAlignementGroupe };
+
+function emptyVentilation(): VentilationGroupe {
+  return { pour: 0, contre: 0, abstention: 0, nonVotant: 0 };
+}
+
+function addPositionToVentilation(v: VentilationGroupe, position: string, n: number): void {
+  if (position === "pour") v.pour += n;
+  else if (position === "contre") v.contre += n;
+  else if (position === "abstention") v.abstention += n;
+  else if (position === "non-votant") v.nonVotant += n;
+}
+
+/**
+ * Taux d'alignement sur la ligne de groupe (METHODOLOGY §4.a) pour un·e député·e.
+ *
+ * Compare chaque vote exprimé du·de la député·e à la position majoritaire de son
+ * groupe sur le même scrutin. La ventilation groupe utilise l'affiliation **courante**
+ * (même limite que la ventilation par groupe sur le détail d'un scrutin).
+ *
+ * Filtre optionnel par thème (scrutins rattachés via dossier législatif).
+ */
+export async function getTauxAlignementGroupe(
+  deputeId: string,
+  opts?: { themeSlug?: string },
+): Promise<TauxAlignementGroupe & { groupeId: string | null }> {
+  const empty = (groupeId: string | null): TauxAlignementGroupe & { groupeId: string | null } => ({
+    groupeId,
+    nbVotesExprimes: 0,
+    nbAlignes: 0,
+    taux: null,
+    nbScrutinsSansMajorite: 0,
+  });
+
+  const db = getDb();
+  const [aff] = await db
+    .select({ groupeId: affiliationsGroupe.groupeId })
+    .from(affiliationsGroupe)
+    .where(and(eq(affiliationsGroupe.deputeId, deputeId), isNull(affiliationsGroupe.validTo)))
+    .limit(1);
+  const groupeId = aff?.groupeId ?? null;
+  if (!groupeId) return empty(null);
+
+  const deputeVotes = await db
+    .select({
+      scrutinId: votes.scrutinId,
+      position: votes.position,
+    })
+    .from(votes)
+    .innerJoin(scrutins, eq(scrutins.id, votes.scrutinId))
+    .where(
+      and(
+        eq(votes.deputeId, deputeId),
+        eq(scrutins.legislature, LEGISLATURE),
+        opts?.themeSlug ? inArray(scrutins.dossierId, dossierIdsForTheme(opts.themeSlug)) : undefined,
+      ),
+    );
+
+  if (deputeVotes.length === 0) return empty(groupeId);
+
+  const scrutinIds = [...new Set(deputeVotes.map((v) => v.scrutinId))];
+  const ventilationRows = await db
+    .select({
+      scrutinId: votes.scrutinId,
+      position: votes.position,
+      n: sql<number>`count(*)::int`,
+    })
+    .from(votes)
+    .innerJoin(
+      affiliationsGroupe,
+      and(
+        eq(affiliationsGroupe.deputeId, votes.deputeId),
+        isNull(affiliationsGroupe.validTo),
+        eq(affiliationsGroupe.groupeId, groupeId),
+      ),
+    )
+    .where(inArray(votes.scrutinId, scrutinIds))
+    .groupBy(votes.scrutinId, votes.position);
+
+  const ventilationByScrutin = new Map<string, VentilationGroupe>();
+  for (const r of ventilationRows) {
+    let v = ventilationByScrutin.get(r.scrutinId);
+    if (!v) {
+      v = emptyVentilation();
+      ventilationByScrutin.set(r.scrutinId, v);
+    }
+    addPositionToVentilation(v, r.position, r.n);
+  }
+
+  const votesPourCalcul = deputeVotes.map((v) => ({
+    position: v.position as PositionVote,
+    ventilationGroupe: ventilationByScrutin.get(v.scrutinId) ?? emptyVentilation(),
+  }));
+
+  return { groupeId, ...computeTauxAlignementGroupe(votesPourCalcul) };
 }
 
 export async function getVoteStats(deputeId: string): Promise<VoteStats> {
