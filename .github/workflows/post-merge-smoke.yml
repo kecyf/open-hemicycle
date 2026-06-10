@@ -1,0 +1,62 @@
+name: Post-merge Smoke
+
+# Vérifie que la prod répond après un merge sur main (Vercel auto-deploy).
+# Un échec ici est repris en priorité par l'étape « reprise » du daily standup.
+
+on:
+  push:
+    branches: [main]
+
+concurrency:
+  group: smoke-${{ github.sha }}
+  cancel-in-progress: true
+
+jobs:
+  smoke:
+    name: Smoke prod
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      PROD_URL: https://open-hemicycle.vercel.app
+    steps:
+      - name: Attendre le déploiement Vercel
+        run: |
+          echo "Attente initiale 90s pour le build Vercel…"
+          sleep 90
+
+      - name: Vérifier les routes clés
+        run: |
+          ROUTES="/ /deputes /scrutins /themes"
+          MAX_ATTEMPTS=12
+          WAIT=30
+
+          for route in $ROUTES; do
+            URL="${PROD_URL}${route}"
+            ok=false
+            for attempt in $(seq 1 $MAX_ATTEMPTS); do
+              STATUS=$(curl -s -o /dev/null -w "%{http_code}" -L "$URL" || echo "000")
+              echo "[$attempt/$MAX_ATTEMPTS] $URL → HTTP $STATUS"
+              if [ "$STATUS" = "200" ]; then
+                ok=true
+                break
+              fi
+              sleep $WAIT
+            done
+            if [ "$ok" != "true" ]; then
+              echo "::error::Route $URL n'a pas répondu 200 après $MAX_ATTEMPTS tentatives."
+              exit 1
+            fi
+          done
+
+          echo "Toutes les routes clés répondent 200."
+
+      - name: Résumé
+        if: always()
+        run: |
+          {
+            echo "## Smoke prod — commit \`${{ github.sha }}\`"
+            echo ""
+            echo "Routes vérifiées : \`/\`, \`/deputes\`, \`/scrutins\`, \`/themes\`"
+            echo ""
+            echo "URL : ${PROD_URL}"
+          } >> "$GITHUB_STEP_SUMMARY"

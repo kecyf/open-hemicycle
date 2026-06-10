@@ -20,6 +20,7 @@
     "seed:themes": "tsx src/cli.ts seed:themes",
     "ingest:all": "tsx src/cli.ts ingest:all",
     "job:activite": "tsx src/cli.ts job:activite",
+    "stats": "tsx src/cli.ts stats",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {

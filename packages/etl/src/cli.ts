@@ -14,10 +14,13 @@
  *   seed:themes       (Re)pose la classification thématique des dossiers (fichier versionné).
  *   ingest:all        Enchaîne deputes, dossiers, scrutins, themes, puis activite.
  *   job:activite      (Re)calcule la table activite_journaliere (heatmap).
+ *   stats             Affiche les compteurs DB (députés, scrutins, votes).
  *
  * Les commandes d'ingestion nécessitent DATABASE_URL (voir .env.example).
  */
 
+import { sql } from "drizzle-orm";
+import { getDb } from "@open-hemicycle/db";
 import { AN_DATASETS, AN_DAILY_PUBLICATION_INDEX, datasetUrl } from "./sources.ts";
 import { downloadDataset } from "./lib/download.ts";
 import { importDeputes } from "./import/deputes.ts";
@@ -66,6 +69,33 @@ async function downloadCore(): Promise<void> {
   console.log("");
 }
 
+interface DbStats {
+  deputes: number;
+  scrutins: number;
+  votes: number;
+}
+
+async function fetchDbStats(): Promise<DbStats> {
+  const db = getDb();
+  const [deputes, scrutins, votes] = await Promise.all([
+    db.execute(sql`SELECT count(*)::int AS c FROM deputes`),
+    db.execute(sql`SELECT count(*)::int AS c FROM scrutins`),
+    db.execute(sql`SELECT count(*)::int AS c FROM votes`),
+  ]);
+  const row = (r: unknown) => (r as Array<{ c: number }>)[0]?.c ?? 0;
+  return {
+    deputes: row(deputes),
+    scrutins: row(scrutins),
+    votes: row(votes),
+  };
+}
+
+async function printDbStats(label: string): Promise<DbStats> {
+  const stats = await fetchDbStats();
+  console.log(`[stats:${label}] députés=${stats.deputes} scrutins=${stats.scrutins} votes=${stats.votes}`);
+  return stats;
+}
+
 async function main(): Promise<void> {
   const cmd = process.argv[2] ?? "sources";
   switch (cmd) {
@@ -106,9 +136,12 @@ async function main(): Promise<void> {
     case "job:activite":
       await computeActiviteJournaliere();
       break;
+    case "stats":
+      await printDbStats("now");
+      break;
     default:
       console.error(
-        `Commande inconnue: ${cmd}\nUsage: oh-etl [sources|check|download|ingest:deputes|ingest:acteurs-historique|backfill:votes|ingest:dossiers|ingest:scrutins|seed:themes|ingest:all|job:activite]`,
+        `Commande inconnue: ${cmd}\nUsage: oh-etl [sources|check|download|ingest:deputes|ingest:acteurs-historique|backfill:votes|ingest:dossiers|ingest:scrutins|seed:themes|ingest:all|job:activite|stats]`,
       );
       process.exit(1);
   }

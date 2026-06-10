@@ -1,0 +1,100 @@
+name: ETL Refresh
+
+# Rafraîchissement quotidien des données AN (additif/idempotent uniquement).
+# Exclut job:activite (DELETE + rebuild de activite_journaliere → HITL/agent).
+#
+# Secret requis : DATABASE_URL (rôle limité oh_agent, jamais postgres).
+# À configurer dans GitHub → Settings → Secrets → Actions.
+
+on:
+  schedule:
+    # 04:30 UTC = 06:30 Paris (hiver) / 05:30 (été) — avant le standup agent 08:00 Paris
+    - cron: "30 4 * * *"
+  workflow_dispatch:
+
+concurrency:
+  group: etl-refresh
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    name: Download + ingest (additif)
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.33.0
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Vérifier DATABASE_URL
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: |
+          if [ -z "$DATABASE_URL" ]; then
+            echo "::error::DATABASE_URL absent — configurer le secret GitHub Actions (rôle oh_agent)."
+            exit 1
+          fi
+          if ! echo "$DATABASE_URL" | grep -q '^postgresql://'; then
+            echo "::error::DATABASE_URL doit être une chaîne postgresql:// (pooler Supabase)."
+            exit 1
+          fi
+
+      - name: Compteurs avant
+        id: before
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: |
+          OUT=$(pnpm --filter @open-hemicycle/etl stats 2>&1 | tail -1)
+          echo "$OUT"
+          echo "stats=$OUT" >> "$GITHUB_OUTPUT"
+
+      - name: Téléchargement dumps AN
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: pnpm --filter @open-hemicycle/etl download
+
+      - name: Ingestion additif (sans job:activite)
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: |
+          pnpm --filter @open-hemicycle/etl ingest:deputes
+          pnpm --filter @open-hemicycle/etl ingest:acteurs-historique
+          pnpm --filter @open-hemicycle/etl backfill:votes
+          pnpm --filter @open-hemicycle/etl ingest:dossiers
+          pnpm --filter @open-hemicycle/etl ingest:scrutins
+          pnpm --filter @open-hemicycle/etl seed:themes
+
+      - name: Compteurs après
+        id: after
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: |
+          OUT=$(pnpm --filter @open-hemicycle/etl stats 2>&1 | tail -1)
+          echo "$OUT"
+          echo "stats=$OUT" >> "$GITHUB_OUTPUT"
+
+      - name: Résumé
+        run: |
+          {
+            echo "## ETL Refresh — $(date -u +%Y-%m-%dT%H:%MZ)"
+            echo ""
+            echo "| Étape | Compteurs |"
+            echo "|-------|-----------|"
+            echo "| Avant | \`${{ steps.before.outputs.stats }}\` |"
+            echo "| Après | \`${{ steps.after.outputs.stats }}\` |"
+            echo ""
+            echo "> Exclut \`job:activite\` (reconstruction heatmap = HITL). Connexion attendue : rôle \`oh_agent\`."
+          } >> "$GITHUB_STEP_SUMMARY"

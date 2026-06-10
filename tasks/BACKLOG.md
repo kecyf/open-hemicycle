@@ -18,8 +18,9 @@ Priorité : P0 (critique) · P1 · P2.
 | 0.3 | P0 | done | Harness agentique (AGENTS.md, rules, skills) |
 | 0.4 | P0 | done | Squelette monorepo pnpm (`apps/web`, `packages/etl`, configs) |
 | 0.5 | P0 | done | Repo GitHub public + push initial |
-| 0.6 | P1 | hitl | Cursor Automation quotidienne : formulaire Glass pré-rempli (cron 08:00 Paris) → reste la sauvegarde par le superviseur |
+| 0.6 | P1 | done | Cursor Automation quotidienne (cron 08:00 Paris) — 1er run autonome complet 2026-06-10 (PR #9) |
 | 0.7 | P2 | next | Choisir/réserver un nom de domaine (HITL si payant) |
+| 0.8 | P1 | hitl | Secret `DATABASE_URL` (rôle `oh_agent`) dans GitHub Actions pour le cron ETL |
 
 ## Phase 1 — Données
 
@@ -54,7 +55,7 @@ Priorité : P0 (critique) · P1 · P2.
 | 3.2 | P0 | done | Fiche député·e : heatmap d'activité (votes) + votes par position + contexte + légende |
 | 3.3 | P0 | done | Explorateur de scrutins : liste filtrable + détail votes par groupe — en ligne (`/scrutins`) |
 | 3.4 | P0 | done | Pages méthodologie + mentions légales + signaler une erreur + footer global — en ligne |
-| 3.5 | P1 | hitl | Déploiement Vercel + Supabase (validation humaine) |
+| 3.5 | P1 | done | Déploiement Vercel + Supabase — prod live https://open-hemicycle.vercel.app |
 
 ## Phase 4 — Indice de cohérence v0
 

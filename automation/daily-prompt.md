@@ -13,8 +13,14 @@ Exécute la procédure de la skill **`daily-standup`** (`.cursor/skills/daily-st
 3. Travaille par incréments testables. Respecte impérativement `.cursor/rules/editorial-guardrails.mdc`, `docs/METHODOLOGY.md` et `docs/legal-guardrails.md`.
 4. Vérifie la Definition of Done (AGENTS.md §4).
 5. **Journalise** une entrée datée en tête de `tasks/JOURNAL.md` (avec la section « 🔔 Pour le superviseur » si une décision humaine est requise).
-6. Mets à jour `tasks/BACKLOG.md` (statuts) et `ROADMAP.md` si un jalon avance.
-7. Commits atomiques (Conventional Commits) sur une branche de travail. **Ne pousse jamais en force sur `main`.** N'ouvre/déploie rien de public sans validation humaine.
+6. Mets à jour `tasks/BACKLOG.md` (statuts), `ROADMAP.md` si un jalon avance, et `CHANGELOG.md` (section `[Non publié]`).
+7. **Livre par PR** (voir AGENTS.md §6 ter et skill `daily-standup` §6) :
+   - Une **branche par run** (`feat/`, `fix/`, `chore/`) — jamais directement sur `main`.
+   - Commits atomiques (Conventional Commits), **push avant d'ouvrir la PR**.
+   - **Ouvre la PR toi-même** (outil « Open Pull Request » activé).
+   - **Travail sûr** (logique pure testée, docs, outillage, refactor non visible) → **auto-merge** : `gh pr merge <n> --auto --squash`. La PR se merge seule dès CI verte.
+   - **Indicateur sensible / nominatif**, **release majeure**, ou **nouvelle surface publique** → **PAS d'auto-merge** : demande le superviseur en reviewer + commente la PR avec « 🔔 superviseur ». Le merge est HITL.
+   - Ne jamais force-push sur `main`. Ne jamais t'auto-approuver.
 
 Termine par un résumé court : ce qui a avancé, ce qui est testable, et les éventuelles questions/validations en attente pour le superviseur.
 

@@ -14,7 +14,7 @@ Horizon de référence : **Jalon M1 à ~1 mois** (POC public fonctionnel). Le d�
 - [x] Repo GitHub public + premier push.
 - [x] Infra live : Supabase (schéma + RLS) + Vercel auto-déployé depuis GitHub.
 - [x] Landing en ligne : https://open-hemicycle.vercel.app
-- [~] Automation quotidienne câblée (formulaire Glass pré-rempli, en attente de sauvegarde par le superviseur).
+- [x] Automation quotidienne opérationnelle (1er run autonome complet 2026-06-10).
 
 ## Phase 1 — Données (semaines 1–2)
 - [x] Setup Supabase (Postgres) + Drizzle + migrations.
@@ -28,7 +28,7 @@ Horizon de référence : **Jalon M1 à ~1 mois** (POC public fonctionnel). Le d�
 ## Phase 2 — Agrégation & API (semaine 2–3)
 - [x] Fonctions de calcul pures (`@open-hemicycle/core`) + tests vitest (score, seuils 0–4, participation).
 - [x] Calcul `activite_journaliere` (heatmap) selon METHODOLOGY §2 — job ETL, 66 080 lignes (votes-only).
-- [ ] Calcul des 3 taux de participation (METHODOLOGY §3).
+- [x] Calcul des 3 taux de participation (METHODOLOGY §3) — fiche député·e, v0.8.0.
 - [x] Accès données (server components Drizzle) : liste/recherche député·es, fiche député·e + répartition des votes.
 - [x] Scrutin + votes par groupe (`listScrutins` / `countScrutins` / `getScrutinDetail`).
 
