@@ -63,6 +63,6 @@ Priorité : P0 (critique) · P1 · P2.
 |----|------|--------|-------|
 | 4.1 | P1 | done | Rattachement scrutins ↔ thèmes (2 thèmes pilotes, v0.7.0) |
 | 4.2 | P1 | hitl | Cohérence vote / ligne de groupe (composante a) — core + requête SQL + composant prêts ; **publication sur fiche député·e** en attente relecture (4.5) |
-| 4.3 | P1 | next | Cohérence participation / thème revendiqué (composante c) |
+| 4.3 | P1 | done | Cohérence participation / thème revendiqué (composante c) — core + requête + composant prêts ; revendications pilote vides ; publication fiche → HITL |
 | 4.4 | P0 | hitl | Validation manuelle échantillon + check-list juridique |
 | 4.5 | P0 | hitl | Relecture humaine avant publication nominative |

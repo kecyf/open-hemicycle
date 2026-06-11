@@ -7,12 +7,16 @@
  */
 
 import {
+  computeComparaisonParticipationTheme,
   computeTauxAlignementGroupe,
   computeTauxParticipationTriple,
+  getThemesRevendiques,
+  type ComparaisonParticipationTheme,
   type EnregistrementVote,
   type PositionVote,
   type TauxAlignementGroupe,
   type TauxParticipationTriple,
+  type ThemeRevendiqueClaim,
   type VentilationGroupe,
 } from "@open-hemicycle/core";
 import { and, asc, desc, eq, inArray, isNull, sql } from "drizzle-orm";
@@ -287,6 +291,93 @@ export async function getTauxAlignementGroupe(
   }));
 
   return { groupeId, ...computeTauxAlignementGroupe(votesPourCalcul) };
+}
+
+export type { ComparaisonParticipationTheme, ThemeRevendiqueClaim };
+
+async function enregistrementsVotesDepute(
+  deputeId: string,
+  themeSlug?: string,
+): Promise<EnregistrementVote[]> {
+  const db = getDb();
+  const rows = await db
+    .select({
+      typeScrutin: scrutins.typeScrutin,
+      position: votes.position,
+    })
+    .from(votes)
+    .innerJoin(scrutins, eq(scrutins.id, votes.scrutinId))
+    .where(
+      and(
+        eq(votes.deputeId, deputeId),
+        eq(scrutins.legislature, LEGISLATURE),
+        themeSlug ? inArray(scrutins.dossierId, dossierIdsForTheme(themeSlug)) : undefined,
+      ),
+    );
+
+  return rows.map((r) => ({
+    typeScrutin: r.typeScrutin,
+    position: r.position as EnregistrementVote["position"],
+  }));
+}
+
+/**
+ * Compare la participation sur un thème au taux global (METHODOLOGY §4.c).
+ *
+ * Ne vérifie pas la revendication publique — utiliser
+ * `getComparaisonParticipationThemeRevendique` pour l'affichage nominatif.
+ */
+export async function getComparaisonParticipationTheme(
+  deputeId: string,
+  themeSlug: string,
+): Promise<ComparaisonParticipationTheme> {
+  const [theme, global] = await Promise.all([
+    enregistrementsVotesDepute(deputeId, themeSlug),
+    enregistrementsVotesDepute(deputeId),
+  ]);
+  return computeComparaisonParticipationTheme(theme, global);
+}
+
+export interface ComparaisonParticipationThemeRevendique {
+  themeSlug: string;
+  themeNom: string;
+  revendication: ThemeRevendiqueClaim;
+  comparaison: ComparaisonParticipationTheme;
+}
+
+/**
+ * Comparaisons pour les thèmes qu'un·e député·e revendique publiquement
+ * (mapping auditable `themes-revendiques.ts`).
+ */
+export async function getComparaisonsParticipationThemesRevendiques(
+  deputeId: string,
+  deputeSlug: string,
+): Promise<ComparaisonParticipationThemeRevendique[]> {
+  const claims = getThemesRevendiques(deputeSlug);
+  if (claims.length === 0) return [];
+
+  const db = getDb();
+  const themeSlugs = [...new Set(claims.map((c) => c.themeSlug))];
+  const themeRows = await db
+    .select({ slug: themes.slug, nom: themes.nom })
+    .from(themes)
+    .where(inArray(themes.slug, themeSlugs));
+  const nomBySlug = new Map(themeRows.map((t) => [t.slug, t.nom]));
+
+  const global = await enregistrementsVotesDepute(deputeId);
+  const results: ComparaisonParticipationThemeRevendique[] = [];
+
+  for (const claim of claims) {
+    const theme = await enregistrementsVotesDepute(deputeId, claim.themeSlug);
+    results.push({
+      themeSlug: claim.themeSlug,
+      themeNom: nomBySlug.get(claim.themeSlug) ?? claim.themeSlug,
+      revendication: claim,
+      comparaison: computeComparaisonParticipationTheme(theme, global),
+    });
+  }
+
+  return results;
 }
 
 export async function getVoteStats(deputeId: string): Promise<VoteStats> {

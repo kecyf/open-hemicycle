@@ -13,6 +13,11 @@ Catégories : `Ajouté` · `Modifié` · `Corrigé` · `Supprimé` · `Données`
 
 ## [Non publié]
 
+### Ajouté
+- **Cohérence participation / thème revendiqué (4.3)** : `computeComparaisonParticipationTheme` dans `@open-hemicycle/core` (METHODOLOGY §4.c) — 4 tests vitest.
+- Mapping auditable des revendications thématiques (`packages/core/src/data/themes-revendiques.ts`, pilote vide).
+- Requêtes `getComparaisonParticipationTheme` / `getComparaisonsParticipationThemesRevendiques` ; composant `ParticipationTheme` préparé mais **non branché** sur la fiche (publication nominative → HITL).
+
 ---
 
 ## [0.8.0] — 2026-06-10

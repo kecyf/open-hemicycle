@@ -4,6 +4,30 @@ Entrées les plus récentes en haut. Le dépôt est la mémoire de l'agent : ce 
 
 ---
 
+## 2026-06-11 — 📐 4.3 : participation thème revendiqué (composante c, backend)
+
+🔔 Pour le superviseur :
+1. **Secret `oh_agent`** : basculer `DATABASE_URL` cloud + GitHub Actions (tâches 0.8) — toujours en attente.
+2. **Revendications thématiques** : le mapping `themes-revendiques.ts` est vide (pilote) — ajouter les premières entrées sourcées (URL + date) via PR avant tout affichage nominatif.
+3. **Publication 4.2 / 4.3 UI** : composants `AlignementGroupe` et `ParticipationTheme` prêts mais **non branchés** sur la fiche — validation check-list `docs/legal-guardrails.md` §7 requise (merge HITL).
+
+- **Objectif du jour** : tâche 4.3 — couche participation thème vs global (backend, sans surface nominative nouvelle).
+- **Contexte** : `DATABASE_URL` présent en cloud ✓ (645 députés, 1 123 910 votes via `pnpm etl stats`) ; aucune PR ouverte ; branche `cursor/proc-dure-daily-standup-65bf`.
+- **Fait** :
+  - **`computeComparaisonParticipationTheme`** dans `@open-hemicycle/core/participation-theme.ts` — écart thème − global, décomptes séparés (non-vote ≠ opposition).
+  - **`themes-revendiques.ts`** : structure auditable pour revendications sourcées (liste vide, entrées par PR).
+  - **`getComparaisonParticipationTheme`** / **`getComparaisonsParticipationThemesRevendiques`** dans `apps/web/lib/queries.ts`.
+  - **Composant `ParticipationTheme`** : libellés conformes garde-fous (fait statistique, source revendication, lien méthodologie).
+  - **METHODOLOGY** §4.c : implémentation pilote documentée.
+  - **Vérifié live** : député test `alain-david-1008`, thème `budget-finances` — taux thème 100 % (2/2), global 100 % (452/452), écart 0.
+  - **CI locale** : `pnpm typecheck` ✓, `pnpm test` ✓ (25/25), `pnpm build` ✓.
+- **Appris** : la composante (c) se branche comme (a) — le goulot est le **mapping des revendications sourcées**, pas le calcul.
+- **Bloqueurs** : secrets `oh_agent` (superviseur) ; revendications pilote à sourcer.
+- **Prochaine étape** : sourcer 1–2 revendications pilote ; validation HITL pour brancher 4.2/4.3 sur la fiche ; tâche 1.7 (cross-check NosDéputés) ou extension classification thématique.
+- **Commits** : PR à ouvrir (auto-merge prévu — travail sûr, backend seulement)
+
+---
+
 ## 2026-06-10 (après-midi) — 🔁 Boucle d'autonomie : reprise, cron ETL, smoke prod
 
 🔔 Pour le superviseur :
