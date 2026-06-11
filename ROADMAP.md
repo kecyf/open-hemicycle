@@ -42,7 +42,7 @@ Horizon de référence : **Jalon M1 à ~1 mois** (POC public fonctionnel). Le d�
 ## Phase 4 — Indice de cohérence v0 (fin M1, sous validation HITL)
 - [x] Rattachement scrutins ↔ thèmes (2 thèmes pilotes, v0.7.0).
 - [~] Cohérence vote / ligne de groupe (composante a) — core + requête prêts ; affichage fiche soumis à HITL (4.5).
-- [ ] Cohérence participation / thème revendiqué (composante c).
+- [~] Cohérence participation / thème revendiqué (composante c) — core + requête prêts ; revendications sourcées et affichage fiche soumis à HITL.
 - [ ] Validation manuelle d'un échantillon + check-list juridique.
 - [ ] **HITL : relecture humaine avant toute publication nominative.**
 

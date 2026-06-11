@@ -98,6 +98,12 @@ sur les scrutins d'un thème T que le·la député·e revendique publiquement :
 ```
 Un écart négatif marqué (très présent en général, absent précisément sur son thème de prédilection) est un **fait** affichable, sans qualificatif.
 
+**Implémentation actuelle (pilote)** :
+- Formule : `taux_participation_T = votes_exprimés_sur_thème / nb_scrutins_du_thème` (idem global) ; `écart = taux_T − taux_global` (points de participation, pas un score moral).
+- **Revendications sourcées** : mapping auditable `packages/core/src/data/themes-revendiques.ts` (URL + date + libellé neutre par député·e et thème). Liste vide tant que les premières sources ne sont pas validées par PR.
+- Logique pure : `@open-hemicycle/core/participation-theme.ts` (`computeComparaisonParticipationTheme`).
+- Requête serveur : `getComparaisonParticipationTheme` / `getComparaisonsParticipationThemesRevendiques` — composant UI préparé, **non branché** sur la fiche (publication nominative → relecture humaine).
+
 ### Règles de publication de l'indice de cohérence
 
 - **Jamais** d'agrégat en un seul chiffre « note d'honnêteté » mis en avant en page d'accueil.
