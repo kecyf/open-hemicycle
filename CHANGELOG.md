@@ -13,6 +13,12 @@ Catégories : `Ajouté` · `Modifié` · `Corrigé` · `Supprimé` · `Données`
 
 ## [Non publié]
 
+---
+
+## [0.9.0] — 2026-06-12
+
+Cohérence thème revendiqué (4.3 backend), cross-check NosDéputés (1.7), boucle data réparée (cron ETL + refresh juin), smoke post-merge stabilisé.
+
 ### Ajouté
 - **Cross-check NosDéputés (1.7)** : `compareGroupEffectifs` / `summarizeDeputeCrossCheck` dans `@open-hemicycle/core` (4 tests) ; commande `pnpm etl validate:nosdeputes` (effectifs par groupe + échantillon nominatif, jointure `id_an` → `PA*`).
 - **Cohérence participation / thème revendiqué (4.3)** : `computeComparaisonParticipationTheme` dans `@open-hemicycle/core` (METHODOLOGY §4.c) — 4 tests vitest.
