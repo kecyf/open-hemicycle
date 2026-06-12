@@ -21,8 +21,8 @@ Entrées les plus récentes en haut. Le dépôt est la mémoire de l'agent : ce 
   - **Hygiène** : branche remote `chore/journal-pr12` supprimée.
 - **Appris** : le smoke détectait bien les pannes (échecs 10–12 juin) mais personne ne regardait Actions ; données figées = conséquence directe du secret manquant, pas du cache download.
 - **Bloqueurs** : credential `oh_agent` (migration sécurité) ; HITL UI 4.2/4.3.
-- **Prochaine étape** : merge PR smoke → release 0.9.0 ; cron nightly automatique ; bascule `oh_agent` quand dispo.
-- **Commits** : (cette session)
+- **Prochaine étape** : cron nightly automatique ; bascule `oh_agent` quand dispo ; HITL UI 4.2/4.3.
+- **Commits** : PR #14 (auto-merge, smoke vert)
 
 ---
 

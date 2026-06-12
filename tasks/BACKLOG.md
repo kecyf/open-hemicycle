@@ -5,7 +5,7 @@ Priorité : P0 (critique) · P1 · P2.
 
 > L'agent prend la tâche `next` de plus haute priorité **faisable en autonomie**. Les tâches `hitl` attendent une validation humaine (voir AGENTS.md §3).
 >
-> **Version courante : `0.8.0`** (voir [`CHANGELOG.md`](../CHANGELOG.md)). Une tâche `done` qui livre une capacité visible doit apparaître dans le `CHANGELOG` ; un incrément cohérent → couper une version (AGENTS.md §6 bis).
+> **Version courante : `0.9.0`** (voir [`CHANGELOG.md`](../CHANGELOG.md)). Une tâche `done` qui livre une capacité visible doit apparaître dans le `CHANGELOG` ; un incrément cohérent → couper une version (AGENTS.md §6 bis).
 
 ---
 
