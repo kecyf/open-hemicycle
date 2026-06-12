@@ -13,6 +13,9 @@ Catégories : `Ajouté` · `Modifié` · `Corrigé` · `Supprimé` · `Données`
 
 ## [Non publié]
 
+### Corrigé
+- **ETL `DATA_RAW_DIR`** : résolution depuis la racine du monorepo (évite ~38k fichiers JSON dans `packages/etl/data/` non gitignorés quand `pnpm etl` tourne depuis le package).
+
 ---
 
 ## [0.9.0] — 2026-06-12
