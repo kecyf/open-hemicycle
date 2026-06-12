@@ -19,6 +19,13 @@ Catégories : `Ajouté` · `Modifié` · `Corrigé` · `Supprimé` · `Données`
 - Mapping auditable des revendications thématiques (`packages/core/src/data/themes-revendiques.ts`, pilote vide).
 - Requêtes `getComparaisonParticipationTheme` / `getComparaisonsParticipationThemesRevendiques` ; composant `ParticipationTheme` préparé mais **non branché** sur la fiche (publication nominative → HITL).
 
+### Données
+- Ré-ingestion AN (31 mai → 11 juin 2026) : **7 397 scrutins** (+192), **1 148 995 votes** (+25 085) ; heatmap reconstruite (**71 910** lignes, max jour 2026-06-11).
+- Secret `DATABASE_URL` posé dans GitHub Actions ; cron ETL Refresh validé (`workflow_dispatch` success).
+
+### Corrigé
+- **Smoke post-merge** : poll parallèle de toutes les routes (40 × 20 s, ~13 min) au lieu d'un sleep fixe + vérif séquentielle — évite les faux négatifs pendant le déploiement Vercel.
+
 ---
 
 ## [0.8.0] — 2026-06-10
