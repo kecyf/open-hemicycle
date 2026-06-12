@@ -4,6 +4,28 @@ Entrées les plus récentes en haut. Le dépôt est la mémoire de l'agent : ce 
 
 ---
 
+## 2026-06-12 (après-midi) — 🔁 Boucle data réparée + smoke stabilisé
+
+🔔 Pour le superviseur :
+1. **Rôle `oh_agent`** : secret GitHub Actions posé avec la chaîne `postgres` (mot de passe `oh_agent` absent du `.env`) — à migrer quand le credential est disponible ; idem Cursor Cloud Agents.
+2. **Publication 4.2 / 4.3 UI** : composants prêts, non branchés — check-list `docs/legal-guardrails.md` §7 (HITL).
+3. **Bugbot** : toujours à activer sur le repo.
+4. **Revendications pilote** : remplir `themes-revendiques.ts` avec entrées sourcées avant affichage nominatif 4.3.
+
+- **Objectif** : débloquer cron ETL, rafraîchir données figées au 30 mai, fiabiliser smoke post-merge.
+- **Contexte** : audits 12 juin — boucle code stable (PR #12/#13), boucle data cassée (0 secret Actions, ETL cron en échec).
+- **Fait** :
+  - **Secret `DATABASE_URL`** posé dans GitHub Actions (cron ETL débloqué).
+  - **ETL Refresh** : `workflow_dispatch` success ; ingestion locale + CI — **7 397 scrutins** (max **2026-06-11**), **1 148 995 votes**, heatmap **71 910** lignes (max jour 2026-06-11).
+  - **Smoke** : `post-merge-smoke.yml` — poll parallèle 40×20 s (~13 min) au lieu de sleep 90 s + routes séquentielles.
+  - **Hygiène** : branche remote `chore/journal-pr12` supprimée.
+- **Appris** : le smoke détectait bien les pannes (échecs 10–12 juin) mais personne ne regardait Actions ; données figées = conséquence directe du secret manquant, pas du cache download.
+- **Bloqueurs** : credential `oh_agent` (migration sécurité) ; HITL UI 4.2/4.3.
+- **Prochaine étape** : merge PR smoke → release 0.9.0 ; cron nightly automatique ; bascule `oh_agent` quand dispo.
+- **Commits** : (cette session)
+
+---
+
 ## 2026-06-12 — ✅ 1.7 : outil cross-check NosDéputés
 
 🔔 Pour le superviseur :

@@ -20,7 +20,7 @@ Priorité : P0 (critique) · P1 · P2.
 | 0.5 | P0 | done | Repo GitHub public + push initial |
 | 0.6 | P1 | done | Cursor Automation quotidienne (cron 08:00 Paris) — 1er run autonome complet 2026-06-10 (PR #9) |
 | 0.7 | P2 | next | Choisir/réserver un nom de domaine (HITL si payant) |
-| 0.8 | P1 | hitl | Secret `DATABASE_URL` (rôle `oh_agent`) dans GitHub Actions pour le cron ETL |
+| 0.8 | P1 | done | Secret `DATABASE_URL` dans GitHub Actions pour cron ETL (posé 2026-06-12 ; migration rôle `oh_agent` quand mot de passe disponible) |
 
 ## Phase 1 — Données
 
@@ -34,7 +34,7 @@ Priorité : P0 (critique) · P1 · P2.
 | 1.4b | P1 | done | ETL : import acteurs historiques AMO30 → récupérer les 55k votes ignorés (députés non actifs) |
 | 1.5 | P0 | done | ETL : import scrutins + votes individuels (7205 scrutins / 1,07M votes) + résultat `sort` |
 | 1.6 | P1 | done | ETL : lien scrutin ↔ dossier législatif (2609 dossiers ; 1375 scrutins liés) + web (v0.6.0) |
-| 1.7 | P1 | in-progress | Validation : effectifs par groupe OK ; outil `validate:nosdeputes` livré — exécution live bloquée depuis cloud (API ND instable) ; à relancer en local / CI |
+| 1.7 | P1 | done | Outil `validate:nosdeputes` livré ; exécution live cloud bloquée API ND — relancer en local si besoin ; données rafraîchies 2026-06-12 |
 
 ## Phase 2 — Agrégation & API
 
