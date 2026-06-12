@@ -2,6 +2,7 @@
  * Téléchargement + décompression des dumps de l'Assemblée nationale.
  *
  * Les dumps sont écrits dans DATA_RAW_DIR (jamais commité, voir .gitignore).
+ * Par défaut : `<racine monorepo>/data/raw` (pas le cwd du package ETL).
  * Par défaut, un dump déjà présent et récent (< maxAgeHours) n'est pas
  * re-téléchargé, pour des itérations rapides.
  */
@@ -9,10 +10,27 @@
 import { mkdir, stat, writeFile } from "node:fs/promises";
 import { existsSync } from "node:fs";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 import AdmZip from "adm-zip";
 import { type AnDataset, datasetUrl } from "../sources.ts";
 
-const RAW_DIR = process.env.DATA_RAW_DIR ?? "./data/raw";
+/** Racine du monorepo (packages/etl/src/lib → ../../../../). */
+const REPO_ROOT = path.resolve(fileURLToPath(import.meta.url), "../../../..");
+
+/** Chemin absolu vers data/raw/, indépendant du cwd (pnpm filter, CI, agent cloud). */
+export function resolveRawDir(): string {
+  const configured = process.env.DATA_RAW_DIR?.trim();
+  if (!configured) {
+    return path.join(REPO_ROOT, "data/raw");
+  }
+  if (path.isAbsolute(configured)) {
+    return configured;
+  }
+  // DATA_RAW_DIR relatif → depuis la racine du monorepo (cf. .env.example).
+  return path.resolve(REPO_ROOT, configured);
+}
+
+const RAW_DIR = resolveRawDir();
 
 export interface DownloadResult {
   /** Répertoire où le zip a été décompressé. */

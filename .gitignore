@@ -16,6 +16,8 @@ out/
 # Data (raw dumps & local DB artifacts — not committed)
 data/raw/
 data/tmp/
+packages/etl/data/
+**/data/raw/
 *.zip
 *.sqlite
 *.db

@@ -4,6 +4,21 @@ Entrées les plus récentes en haut. Le dépôt est la mémoire de l'agent : ce 
 
 ---
 
+## 2026-06-12 (fin de session) — 🧹 Chemin data/raw ETL corrigé
+
+🔔 Pour le superviseur : rien de bloquant — migration `oh_agent`, Bugbot, HITL UI 4.2/4.3 inchangés (cf. entrée après-midi).
+
+- **Objectif** : corriger les ~38k fichiers untracked dans l'UI Cursor (`packages/etl/data/raw/acteurs-historique/`).
+- **Cause** : `DATA_RAW_DIR="./data/raw"` résolu depuis le cwd `packages/etl/` au lieu de la racine du monorepo.
+- **Fait** :
+  - **`resolveRawDir()`** dans `download.ts` — chemin absolu depuis la racine du repo.
+  - **`.gitignore`** : `packages/etl/data/` + `**/data/raw/` (filet de sécurité).
+  - Dossier parasite supprimé localement (~429 Mo).
+  - PR ouverte (auto-merge, travail sûr).
+- **Prochaine étape** : run agent demain — reprendre backlog autonome (extension thématique, cross-check ND local, etc.).
+
+---
+
 ## 2026-06-12 (après-midi) — 🔁 Boucle data réparée + smoke stabilisé
 
 🔔 Pour le superviseur :
