@@ -34,7 +34,7 @@ Priorité : P0 (critique) · P1 · P2.
 | 1.4b | P1 | done | ETL : import acteurs historiques AMO30 → récupérer les 55k votes ignorés (députés non actifs) |
 | 1.5 | P0 | done | ETL : import scrutins + votes individuels (7205 scrutins / 1,07M votes) + résultat `sort` |
 | 1.6 | P1 | done | ETL : lien scrutin ↔ dossier législatif (2609 dossiers ; 1375 scrutins liés) + web (v0.6.0) |
-| 1.7 | P1 | in-progress | Validation : effectifs par groupe OK ; reste cross-check nominatif vs NosDéputés |
+| 1.7 | P1 | in-progress | Validation : effectifs par groupe OK ; outil `validate:nosdeputes` livré — exécution live bloquée depuis cloud (API ND instable) ; à relancer en local / CI |
 
 ## Phase 2 — Agrégation & API
 

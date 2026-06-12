@@ -21,6 +21,7 @@
     "ingest:all": "tsx src/cli.ts ingest:all",
     "job:activite": "tsx src/cli.ts job:activite",
     "stats": "tsx src/cli.ts stats",
+    "validate:nosdeputes": "tsx src/cli.ts validate:nosdeputes",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {

@@ -4,6 +4,28 @@ Entrées les plus récentes en haut. Le dépôt est la mémoire de l'agent : ce 
 
 ---
 
+## 2026-06-12 — ✅ 1.7 : outil cross-check NosDéputés
+
+🔔 Pour le superviseur :
+1. **Secret `oh_agent`** : basculer `DATABASE_URL` cloud + GitHub Actions (tâches 0.8) — toujours en attente.
+2. **Publication 4.2 / 4.3 UI** : composants prêts mais non branchés — validation check-list `docs/legal-guardrails.md` §7 requise (merge HITL).
+3. **Cross-check NosDéputés live** : l'API `nosdeputes.fr` répond de façon instable depuis la VM cloud (`fetch failed` / reset TCP). Relancer `pnpm etl validate:nosdeputes` en local ou ajouter à la CI quand l'accès réseau est fiable.
+
+- **Objectif du jour** : tâche 1.7 — cross-check nominatif vs NosDéputés (outillage + premier run).
+- **Contexte** : `DATABASE_URL` présent ✓ (`pnpm etl stats` : 645 députés, 1 123 910 votes) ; aucune PR ouverte ; `main` à jour (PR #12 mergée).
+- **Fait** :
+  - **`nosdeputes-crosscheck.ts`** (core) : jointure `id_an` → `PA*`, comparaison effectifs groupe, synthèse écarts nominatifs — 4 tests vitest.
+  - **`validate:nosdeputes`** (ETL) : charge 577 députés en mandat (`mandats.fin IS NULL`), tente API NosDéputés (reprises + fallback `/deputes/json`), affiche effectifs + échantillon 30.
+  - **Docs** : `docs/data-sources.md` (commande documentée).
+  - **CI locale** : `pnpm typecheck` ✓, `pnpm test` ✓ (29/29), `pnpm build` ✓.
+  - **Run live** : DB OK (577 en mandat) ; API NosDéputés inaccessible depuis cloud → exit 2 (comportement attendu, pas de faux positif).
+- **Appris** : le goulot du cross-check externe est réseau/API (pas la logique) ; 577 en mandat = cohérent AMO10.
+- **Bloqueurs** : API NosDéputés depuis cloud ; secrets `oh_agent` (superviseur).
+- **Prochaine étape** : exécuter `validate:nosdeputes` en local pour boucler 1.7 ; sourcer revendications pilote ; HITL UI 4.2/4.3.
+- **Commits** : PR à ouvrir (auto-merge — outillage testé, pas de surface publique)
+
+---
+
 ## 2026-06-11 — 📐 4.3 : participation thème revendiqué (composante c, backend)
 
 🔔 Pour le superviseur :

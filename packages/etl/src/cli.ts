@@ -15,6 +15,7 @@
  *   ingest:all        Enchaîne deputes, dossiers, scrutins, themes, puis activite.
  *   job:activite      (Re)calcule la table activite_journaliere (heatmap).
  *   stats             Affiche les compteurs DB (députés, scrutins, votes).
+ *   validate:nosdeputes  Cross-check effectifs + échantillon vs NosDéputés.fr.
  *
  * Les commandes d'ingestion nécessitent DATABASE_URL (voir .env.example).
  */
@@ -29,6 +30,7 @@ import { importDossiers } from "./import/dossiers.ts";
 import { importScrutins, backfillVotes } from "./import/scrutins.ts";
 import { seedThemes } from "./import/themes.ts";
 import { computeActiviteJournaliere } from "./jobs/activite.ts";
+import { validateNosdeputes } from "./validate/nosdeputes.ts";
 
 const LEGISLATURE = process.env.AN_LEGISLATURE ?? "17";
 
@@ -139,9 +141,12 @@ async function main(): Promise<void> {
     case "stats":
       await printDbStats("now");
       break;
+    case "validate:nosdeputes":
+      await validateNosdeputes();
+      break;
     default:
       console.error(
-        `Commande inconnue: ${cmd}\nUsage: oh-etl [sources|check|download|ingest:deputes|ingest:acteurs-historique|backfill:votes|ingest:dossiers|ingest:scrutins|seed:themes|ingest:all|job:activite|stats]`,
+        `Commande inconnue: ${cmd}\nUsage: oh-etl [sources|check|download|ingest:deputes|ingest:acteurs-historique|backfill:votes|ingest:dossiers|ingest:scrutins|seed:themes|ingest:all|job:activite|stats|validate:nosdeputes]`,
       );
       process.exit(1);
   }
