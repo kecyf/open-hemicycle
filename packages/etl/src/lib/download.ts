@@ -14,8 +14,8 @@ import { fileURLToPath } from "node:url";
 import AdmZip from "adm-zip";
 import { type AnDataset, datasetUrl } from "../sources.ts";
 
-/** Racine du monorepo (packages/etl/src/lib → ../../../../). */
-const REPO_ROOT = path.resolve(fileURLToPath(import.meta.url), "../../../..");
+/** Racine du monorepo (fichier packages/etl/src/lib/download.ts → 5× `..`). */
+const REPO_ROOT = path.resolve(fileURLToPath(import.meta.url), "../../../../..");
 
 /** Chemin absolu vers data/raw/, indépendant du cwd (pnpm filter, CI, agent cloud). */
 export function resolveRawDir(): string {
