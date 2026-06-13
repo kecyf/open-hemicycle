@@ -22,6 +22,7 @@
     "job:activite": "tsx src/cli.ts job:activite",
     "stats": "tsx src/cli.ts stats",
     "validate:nosdeputes": "tsx src/cli.ts validate:nosdeputes",
+    "audit:dossiers-scrutins": "tsx src/cli.ts audit:dossiers-scrutins",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
