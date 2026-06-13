@@ -13,8 +13,13 @@ Catégories : `Ajouté` · `Modifié` · `Corrigé` · `Supprimé` · `Données`
 
 ## [Non publié]
 
+### Ajouté
+- **Extension thématique (4.1b)** : thèmes `agriculture` (PL urgence souveraineté agricole, 416 scrutins) et `defense` (programmation militaire 2024–2030, 291 scrutins) ; comptes 2025 rattachés à `budget-finances`.
+- **ETL `audit:dossiers-scrutins`** : inventaire hors-ligne des dossiers porteurs de scrutins (dumps AN, sans `DATABASE_URL`).
+
 ### Corrigé
 - **ETL `DATA_RAW_DIR`** : résolution depuis la racine du monorepo (évite ~38k fichiers JSON dans `packages/etl/data/` non gitignorés quand `pnpm etl` tourne depuis le package).
+- **`resolveRawDir()`** : correction du nombre de `..` depuis `download.ts` (pointait sur `packages/` au lieu de la racine du monorepo).
 
 ---
 

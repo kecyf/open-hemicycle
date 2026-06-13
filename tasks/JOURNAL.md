@@ -4,6 +4,29 @@ Entrées les plus récentes en haut. Le dépôt est la mémoire de l'agent : ce 
 
 ---
 
+## 2026-06-13 — 🗂️ Extension thématique + fix `resolveRawDir`
+
+🔔 Pour le superviseur :
+1. **`DATABASE_URL` cloud** : présent mais **auth échoue** (`password authentication failed for user "postgres"`) — le secret Cursor Cloud semble utiliser un mot de passe obsolète ou le rôle `postgres` au lieu de `oh_agent`. À corriger pour débloquer `seed:themes` en prod et les runs ETL agent.
+2. **Publication 4.2 / 4.3 UI** : inchangé — check-list `docs/legal-guardrails.md` §7 (HITL).
+3. **Après merge** : lancer `pnpm etl seed:themes` (ou `ingest:all`) avec un `DATABASE_URL` valide pour projeter les 4 thèmes en base.
+
+- **Objectif du jour** : extension classification thématique (4.1b) + outillage audit hors-ligne.
+- **Contexte** : aucune PR ouverte ; `DATABASE_URL` format OK mais connexion refusée → tâche data sans écriture DB.
+- **Fait** :
+  - **Audit** : `pnpm etl audit:dossiers-scrutins` — 56 dossiers porteurs de votes, 1 570 scrutins liés (dump 13 juin).
+  - **Thèmes** (`themes.ts`) : +`agriculture` (DLR5L17N54085, 416 scrutins), +`defense` (DLR5L17N54083, 291 scrutins) ; comptes 2025 ajoutés à `budget-finances`.
+  - **Fix `resolveRawDir()`** : 5× `..` depuis `download.ts` (pointait sur `packages/` → dumps dans `packages/data/raw`).
+  - **`.gitignore`** : `packages/data/` (filet de sécurité).
+  - **Docs** : `METHODOLOGY.md`, `data-sources.md`, `BACKLOG` (4.1b done), `ROADMAP`, `CHANGELOG`.
+  - **CI locale** : `pnpm typecheck` ✓, `pnpm test` ✓ (29/29), `pnpm build` ✓.
+- **Appris** : le correctif DATA_RAW_DIR du 12/06 était incomplet (4 `..` au lieu de 5 depuis un fichier) ; l'extension thématique peut se faire hors-ligne via l'audit.
+- **Bloqueurs** : credential `DATABASE_URL` cloud (superviseur).
+- **Prochaine étape** : corriger secret DB cloud ; `seed:themes` post-merge ; HITL UI 4.2/4.3 ; revendications pilote sourcées.
+- **Commits** : PR à ouvrir (auto-merge — outillage + classification versionnée, pas de surface publique nominative).
+
+---
+
 ## 2026-06-12 (fin de session) — 🧹 Chemin data/raw ETL corrigé
 
 🔔 Pour le superviseur : rien de bloquant — migration `oh_agent`, Bugbot, HITL UI 4.2/4.3 inchangés (cf. entrée après-midi).

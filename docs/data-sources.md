@@ -28,7 +28,7 @@ Pas d'API REST officielle : modèle **fichiers (ZIP JSON/XML) + URLs unitaires +
 
 | Source | Usage | Licence | Notes |
 |---|---|---|---|
-| [NosDéputés.fr](https://www.nosdeputes.fr) ([API](https://github.com/regardscitoyens/nosdeputes.fr/blob/master/doc/api.md)) | Cross-check, indicateurs d'activité pré-calculés | **ODbL 1.0** | Ajouter `/json`,`/xml`,`/csv` aux URLs. *Share-alike*. Commande : `pnpm etl validate:nosdeputes` (effectifs groupe + échantillon nominatif, jointure `id_an` → `PA*`). |
+| [NosDéputés.fr](https://www.nosdeputes.fr) ([API](https://github.com/regardscitoyens/nosdeputes.fr/blob/master/doc/api.md)) | Cross-check, indicateurs d'activité pré-calculés | **ODbL 1.0** | Ajouter `/json`,`/xml`,`/csv` aux URLs. *Share-alike*. Commandes : `pnpm etl validate:nosdeputes` (effectifs groupe + échantillon nominatif) ; `pnpm etl audit:dossiers-scrutins` (inventaire hors-ligne des dossiers porteurs de scrutins, sans DB). |
 | [Datan](https://datan.fr) ([data.gouv](https://www.data.gouv.fr/organizations/datan)) | Scores participation/loyauté (comparaison) | Licence Ouverte | MàJ hebdo |
 | [@tricoteuses/assemblee](https://www.npmjs.com/package/@tricoteuses/assemblee) | ETL : download, clean, schémas TS | **AGPL-3.0** | Très actif. Attention licence (copyleft). |
 | [HATVP open data](https://www.hatvp.fr/open-data/) | Déclarations d'intérêts/patrimoine | Licence Ouverte | CSV + XML |

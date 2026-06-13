@@ -123,7 +123,7 @@ Les scrutins sont rattachés à des **thèmes** pour permettre de suivre un suje
 - **Rattachement au niveau du dossier législatif** : un scrutin hérite du thème de son dossier, via le lien officiel scrutin → dossier publié par l'Assemblée nationale. Tables `themes` et `dossiers_themes`.
 - **Classification manuelle et conservatrice** : un dossier n'entre dans un thème que si son **titre officiel (verbatim AN)** concerne sans ambiguïté le cœur du thème. **En cas de doute, on n'inclut pas.** Un dossier peut n'appartenir à aucun thème.
 - **Source de vérité versionnée et auditable** : le mapping complet (thème → dossiers, avec leur titre officiel justifiant le rattachement) vit dans `packages/etl/src/data/themes.ts` ; toute modification passe par une PR. La base n'est qu'une projection de ce fichier (`pnpm --filter @open-hemicycle/etl seed:themes`).
-- **Phase pilote** : deux thèmes — `budget-finances` (« Budget & finances publiques ») et `securite-immigration` (« Sécurité & immigration »). La liste s'étoffera progressivement.
+- **Phase pilote** : quatre thèmes — `budget-finances`, `securite-immigration`, `agriculture`, `defense` (classification conservatrice par titre officiel AN ; la liste s'étoffera progressivement).
 - Un thème est un **regroupement neutre**, jamais un jugement ; le périmètre est restreint, symétrique et public.
 
 ### Méthodes futures envisagées (par ordre de préférence)
