@@ -5,7 +5,7 @@ Priorité : P0 (critique) · P1 · P2.
 
 > L'agent prend la tâche `next` de plus haute priorité **faisable en autonomie**. Les tâches `hitl` attendent une validation humaine (voir AGENTS.md §3).
 >
-> **Version courante : `0.9.0`** (voir [`CHANGELOG.md`](../CHANGELOG.md)). Une tâche `done` qui livre une capacité visible doit apparaître dans le `CHANGELOG` ; un incrément cohérent → couper une version (AGENTS.md §6 bis).
+> **Version courante : `0.10.0`** (voir [`CHANGELOG.md`](../CHANGELOG.md)). Une tâche `done` qui livre une capacité visible doit apparaître dans le `CHANGELOG` ; un incrément cohérent → couper une version (AGENTS.md §6 bis).
 
 ---
 
@@ -65,5 +65,6 @@ Priorité : P0 (critique) · P1 · P2.
 | 4.1b | P1 | done | Extension classification thématique : +agriculture, +défense, comptes 2025 (budget) ; outil `audit:dossiers-scrutins` |
 | 4.2 | P1 | hitl | Cohérence vote / ligne de groupe (composante a) — core + requête SQL + composant prêts ; **publication sur fiche député·e** en attente relecture (4.5) |
 | 4.3 | P1 | done | Cohérence participation / thème revendiqué (composante c) — core + requête + composant prêts ; revendications pilote vides ; publication fiche → HITL |
+| 4.3b | P1 | next | Sourcer premières revendications dans `themes-revendiques.ts` (`validate:revendications` prêt ; fond éditorial → relecture superviseur avant merge des entrées) |
 | 4.4 | P0 | hitl | Validation manuelle échantillon + check-list juridique |
 | 4.5 | P0 | hitl | Relecture humaine avant publication nominative |
