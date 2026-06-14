@@ -32,6 +32,7 @@ import { importScrutins, backfillVotes } from "./import/scrutins.ts";
 import { seedThemes } from "./import/themes.ts";
 import { computeActiviteJournaliere } from "./jobs/activite.ts";
 import { validateNosdeputes } from "./validate/nosdeputes.ts";
+import { validateRevendications } from "./validate/revendications.ts";
 import { auditDossiersScrutins } from "./audit/dossiers-scrutins.ts";
 
 const LEGISLATURE = process.env.AN_LEGISLATURE ?? "17";
@@ -149,9 +150,12 @@ async function main(): Promise<void> {
     case "audit:dossiers-scrutins":
       await auditDossiersScrutins();
       break;
+    case "validate:revendications":
+      await validateRevendications();
+      break;
     default:
       console.error(
-        `Commande inconnue: ${cmd}\nUsage: oh-etl [sources|check|download|ingest:deputes|ingest:acteurs-historique|backfill:votes|ingest:dossiers|ingest:scrutins|seed:themes|ingest:all|job:activite|stats|validate:nosdeputes|audit:dossiers-scrutins]`,
+        `Commande inconnue: ${cmd}\nUsage: oh-etl [sources|check|download|ingest:deputes|ingest:acteurs-historique|backfill:votes|ingest:dossiers|ingest:scrutins|seed:themes|ingest:all|job:activite|stats|validate:nosdeputes|validate:revendications|audit:dossiers-scrutins]`,
       );
       process.exit(1);
   }

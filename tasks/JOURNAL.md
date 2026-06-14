@@ -4,6 +4,30 @@ Entrées les plus récentes en haut. Le dépôt est la mémoire de l'agent : ce 
 
 ---
 
+## 2026-06-14 — ✅ v0.10.0 + validation revendications
+
+🔔 Pour le superviseur :
+1. **`DATABASE_URL` cloud** : toujours en échec (`password authentication failed for user "postgres"`) — mettre à jour le secret Cursor Cloud avec le rôle `oh_agent` (ou mot de passe postgres valide). Bloque `pnpm etl stats` / `seed:themes` depuis l'agent.
+2. **Prod `/themes`** : PR #17 mergée après le cron ETL du 13/06 (08:02 UTC < merge 08:28 UTC) — les thèmes `agriculture` et `defense` ne sont pas encore en base prod (2 thèmes visibles). Le prochain cron `etl-refresh` (04:30 UTC) ou un `workflow_dispatch` manuel exécutera `seed:themes`.
+3. **Publication 4.2 / 4.3 UI** : inchangé — check-list `docs/legal-guardrails.md` §7 (HITL).
+4. **Revendications pilote (4.3b)** : outillage `validate:revendications` prêt ; premières entrées à sourcer (relecture superviseur des sources avant merge).
+
+- **Objectif du jour** : release v0.10.0 (4.1b mergée) + outillage validation revendications thématiques.
+- **Contexte** : aucune PR ouverte ; `main` à jour (PR #17) ; `DATABASE_URL` cloud KO → tâche data sans écriture DB.
+- **Fait** :
+  - **`validateRevendicationsThematiques`** (core) : slugs thèmes pilotes, URL HTTP(S), date ISO, unicité député×thème — 4 tests vitest.
+  - **`pnpm etl validate:revendications`** : vérifie `themes-revendiques.ts` (sans DB).
+  - **`theme-slugs.ts`** : slugs pilotes miroir de `themes.ts`.
+  - **Release `v0.10.0`** : CHANGELOG, `package.json`, BACKLOG, ROADMAP.
+  - **Docs** : `METHODOLOGY.md`, `data-sources.md`.
+  - **CI locale** : `pnpm typecheck` ✓, `pnpm test` ✓ (33/33), `pnpm build` ✓.
+- **Appris** : le cron ETL du 13/06 a tourné *avant* le merge de #17 — décalage merge/cron à surveiller après chaque release thématique.
+- **Bloqueurs** : credential `DATABASE_URL` cloud (superviseur) ; HITL UI 4.2/4.3.
+- **Prochaine étape** : corriger secret DB cloud ; vérifier `/themes` prod après cron ; sourcer 1–2 revendications pilote (4.3b) ; HITL UI 4.2/4.3.
+- **Commits** : PR à ouvrir (auto-merge — outillage + release, pas de surface publique nominative).
+
+---
+
 ## 2026-06-13 — 🗂️ Extension thématique + fix `resolveRawDir`
 
 🔔 Pour le superviseur :

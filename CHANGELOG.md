@@ -13,9 +13,16 @@ Catégories : `Ajouté` · `Modifié` · `Corrigé` · `Supprimé` · `Données`
 
 ## [Non publié]
 
+---
+
+## [0.10.0] — 2026-06-14
+
+Extension thématique (agriculture, défense), outil d'audit dossiers↔scrutins, correctif `DATA_RAW_DIR`, validation structurelle des revendications sourcées.
+
 ### Ajouté
 - **Extension thématique (4.1b)** : thèmes `agriculture` (PL urgence souveraineté agricole, 416 scrutins) et `defense` (programmation militaire 2024–2030, 291 scrutins) ; comptes 2025 rattachés à `budget-finances`.
 - **ETL `audit:dossiers-scrutins`** : inventaire hors-ligne des dossiers porteurs de scrutins (dumps AN, sans `DATABASE_URL`).
+- **Validation revendications** : `validateRevendicationsThematiques` dans `@open-hemicycle/core` (4 tests) ; commande `pnpm etl validate:revendications` (structure URL/date/slug, sans DB).
 
 ### Corrigé
 - **ETL `DATA_RAW_DIR`** : résolution depuis la racine du monorepo (évite ~38k fichiers JSON dans `packages/etl/data/` non gitignorés quand `pnpm etl` tourne depuis le package).
