@@ -1,10 +1,24 @@
+import { getGlobalCounts, type GlobalCounts } from "../../lib/queries";
+
 /**
  * Bandeau d'honnêteté sur l'état des données.
  *
  * Affiché partout où l'on montre des chiffres : le POC repose sur une ingestion
  * encore partielle. On l'assume explicitement (garde-fous éditoriaux).
+ *
+ * Les chiffres sont **live** (plus de valeurs en dur) : on peut passer `counts`
+ * pour éviter un second appel quand la page les a déjà chargés, sinon le bandeau
+ * les récupère lui-même.
  */
-export function DataNotice({ className = "" }: { className?: string }) {
+export async function DataNotice({
+  className = "",
+  counts: countsProp,
+}: {
+  className?: string;
+  counts?: GlobalCounts | null;
+}) {
+  const counts =
+    countsProp !== undefined ? countsProp : await getGlobalCounts().catch(() => null);
   return (
     <aside
       className={`rounded-xl border border-amber-500/30 bg-amber-500/5 p-4 text-sm leading-relaxed text-muted ${className}`}
@@ -12,11 +26,24 @@ export function DataNotice({ className = "" }: { className?: string }) {
     >
       <p>
         <strong className="text-amber-300">Données partielles (POC).</strong> L'ingestion
-        couvre la 17ᵉ législature : <strong className="text-foreground">577 député·es</strong>,{" "}
-        <strong className="text-foreground">~7 000 scrutins</strong> et leurs votes nominatifs.
-        Il manque encore les votes des député·es non actifs (dump historique) et le
-        rattachement scrutin ↔ texte de loi. Les chiffres affichés sont donc{" "}
-        <em>indicatifs et susceptibles d'évoluer</em>.
+        couvre la 17ᵉ législature
+        {counts ? (
+          <>
+            {" : "}
+            <strong className="text-foreground">
+              {counts.deputesEnMandat.toLocaleString("fr-FR")} député·es en mandat
+            </strong>{" "}
+            ({counts.deputes.toLocaleString("fr-FR")} ayant siégé, remplacements inclus),{" "}
+            <strong className="text-foreground">
+              {counts.scrutins.toLocaleString("fr-FR")} scrutins
+            </strong>{" "}
+            et leurs votes nominatifs.
+          </>
+        ) : (
+          " (chiffres temporairement indisponibles)."
+        )}{" "}
+        Le rattachement de l'ensemble des scrutins à un thème lisible est en cours. Les
+        chiffres affichés sont <em>indicatifs et susceptibles d'évoluer</em>.
       </p>
     </aside>
   );

@@ -37,7 +37,9 @@ export default async function DeputesPage({
         </h1>
         <p className="max-w-2xl text-base text-muted">
           {deputes.length} député·e{deputes.length > 1 ? "s" : ""}
-          {groupeActif ? ` du groupe ${groupeActif.sigle ?? groupeActif.nom}` : " — 17ᵉ législature"}.
+          {groupeActif
+            ? ` du groupe ${groupeActif.sigle ?? groupeActif.nom}`
+            : " ayant siégé sous la 17ᵉ législature (remplacements inclus)"}.
           Cliquez sur un nom pour voir le détail des votes.
         </p>
       </header>

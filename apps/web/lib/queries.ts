@@ -25,6 +25,7 @@ import {
   deputes,
   groupesPolitiques,
   affiliationsGroupe,
+  mandats,
   votes,
   scrutins,
   dossiersLegislatifs,
@@ -720,20 +721,38 @@ export async function getScrutinDetail(uidAn: string): Promise<ScrutinDetail | n
   };
 }
 
-/** Quelques compteurs globaux pour le contexte (affichés sur la landing/annuaire). */
-export async function getGlobalCounts(): Promise<{
+export interface GlobalCounts {
+  /** Toutes les personnes ayant siégé sous la législature (remplacements inclus). */
   deputes: number;
+  /** Sous-ensemble : député·es dont le mandat est en cours (`mandats.fin IS NULL`). */
+  deputesEnMandat: number;
   scrutins: number;
   votes: number;
-}> {
+}
+
+/**
+ * Compteurs globaux pour le contexte (landing / annuaire).
+ *
+ * On distingue deux notions volontairement : `deputes` = toutes les personnes
+ * ayant siégé (≈ 645, inclut les remplacements/démissions de la législature),
+ * `deputesEnMandat` = celles encore en fonction (≈ 577 sièges). Afficher les
+ * deux évite l'incohérence « 645 vs 577 » et illustre la transparence (un siège
+ * n'est pas une personne).
+ */
+export async function getGlobalCounts(): Promise<GlobalCounts> {
   const db = getDb();
-  const [d, s, v] = await Promise.all([
+  const [d, dm, s, v] = await Promise.all([
     db.select({ n: sql<number>`count(*)::int` }).from(deputes),
+    db
+      .select({ n: sql<number>`count(distinct ${mandats.deputeId})::int` })
+      .from(mandats)
+      .where(and(eq(mandats.legislature, LEGISLATURE), isNull(mandats.fin))),
     db.select({ n: sql<number>`count(*)::int` }).from(scrutins),
     db.select({ n: sql<number>`count(*)::int` }).from(votes),
   ]);
   return {
     deputes: d[0]?.n ?? 0,
+    deputesEnMandat: dm[0]?.n ?? 0,
     scrutins: s[0]?.n ?? 0,
     votes: v[0]?.n ?? 0,
   };

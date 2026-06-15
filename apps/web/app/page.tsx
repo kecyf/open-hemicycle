@@ -25,7 +25,7 @@ export const dynamic = "force-dynamic";
 const chantiers = [
   { label: "Annuaire + activité de vote des député·es", etat: "En ligne", href: "/deputes" },
   { label: "Explorateur de scrutins (votes par groupe)", etat: "En ligne", href: "/scrutins" },
-  { label: "Indice de cohérence factuel par thème", etat: "À venir", href: null },
+  { label: "Atlas des positionnements par thème", etat: "À venir", href: null },
 ];
 
 export default async function Home() {
@@ -74,7 +74,11 @@ export default async function Home() {
         {counts && (
           <dl className="mt-2 flex flex-wrap gap-x-8 gap-y-2 text-sm">
             <div className="flex items-baseline gap-2">
-              <dt className="text-muted">Député·es</dt>
+              <dt className="text-muted">Député·es en mandat</dt>
+              <dd className="font-semibold tabular-nums">{counts.deputesEnMandat.toLocaleString("fr-FR")}</dd>
+            </div>
+            <div className="flex items-baseline gap-2">
+              <dt className="text-muted">Ayant siégé</dt>
               <dd className="font-semibold tabular-nums">{counts.deputes.toLocaleString("fr-FR")}</dd>
             </div>
             <div className="flex items-baseline gap-2">
@@ -89,7 +93,7 @@ export default async function Home() {
         )}
       </header>
 
-      <DataNotice />
+      <DataNotice counts={counts} />
 
       <section className="flex flex-col gap-6" aria-labelledby="principes-titre">
         <h2 id="principes-titre" className="text-sm font-semibold uppercase tracking-wider text-muted">
