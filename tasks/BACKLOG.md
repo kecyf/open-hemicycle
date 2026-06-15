@@ -68,7 +68,7 @@ Priorité : P0 (critique) · P1 · P2.
 | 4.1b | P1 | done | Extension classification thématique : +agriculture, +défense, comptes 2025 (budget) ; outil `audit:dossiers-scrutins` |
 | 4.2 | P1 | hitl | Cohérence vote / ligne de groupe (composante a) — core + requête SQL + composant prêts ; **publication sur fiche député·e** en attente relecture (4.5) |
 | 4.3 | P1 | done | Cohérence participation / thème revendiqué (composante c) — core + requête + composant prêts ; revendications pilote vides ; publication fiche → HITL |
-| 4.3b | P1 | hitl | Sourcer premières revendications dans `themes-revendiques.ts` — **PR #19 rebasée** (2 entrées sourcées, slugs pilotes) ; relecture superviseur requise avant merge ; migrer slugs → taxonomie après merge infra 4.3b |
+| 4.3b | P1 | hitl | Sourcer premières revendications dans `themes-revendiques.ts` — **PR #19 rebasée** (2 entrées sourcées, slugs taxonomie) ; relecture superviseur requise avant merge |
 | 4.4 | P0 | hitl | Validation manuelle échantillon + check-list juridique |
 | 4.5 | P0 | hitl | Relecture humaine avant publication nominative |
 | 4.6 | P1 | done | **Cohérence effectifs** : afficher « 577 en mandat / 645 ayant siégé » (homepage `getGlobalCounts` + bandeau `DataNotice` dynamique + header `/deputes`). Fix d'incohérence, non nominatif |
