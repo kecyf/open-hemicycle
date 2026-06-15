@@ -39,7 +39,17 @@ Horizon de référence : **Jalon M1 à ~1 mois** (POC public fonctionnel). Le d�
 - [x] Page méthodologie + mentions légales + « signaler une erreur » + footer global — **en ligne**.
 - [x] Déploiement continu Vercel depuis `main` (landing + pages data).
 
-## Phase 4 — Indice de cohérence v0 (fin M1, sous validation HITL)
+## Phase 4 — Atlas thématique (priorité M1) + cohérence v0
+
+> Réorientation 2026-06-15 : le produit phare devient l'**atlas des positionnements par thème** (niveau groupe, non nominatif → hors HITL lourd). La cohérence dire/faire nominative reste une couche ultérieure, sous validation. Décision dans `VISION.md` et `tasks/JOURNAL.md`.
+
+**Atlas (next)**
+- [ ] Cohérence d'affichage des effectifs (577 en mandat / 645 ayant siégé) sur homepage + annuaire + bandeau POC.
+- [ ] Taxonomie de thèmes **neutre et exhaustive** (méthode de sélection publiée, anti-biais) remplaçant les thèmes pilotes ad hoc (budget, sécurité, agriculture, défense).
+- [ ] Couche d'enrichissement : classification scrutin → thème par LLM, **sortie figée/versionnée/auditable** (modèle + prompt + confiance + date) ; fallback « non classé » ; précision mesurée sur échantillon annoté.
+- [ ] Page thème publique : positionnement par groupe (symétrique, sourcé, scrutins cliquables) — niveau groupe, non nominatif.
+
+**Cohérence v0 (en partie HITL)**
 - [x] Rattachement scrutins ↔ thèmes (pilote étendu : budget, sécurité, agriculture, défense).
 - [~] Cohérence vote / ligne de groupe (composante a) — core + requête prêts ; affichage fiche soumis à HITL (4.5).
 - [~] Cohérence participation / thème revendiqué (composante c) — core + requête prêts ; revendications sourcées et affichage fiche soumis à HITL.

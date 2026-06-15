@@ -13,6 +13,15 @@ Catégories : `Ajouté` · `Modifié` · `Corrigé` · `Supprimé` · `Données`
 
 ## [Non publié]
 
+### Modifié
+- **Réorientation produit (2026-06-15)** : produit phare = **atlas des positionnements par thème** (niveau groupe, non nominatif) ; abandon explicite du « score » de confiance/honnêteté ; entrée principale par le thème. `VISION.md`, `ROADMAP.md`, `tasks/BACKLOG.md` (tâches 4.6–4.9) mis à jour.
+
+### Corrigé
+- **Cohérence des effectifs député·es (4.6)** : la homepage affichait « 645 » (toutes les personnes ayant siégé) à côté d'un bandeau figé « 577 ». On distingue désormais **« en mandat » (≈ 577) / « ayant siégé » (≈ 645)** sur la homepage, l'annuaire et le bandeau POC — chiffres **live** (fin des valeurs en dur dans `DataNotice`), texte obsolète sur les votes historiques retiré. `getGlobalCounts()` renvoie `deputesEnMandat` (`mandats.fin IS NULL`).
+
+### Garde-fous
+- **Couche d'enrichissement encadrée** : usage de modèles de langage autorisé pour *classer* des faits publics (scrutin → thème), jamais pour juger ou inférer une position individuelle. Sortie figée, versionnée, auditable et rejouable ; fallback « non classé » ; précision mesurée. Documenté dans `VISION.md`.
+
 ---
 
 ## [0.10.0] — 2026-06-14
