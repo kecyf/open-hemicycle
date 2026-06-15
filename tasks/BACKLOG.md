@@ -57,7 +57,9 @@ Priorité : P0 (critique) · P1 · P2.
 | 3.4 | P0 | done | Pages méthodologie + mentions légales + signaler une erreur + footer global — en ligne |
 | 3.5 | P1 | done | Déploiement Vercel + Supabase — prod live https://open-hemicycle.vercel.app |
 
-## Phase 4 — Indice de cohérence v0
+## Phase 4 — Atlas thématique + cohérence v0
+
+> **Réorientation 2026-06-15** : produit phare = **atlas des positionnements par thème** (niveau groupe, non nominatif). Détails dans `VISION.md` et `tasks/JOURNAL.md`. Les tâches `next` ci-dessous sont autonomes (non nominatives) ; la cohérence nominative reste `hitl`.
 
 | ID | Prio | Statut | Tâche |
 |----|------|--------|-------|
@@ -68,3 +70,7 @@ Priorité : P0 (critique) · P1 · P2.
 | 4.3b | P1 | next | Sourcer premières revendications dans `themes-revendiques.ts` (`validate:revendications` prêt ; fond éditorial → relecture superviseur avant merge des entrées) |
 | 4.4 | P0 | hitl | Validation manuelle échantillon + check-list juridique |
 | 4.5 | P0 | hitl | Relecture humaine avant publication nominative |
+| 4.6 | P1 | next | **Cohérence effectifs** : afficher « 577 en mandat / 645 ayant siégé » (homepage `getGlobalCounts` + bandeau `DataNotice` dynamique + header `/deputes`). Fix d'incohérence, non nominatif |
+| 4.7 | P0 | next | **Taxonomie de thèmes neutre** : nomenclature exhaustive (ex. calquée commissions AN / politiques publiques) + méthode de sélection publiée (anti-biais), remplaçant les 2 thèmes pilotes ad hoc |
+| 4.8 | P0 | next | **Couche d'enrichissement LLM** : job ETL de classification scrutin → thème (OpenRouter), sortie versionnée en base (thème + confiance + modèle + prompt + date), fallback « non classé », précision mesurée sur échantillon-or. Méthodologie publiée |
+| 4.9 | P1 | next | **Page thème publique** (atlas) : positionnement par groupe (barres symétriques, phrase factuelle, scrutins cliquables, sources). Niveau groupe → non nominatif |

@@ -4,6 +4,26 @@ Entrées les plus récentes en haut. Le dépôt est la mémoire de l'agent : ce 
 
 ---
 
+## 2026-06-15 — 🧭 Réorientation produit : atlas thématique + couche d'enrichissement
+
+🔔 Pour le superviseur : décision stratégique actée **avec** le superviseur (brainstorm de session). Aucune publication nominative engagée ; les nouveaux chantiers (4.6–4.9) sont **non nominatifs** donc autonomes. La cohérence dire/faire nominative reste HITL.
+
+- **Contexte** : questionnement superviseur sur (1) une incohérence d'affichage homepage (645 vs 577) et (2) le positionnement produit (« score de confiance/honnêteté » vs garde-fous).
+- **Décisions** (3 carrefours tranchés par le superviseur) :
+  1. **Abandon du « score »** unique de confiance/honnêteté comme objet produit — confirme et renforce `METHODOLOGY.md` §4/§7. On fait *parler* la donnée par l'agrégation factuelle + sourcing + symétrie, pas par un verdict agrégé.
+  2. **Produit phare = atlas des positionnements par thème** (niveau **groupe**, non nominatif). La cohérence dire/faire nominative (Produit B) devient une couche ultérieure, sous relecture juridique.
+  3. **Entrée principale = le THÈME** (« sur l'immigration, qui vote quoi »), pas le député.
+- **Nouveau positionnement de valeur** : au-delà de l'UI, la **couche d'enrichissement** qui structure la donnée brute (rattacher les ~80 % de scrutins sans dossier à un thème). Outil envisagé : classification par LLM (clé OpenRouter superviseur), **strictement encadrée** : classer jamais juger, sortie figée/versionnée/auditable (modèle+prompt+confiance+date), fallback « non classé », précision mesurée, humain sur cas limites. Ligne légale : enrichir les *métadonnées* (scrutins/thèmes), **jamais les personnes**.
+- **Fait** :
+  - `VISION.md` : phrase produit (atlas), étage 3 + valeur en deux couches, section « angle distinctif » réécrite (atlas maintenant / cohérence plus tard / « jamais de score »), nouvelle section « couche d'enrichissement », critères de succès M1 réordonnés (thème d'abord).
+  - `ROADMAP.md` + `tasks/BACKLOG.md` : Phase 4 réorientée ; tâches **4.6** (cohérence effectifs 577/645), **4.7** (taxonomie thèmes neutre), **4.8** (enrichissement LLM versionné), **4.9** (page thème publique) — toutes `next`, non nominatives.
+  - **4.6 implémentée** : `getGlobalCounts()` renvoie `deputesEnMandat` ; homepage + `/deputes` + `DataNotice` (live) affichent « en mandat / ayant siégé ». Diagnostic : **645** = `COUNT(*)` `deputes` (+68 AMO30) ; **577** = constante en dur obsolète.
+- **Prochaine étape** : brainstorm 4.7 (méthode de sélection des thèmes neutre/anti-biais) avant code → 4.8 → 4.9. La méthodo `docs/METHODOLOGY.md` devra documenter la couche d'enrichissement avant publication de l'atlas.
+- **Garde-fous** : symétrie de la **sélection des thèmes** identifiée comme nouveau risque de biais (choisir les thèmes EST un acte éditorial) → méthode neutre publiée requise.
+- **Commits** : PR (auto-merge — docs + fix effectifs non nominatif, travail sûr).
+
+---
+
 ## 2026-06-14 — ✅ v0.10.0 + validation revendications
 
 🔔 Pour le superviseur :
@@ -48,7 +68,6 @@ Entrées les plus récentes en haut. Le dépôt est la mémoire de l'agent : ce 
 - **Bloqueurs** : credential `DATABASE_URL` cloud (superviseur).
 - **Prochaine étape** : corriger secret DB cloud ; `seed:themes` post-merge ; HITL UI 4.2/4.3 ; revendications pilote sourcées.
 - **Commits** : PR à ouvrir (auto-merge — outillage + classification versionnée, pas de surface publique nominative).
-
 ---
 
 ## 2026-06-12 (fin de session) — 🧹 Chemin data/raw ETL corrigé
