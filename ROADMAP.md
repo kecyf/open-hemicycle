@@ -44,8 +44,9 @@ Horizon de référence : **Jalon M1 à ~1 mois** (POC public fonctionnel). Le d�
 > Réorientation 2026-06-15 : le produit phare devient l'**atlas des positionnements par thème** (niveau groupe, non nominatif → hors HITL lourd). La cohérence dire/faire nominative reste une couche ultérieure, sous validation. Décision dans `VISION.md` et `tasks/JOURNAL.md`.
 
 **Atlas (next)**
-- [ ] Cohérence d'affichage des effectifs (577 en mandat / 645 ayant siégé) sur homepage + annuaire + bandeau POC.
-- [ ] Taxonomie de thèmes **neutre et exhaustive** (méthode de sélection publiée, anti-biais) remplaçant les thèmes pilotes ad hoc (budget, sécurité, agriculture, défense).
+- [x] Cohérence d'affichage des effectifs (577 en mandat / 645 ayant siégé) sur homepage + annuaire + bandeau POC.
+- [x] Taxonomie de thèmes **neutre et exhaustive** (8 commissions permanentes AN, méthode anti-biais publiée dans `docs/theme-taxonomy.md`).
+- [ ] Migration des slugs pilotes vers taxonomie commissions + projection DB.
 - [ ] Couche d'enrichissement : classification scrutin → thème par LLM, **sortie figée/versionnée/auditable** (modèle + prompt + confiance + date) ; fallback « non classé » ; précision mesurée sur échantillon annoté.
 - [ ] Page thème publique : positionnement par groupe (symétrique, sourcé, scrutins cliquables) — niveau groupe, non nominatif.
 

@@ -13,6 +13,9 @@ Catégories : `Ajouté` · `Modifié` · `Corrigé` · `Supprimé` · `Données`
 
 ## [Non publié]
 
+### Ajouté
+- **Taxonomie thématique neutre (4.7)** : nomenclature exhaustive calquée sur les 8 commissions permanentes AN (art. 36 Règlement) — `packages/core/src/data/theme-taxonomie.ts` (UID `PO*` vérifiés via dump AMO10). Méthode de sélection anti-biais publiée dans `docs/theme-taxonomy.md`. Validation : `pnpm etl validate:taxonomie` + 6 tests vitest. Correspondance migration pilote → taxonomie (`PILOT_TO_TAXONOMIE_SLUG`).
+
 ### Modifié
 - **Réorientation produit (2026-06-15)** : produit phare = **atlas des positionnements par thème** (niveau groupe, non nominatif) ; abandon explicite du « score » de confiance/honnêteté ; entrée principale par le thème. `VISION.md`, `ROADMAP.md`, `tasks/BACKLOG.md` (tâches 4.6–4.9) mis à jour.
 

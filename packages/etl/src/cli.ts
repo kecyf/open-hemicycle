@@ -15,8 +15,8 @@
  *   ingest:all        Enchaîne deputes, dossiers, scrutins, themes, puis activite.
  *   job:activite      (Re)calcule la table activite_journaliere (heatmap).
  *   stats             Affiche les compteurs DB (députés, scrutins, votes).
- *   validate:nosdeputes  Cross-check effectifs + échantillon vs NosDéputés.fr.
- *   audit:dossiers-scrutins  Liste les dossiers liés à des scrutins (hors-ligne, dumps AN).
+ *   validate:revendications  Vérifie la structure des revendications sourcées (sans DB).
+ *   validate:taxonomie     Vérifie la taxonomie thématique (8 commissions AN, sans DB).
  *
  * Les commandes d'ingestion nécessitent DATABASE_URL (voir .env.example).
  */
@@ -33,6 +33,7 @@ import { seedThemes } from "./import/themes.ts";
 import { computeActiviteJournaliere } from "./jobs/activite.ts";
 import { validateNosdeputes } from "./validate/nosdeputes.ts";
 import { validateRevendications } from "./validate/revendications.ts";
+import { validateTaxonomie } from "./validate/taxonomie.ts";
 import { auditDossiersScrutins } from "./audit/dossiers-scrutins.ts";
 
 const LEGISLATURE = process.env.AN_LEGISLATURE ?? "17";
@@ -153,9 +154,12 @@ async function main(): Promise<void> {
     case "validate:revendications":
       await validateRevendications();
       break;
+    case "validate:taxonomie":
+      validateTaxonomie();
+      break;
     default:
       console.error(
-        `Commande inconnue: ${cmd}\nUsage: oh-etl [sources|check|download|ingest:deputes|ingest:acteurs-historique|backfill:votes|ingest:dossiers|ingest:scrutins|seed:themes|ingest:all|job:activite|stats|validate:nosdeputes|validate:revendications|audit:dossiers-scrutins]`,
+        `Commande inconnue: ${cmd}\nUsage: oh-etl [sources|check|download|ingest:deputes|ingest:acteurs-historique|backfill:votes|ingest:dossiers|ingest:scrutins|seed:themes|ingest:all|job:activite|stats|validate:nosdeputes|validate:revendications|validate:taxonomie|audit:dossiers-scrutins]`,
       );
       process.exit(1);
   }
