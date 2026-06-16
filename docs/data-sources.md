@@ -31,6 +31,7 @@ Pas d'API REST officielle : modèle **fichiers (ZIP JSON/XML) + URLs unitaires +
 | [NosDéputés.fr](https://www.nosdeputes.fr) ([API](https://github.com/regardscitoyens/nosdeputes.fr/blob/master/doc/api.md)) | Cross-check, indicateurs d'activité pré-calculés | **ODbL 1.0** | Ajouter `/json`,`/xml`,`/csv` aux URLs. *Share-alike*. Commandes : `pnpm etl validate:nosdeputes` (effectifs groupe + échantillon nominatif) ; `pnpm etl validate:revendications` (structure des revendications sourcées, sans DB) ; `pnpm etl audit:dossiers-scrutins` (inventaire hors-ligne des dossiers porteurs de scrutins, sans DB). |
 | [Datan](https://datan.fr) ([data.gouv](https://www.data.gouv.fr/organizations/datan)) | Scores participation/loyauté (comparaison) | Licence Ouverte | MàJ hebdo |
 | [@tricoteuses/assemblee](https://www.npmjs.com/package/@tricoteuses/assemblee) | ETL : download, clean, schémas TS | **AGPL-3.0** | Très actif. Attention licence (copyleft). |
+| Taxonomie thématique | 8 commissions permanentes AN (art. 36 Règlement) | Institutionnel | Voir [`docs/theme-taxonomy.md`](theme-taxonomy.md) ; UID `PO*` vérifiés via dump AMO10 ; `pnpm etl validate:taxonomie` |
 | [HATVP open data](https://www.hatvp.fr/open-data/) | Déclarations d'intérêts/patrimoine | Licence Ouverte | CSV + XML |
 | [HATVP répertoire lobby (AGORA)](https://www.hatvp.fr/open-data-repertoire/) | Représentants d'intérêts | Licence Ouverte | JSON consolidé (MàJ nocturne) |
 

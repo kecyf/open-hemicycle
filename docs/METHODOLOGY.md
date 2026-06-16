@@ -118,17 +118,26 @@ Un écart négatif marqué (très présent en général, absent précisément su
 
 Les scrutins sont rattachés à des **thèmes** pour permettre de suivre un sujet de bout en bout.
 
-### Implémentation actuelle (pilote)
+### Taxonomie cible (4.7 — commissions permanentes AN)
+
+La nomenclature exhaustive repose sur les **8 commissions permanentes** de l'Assemblée nationale (article 36 du Règlement). La liste est **figée institutionnellement** : on ne choisit pas « les sujets qui font débat » mais les compétences parlementaires officielles, symétriques entre elles.
+
+- **Source de vérité** : `packages/core/src/data/theme-taxonomie.ts` (slugs, libellés officiels, UID `PO*` des commissions).
+- **Méthode de sélection anti-biais** : [`docs/theme-taxonomy.md`](theme-taxonomy.md) (ancrage institutionnel, limites, règles de rattachement).
+- **Validation** : `pnpm etl validate:taxonomie` (structure, unicité, correspondance pilote).
+- **Migration** : les 4 thèmes pilotes (`budget-finances`, etc.) seront remplacés progressivement par les slugs taxonomie (`finances-controle-budgetaire`, etc.) — voir `PILOT_TO_TAXONOMIE_SLUG`.
+
+### Implémentation actuelle (pilote — en migration)
 
 - **Rattachement au niveau du dossier législatif** : un scrutin hérite du thème de son dossier, via le lien officiel scrutin → dossier publié par l'Assemblée nationale. Tables `themes` et `dossiers_themes`.
 - **Classification manuelle et conservatrice** : un dossier n'entre dans un thème que si son **titre officiel (verbatim AN)** concerne sans ambiguïté le cœur du thème. **En cas de doute, on n'inclut pas.** Un dossier peut n'appartenir à aucun thème.
 - **Source de vérité versionnée et auditable** : le mapping complet (thème → dossiers, avec leur titre officiel justifiant le rattachement) vit dans `packages/etl/src/data/themes.ts` ; toute modification passe par une PR. La base n'est qu'une projection de ce fichier (`pnpm --filter @open-hemicycle/etl seed:themes`).
-- **Phase pilote** : quatre thèmes — `budget-finances`, `securite-immigration`, `agriculture`, `defense` (classification conservatrice par titre officiel AN ; la liste s'étoffera progressivement).
+- **Phase pilote** : quatre thèmes ad hoc encore actifs en base (`budget-finances`, `securite-immigration`, `agriculture`, `defense`) — en cours de remplacement par la taxonomie commissions.
 - Un thème est un **regroupement neutre**, jamais un jugement ; le périmètre est restreint, symétrique et public.
 
 ### Méthodes futures envisagées (par ordre de préférence)
 1. Métadonnées thématiques des dossiers législatifs (quand exploitables).
-2. Classification assistée (mots-clés / modèle), **avec relecture humaine** et thème toujours rattaché à une source.
+2. Classification assistée (mots-clés / modèle), **avec relecture humaine** et thème toujours rattaché à une source — voir couche d'enrichissement LLM (4.8).
 3. Jamais de thème « deviné » sans trace vérifiable.
 
 ---

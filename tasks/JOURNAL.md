@@ -4,6 +4,28 @@ Entrées les plus récentes en haut. Le dépôt est la mémoire de l'agent : ce 
 
 ---
 
+## 2026-06-16 — Taxonomie thématique neutre (4.7)
+
+🔔 Pour le superviseur :
+1. **`DATABASE_URL` cloud** : toujours en échec (`password authentication failed for user "postgres"`) — mettre à jour le secret Cursor Cloud avec le rôle `oh_agent` (ou mot de passe valide). Bloque ETL agent et `seed:themes` depuis le cloud.
+2. **PR #19 (4.3b revendications pilote)** : toujours en DRAFT, CI verte, en attente relecture superviseur (HITL — pas d'auto-merge).
+3. **Migration slugs taxonomie** : les 8 thèmes commissions sont définis en code mais les slugs pilotes restent actifs en base/URL — bascule DB à planifier (évite de casser les liens existants).
+
+- **Objectif du jour** : tâche backlog **4.7** — taxonomie de thèmes neutre (nomenclature + méthode anti-biais).
+- **Contexte** : PR #19 ouverte (HITL, ne pas dupliquer) ; `main` à jour (PR #20 mergée, 4.6 done) ; `DATABASE_URL` cloud KO → travail sans écriture DB.
+- **Fait** :
+  - **`theme-taxonomie.ts`** (core) : 8 thèmes = 8 commissions permanentes AN, UID `PO*` extraits du dump AMO10 (législature 17).
+  - **`docs/theme-taxonomy.md`** : méthode de sélection anti-biais (ancrage institutionnel art. 36 Règlement, symétrie, limites, règles de rattachement, plan de migration pilote).
+  - **`validateThemeTaxonomie`** + `pnpm etl validate:taxonomie` + 6 tests vitest.
+  - **`METHODOLOGY.md` §5**, `data-sources.md`, `BACKLOG` (4.6→done, 4.7→done), `ROADMAP` mis à jour.
+  - **CI locale** : `pnpm typecheck` ✓, `pnpm test` ✓ (39/39), `pnpm build` ✓, `validate:taxonomie` ✓.
+- **Appris** : le dump AMO10 contient exactement 8 organes `COMPER` (commissions permanentes) avec des UID stables pour la 17e législature ; la taxonomie peut s'ancrer dessus sans choix éditorial ad hoc.
+- **Bloqueurs** : credential `DATABASE_URL` cloud (superviseur) ; HITL PR #19 et UI 4.2/4.3.
+- **Prochaine étape** : 4.8 (couche enrichissement LLM) ou migration slugs taxonomie en base ; corriger secret DB cloud ; relecture PR #19.
+- **Commits** : PR (auto-merge — logique pure + docs, non nominatif, travail sûr).
+
+---
+
 ## 2026-06-15 — 🧭 Réorientation produit : atlas thématique + couche d'enrichissement
 
 🔔 Pour le superviseur : décision stratégique actée **avec** le superviseur (brainstorm de session). Aucune publication nominative engagée ; les nouveaux chantiers (4.6–4.9) sont **non nominatifs** donc autonomes. La cohérence dire/faire nominative reste HITL.
