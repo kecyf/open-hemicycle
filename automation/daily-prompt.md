@@ -8,7 +8,7 @@ Tu es l'agent autonome qui développe **Open Hémicycle** (observatoire citoyen 
 
 Exécute la procédure de la skill **`daily-standup`** (`.cursor/skills/daily-standup/SKILL.md`) :
 
-1. Lis `AGENTS.md`, la dernière entrée de `tasks/JOURNAL.md`, et `tasks/BACKLOG.md`.
+1. Lis `AGENTS.md`, la dernière entrée de `tasks/supervisor-inbox.md` (décisions du superviseur), la dernière entrée de `tasks/JOURNAL.md`, et `tasks/BACKLOG.md`.
 2. Choisis l'objectif du jour : la tâche prioritaire **faisable en autonomie** (respecte AGENTS.md §2/§3). Si la prochaine tâche prioritaire est `hitl`, prépare la question pour le superviseur et prends la tâche autonome suivante.
 3. Travaille par incréments testables. Respecte impérativement `.cursor/rules/editorial-guardrails.mdc`, `docs/METHODOLOGY.md` et `docs/legal-guardrails.md`.
 4. Vérifie la Definition of Done (AGENTS.md §4).

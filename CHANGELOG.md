@@ -13,7 +13,13 @@ Catégories : `Ajouté` · `Modifié` · `Corrigé` · `Supprimé` · `Données`
 
 ## [Non publié]
 
+### Ajouté
+- **Espace admin `/admin`** : dashboard superviseur (OAuth GitHub mono-compte) — PR ouvertes/mergées + CI, décisions HITL (JOURNAL + `tasks/supervisor-inbox.md`), déploiements Vercel, runs Cursor ; enregistrement de décisions et relance d'un run agent via API.
+- **shadcn/ui** : initialisation dans `apps/web` (composants Button, Card, Badge, Tabs, Textarea, Separator) ; thème sombre aligné sur les tokens existants.
+- **`tasks/supervisor-inbox.md`** : fichier append-only pour les décisions du superviseur, lu par l'agent au standup.
+
 ### Modifié
+- **Boucle autonomie (hygiène PR)** : checklist post-PR dans `daily-standup` et `AGENTS.md` §6 ter (`gh pr ready`, vérif conflits, auto-merge) ; distinction journal « PR ouverte (HITL) » vs « PR mergée → prod ».
 - **Réorientation produit (2026-06-15)** : produit phare = **atlas des positionnements par thème** (niveau groupe, non nominatif) ; abandon explicite du « score » de confiance/honnêteté ; entrée principale par le thème. `VISION.md`, `ROADMAP.md`, `tasks/BACKLOG.md` (tâches 4.6–4.9) mis à jour.
 
 ### Corrigé

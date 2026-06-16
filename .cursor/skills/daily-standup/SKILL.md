@@ -38,6 +38,7 @@ Dans tous les cas : **un incrément testable et committé vaut mieux qu'une gros
 
 ## 1. Reprendre le fil (lecture)
 - Lire `AGENTS.md` (manuel d'opération) si pas déjà en contexte.
+- Lire la **dernière entrée** de `tasks/supervisor-inbox.md` (décisions du superviseur) et agir / clore si une décision est en attente.
 - Lire la **dernière entrée** de `tasks/JOURNAL.md` : où en était-on, quels bloqueurs, quelle « prochaine étape » était notée.
 - Lire `tasks/BACKLOG.md` : tâches `next` / `in-progress`.
 - Survoler `ROADMAP.md` : sommes-nous alignés sur le jalon courant ?
@@ -70,6 +71,7 @@ Ajouter une entrée datée en **tête** de `tasks/JOURNAL.md` avec ce format :
 
 - **Objectif du jour** : ...
 - **Fait** : ...
+- **Livraison** : `PR #N mergée → prod` **ou** `PR #N ouverte (HITL)` **ou** `aucune PR` — ne pas confondre « code commité » et « en production ».
 - **Appris** : ...
 - **Bloqueurs** : ...
 - **Prochaine étape** : ...
@@ -85,6 +87,11 @@ Ajouter une entrée datée en **tête** de `tasks/JOURNAL.md` avec ce format :
 - **Choisir le mode de merge selon la nature du travail** (voir AGENTS.md §6 ter) :
   - **Travail sûr** (logique pure testée, docs, outillage, refactor non visible) → **active l'auto-merge** : `gh pr merge <n> --auto --squash`. La PR se merge seule dès CI verte, branche supprimée automatiquement. Tu n'attends personne.
   - **Indicateur sensible / nominatif** (AGENTS.md §3), **release majeure**, ou **nouvelle surface publique** → **PAS d'auto-merge**. **Demande le superviseur en reviewer** + **commente la PR** avec le flag « 🔔 superviseur » (décision attendue, contexte, lien scrutin/doc). Le merge est **HITL** : tu laisses la PR ouverte et tu enchaînes sur la tâche autonome suivante.
+- **Checklist post-PR obligatoire** (travail sûr uniquement — après ouverture de la PR, avant de clôturer la session) :
+  1. `gh pr ready <n>` — retirer le statut draft si la PR a été ouverte en brouillon.
+  2. Vérifier `mergeStateStatus` : `gh pr view <n> --json mergeStateStatus,mergeable` — si `DIRTY` ou `CONFLICTING`, rebaser sur `main` (`git fetch origin && git rebase origin/main && git push --force-with-lease`) et revérifier.
+  3. `gh pr merge <n> --auto --squash` — activer l'auto-merge (sauf HITL).
+  4. Confirmer dans le journal : **« PR #N mergée → prod »** (après merge effectif) ou **« PR #N ouverte (HITL) »** (si en attente superviseur). Ne jamais écrire « livré en prod » tant que la PR n'est pas mergée sur `main`.
 - Si un incrément cohérent est livré (nouvelle surface / job / indicateur), **couper une version** : déplacer `[Non publié]` → `[X.Y.Z] — date`, bumper `package.json` (root), `chore(release): vX.Y.Z`, tag annoté `vX.Y.Z`, `git push --tags` (voir AGENTS.md §6 bis). Release majeure ou indicateur sensible = merge **HITL**.
 - **Avant de réécrire un module, vérifie qu'il n'existe pas déjà** (sur `main` ou dans une PR ouverte) : faute de merge, des indicateurs ont été réécrits sous plusieurs noms. Une PR ouverte non mergée = travail déjà fait, à reprendre, pas à refaire.
 

@@ -4,6 +4,27 @@ Entrées les plus récentes en haut. Le dépôt est la mémoire de l'agent : ce 
 
 ---
 
+## 2026-06-16 — Espace admin HITL + hygiène boucle autonomie
+
+🔔 Pour le superviseur :
+1. **Merge HITL** : cette PR introduit `/admin` (nouvelle surface publique) — **pas d'auto-merge**. Configurer les secrets Vercel avant usage : `NEXTAUTH_SECRET`, `NEXTAUTH_URL`, `AUTH_GITHUB_ID`, `AUTH_GITHUB_SECRET`, `ADMIN_GITHUB_LOGIN`, `GITHUB_ADMIN_TOKEN`, `VERCEL_ACCESS_TOKEN`, `VERCEL_PROJECT_ID`, `CURSOR_API_KEY` (voir `.env.example`).
+2. **OAuth App GitHub** : créer l'app avec callback prod + localhost.
+3. Décisions HITL récurrentes inchangées (PR #19, `oh_agent`, 4.2/4.3 UI).
+
+- **Objectif du jour** : refermer la boucle d'autonomie (hygiène PR) + espace admin superviseur.
+- **Fait** :
+  - Checklist post-PR dans `daily-standup` + `AGENTS.md` §6 ter ; distinction « PR ouverte (HITL) » vs « PR mergée → prod ».
+  - `tasks/supervisor-inbox.md` + lecture au standup (`automation/daily-prompt.md`).
+  - shadcn/ui initialisé dans `apps/web` ; thème sombre conservé.
+  - `/admin` : OAuth GitHub mono-compte (`proxy.ts`), dashboard PR/CI/HITL/Vercel/Cursor, API décision + relance agent.
+- **Livraison** : PR ouverte (HITL) — pas encore en prod.
+- **Appris** : la chaîne merge→Vercel fonctionne ; le goulot est les PR draft/conflits/HITL non refermés.
+- **Bloqueurs** : secrets admin à configurer côté Vercel par le superviseur.
+- **Prochaine étape** : merge HITL après config secrets ; traiter PR #19 via l'admin.
+- **Commits** : branche `feat/admin-hitl-dashboard`.
+
+---
+
 ## 2026-06-15 — 🧭 Réorientation produit : atlas thématique + couche d'enrichissement
 
 🔔 Pour le superviseur : décision stratégique actée **avec** le superviseur (brainstorm de session). Aucune publication nominative engagée ; les nouveaux chantiers (4.6–4.9) sont **non nominatifs** donc autonomes. La cohérence dire/faire nominative reste HITL.
