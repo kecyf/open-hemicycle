@@ -4,6 +4,31 @@ Entrées les plus récentes en haut. Le dépôt est la mémoire de l'agent : ce 
 
 ---
 
+## 2026-06-17 — Atlas thématique (4.9)
+
+🔔 Pour le superviseur :
+1. **`DATABASE_URL` cloud** : toujours en échec (`password authentication failed for user "postgres"`) — mettre à jour le secret avec le rôle `oh_agent` (ou mot de passe valide). Bloque ETL agent et tests live DB depuis le cloud.
+2. **PR #22 (admin HITL)** : ouverte, CI verte — nouvelle surface `/admin`, merge HITL (secrets Vercel/GitHub à configurer).
+3. **PR #19 (4.3b revendications pilote)** : toujours en DRAFT, en attente relecture superviseur.
+4. **PR atlas 4.9** : nouvelle surface publique `/themes/[slug]` — **merge HITL** demandé (relecture éditoriale avant mise en prod).
+
+- **Objectif du jour** : tâche backlog **4.9** — page atlas thématique publique (positionnement par groupe, non nominatif).
+- **Contexte** : `DATABASE_URL` cloud KO → implémentation sans écriture DB ; PR #19/#22 ouvertes (ne pas dupliquer) ; `main` à jour (4.7 mergée).
+- **Fait** :
+  - **`positionnement-theme.ts`** (core) : `computeComptesMajoriteGroupeTheme`, `phrasePositionnementGroupe` + 3 tests vitest.
+  - **`getThemeAtlas`** : requête agrégée par groupe sur scrutins d'un thème ; symétrie (tous les groupes listés).
+  - **Page `/themes/[slug]`** : barres de ventilation, phrases factuelles, scrutins récents cliquables, légende prudence.
+  - **`GroupeVentilationBar`** : composant partagé (scrutin + atlas).
+  - Liens `/themes` → atlas ; pastilles scrutin → `/themes/[slug]` ; homepage « atlas En ligne ».
+  - **`METHODOLOGY.md` §5** (atlas), BACKLOG (4.9→done), ROADMAP, CHANGELOG.
+  - **CI locale** : `pnpm typecheck` ✓, `pnpm test` ✓ (42/42), `pnpm build` ✓.
+- **Appris** : l'atlas peut être livré sans migration taxonomie ni couche LLM — il s'appuie sur les thèmes pilotes déjà en base ; la symétrie impose d'afficher tous les groupes même sans vote sur le périmètre.
+- **Bloqueurs** : credential `DATABASE_URL` cloud ; HITL merge atlas + admin + revendications.
+- **Prochaine étape** : 4.8 (couche enrichissement LLM — schéma + méthodo avant migration DB HITL) ; corriger secret DB ; relecture PR #19/#22/atlas.
+- **Commits** : PR (HITL — nouvelle surface publique non nominative).
+
+---
+
 ## 2026-06-16 — Taxonomie thématique neutre (4.7)
 
 🔔 Pour le superviseur :

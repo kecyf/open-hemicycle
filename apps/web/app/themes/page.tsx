@@ -21,13 +21,15 @@ export default async function ThemesPage() {
         </Link>
         <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">Thèmes</h1>
         <p className="max-w-2xl text-base text-muted">
-          Regroupement des scrutins par grand sujet, pour suivre un texte de bout en bout.
-          La classification est <strong className="text-foreground">manuelle, conservatrice
-          et auditable</strong>, faite au niveau du dossier législatif — voir la{" "}
+          Regroupement des scrutins par grand sujet. Pour chaque thème, l&apos;atlas affiche le
+          positionnement agrégé de chaque groupe politique (votes nominatifs sourcés, symétrie
+          entre groupes). La classification est{" "}
+          <strong className="text-foreground">manuelle, conservatrice et auditable</strong>, faite
+          au niveau du dossier législatif — voir la{" "}
           <Link href="/methodologie" className="text-accent hover:underline">
             méthodologie
           </Link>
-          . Phase pilote : la liste s'étoffera progressivement.
+          .
         </p>
       </header>
 
@@ -37,7 +39,7 @@ export default async function ThemesPage() {
         {themes.map((t) => (
           <li key={t.slug}>
             <Link
-              href={`/scrutins?theme=${t.slug}`}
+              href={`/themes/${t.slug}`}
               className="flex flex-col gap-1.5 rounded-xl border border-border bg-card p-5 transition-colors hover:bg-border/30"
             >
               <span className="flex items-baseline justify-between gap-3">

@@ -25,7 +25,7 @@ export const dynamic = "force-dynamic";
 const chantiers = [
   { label: "Annuaire + activité de vote des député·es", etat: "En ligne", href: "/deputes" },
   { label: "Explorateur de scrutins (votes par groupe)", etat: "En ligne", href: "/scrutins" },
-  { label: "Atlas des positionnements par thème", etat: "À venir", href: null },
+  { label: "Atlas des positionnements par thème", etat: "En ligne", href: "/themes" },
 ];
 
 export default async function Home() {

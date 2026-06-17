@@ -73,4 +73,4 @@ Priorité : P0 (critique) · P1 · P2.
 | 4.6 | P1 | done | **Cohérence effectifs** : afficher « 577 en mandat / 645 ayant siégé » (homepage `getGlobalCounts` + bandeau `DataNotice` dynamique + header `/deputes`). Fix d'incohérence, non nominatif |
 | 4.7 | P0 | done | **Taxonomie de thèmes neutre** : nomenclature exhaustive (8 commissions permanentes AN) + méthode de sélection publiée (`docs/theme-taxonomy.md`) ; migration progressive des slugs pilotes |
 | 4.8 | P0 | next | **Couche d'enrichissement LLM** : job ETL de classification scrutin → thème (OpenRouter), sortie versionnée en base (thème + confiance + modèle + prompt + date), fallback « non classé », précision mesurée sur échantillon-or. Méthodologie publiée |
-| 4.9 | P1 | next | **Page thème publique** (atlas) : positionnement par groupe (barres symétriques, phrase factuelle, scrutins cliquables, sources). Niveau groupe → non nominatif |
+| 4.9 | P1 | done | **Page thème publique** (atlas) : positionnement par groupe (barres symétriques, phrase factuelle, scrutins cliquables, sources). Niveau groupe → non nominatif |
