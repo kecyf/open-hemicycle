@@ -48,7 +48,7 @@ Horizon de référence : **Jalon M1 à ~1 mois** (POC public fonctionnel). Le d�
 - [x] Taxonomie de thèmes **neutre et exhaustive** (8 commissions permanentes AN, méthode anti-biais publiée dans `docs/theme-taxonomy.md`).
 - [ ] Migration des slugs pilotes vers taxonomie commissions + projection DB.
 - [~] Couche d'enrichissement : classification scrutin → thème par LLM — **fondations livrées** (core, prompt v1, échantillon-or, validate, schéma) ; migration DB + run live en attente (HITL + secrets).
-- [ ] Page thème publique : positionnement par groupe (symétrique, sourcé, scrutins cliquables) — niveau groupe, non nominatif.
+- [x] Page thème publique (atlas `/themes/[slug]`) : positionnement par groupe (symétrique, sourcé, scrutins cliquables) — niveau groupe, non nominatif.
 
 **Cohérence v0 (en partie HITL)**
 - [x] Rattachement scrutins ↔ thèmes (pilote étendu : budget, sécurité, agriculture, défense).

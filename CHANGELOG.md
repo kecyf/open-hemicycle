@@ -16,6 +16,7 @@ Catégories : `Ajouté` · `Modifié` · `Corrigé` · `Supprimé` · `Données`
 ### Ajouté
 - **Couche d'enrichissement LLM (4.8 — fondations)** : `classification-scrutin.ts` (parse réponse LLM, seuil confiance 0,75, métriques échantillon-or) ; échantillon-or 15 scrutins annotés ; prompt v1 + client OpenRouter ; `pnpm etl validate:enrichissement` (benchmark offline 86,7 %) ; job `classify:scrutins` (dry-run) ; table `scrutins_classifications` (schéma, migration HITL) ; `docs/enrichissement-llm.md`.
 - **Taxonomie thématique neutre (4.7)** : nomenclature exhaustive calquée sur les 8 commissions permanentes AN (art. 36 Règlement) — `packages/core/src/data/theme-taxonomie.ts` (UID `PO*` vérifiés via dump AMO10). Méthode de sélection anti-biais publiée dans `docs/theme-taxonomy.md`. Validation : `pnpm etl validate:taxonomie` + 6 tests vitest. Correspondance migration pilote → taxonomie (`PILOT_TO_TAXONOMIE_SLUG`).
+- **Atlas thématique (4.9)** : page `/themes/[slug]` — positionnement agrégé par groupe (barres symétriques, phrase factuelle `phrasePositionnementGroupe`, scrutins récents cliquables). Core `positionnement-theme.ts` + requête `getThemeAtlas`. Composant partagé `GroupeVentilationBar`. Homepage : atlas « En ligne ».
 
 ### Modifié
 - **Réorientation produit (2026-06-15)** : produit phare = **atlas des positionnements par thème** (niveau groupe, non nominatif) ; abandon explicite du « score » de confiance/honnêteté ; entrée principale par le thème. `VISION.md`, `ROADMAP.md`, `tasks/BACKLOG.md` (tâches 4.6–4.9) mis à jour.
