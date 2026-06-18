@@ -220,3 +220,33 @@ export const syncRuns = pgTable("sync_runs", {
   errors: integer("errors").default(0),
   notes: text("notes"),
 });
+
+/**
+ * Classification assistée scrutin → thème (couche d'enrichissement LLM, 4.8).
+ *
+ * Sortie figée et versionnée : une ligne par (scrutin, prompt_version).
+ * `themeSlug` NULL = « non classé » (confiance insuffisante ou ambiguïté).
+ * Voir docs/enrichissement-llm.md.
+ */
+export const scrutinsClassifications = pgTable(
+  "scrutins_classifications",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    scrutinId: uuid("scrutin_id")
+      .notNull()
+      .references(() => scrutins.id),
+    themeSlug: text("theme_slug"),
+    confidence: integer("confidence_basis_points").notNull(), // 0–10000 (= 0.00–1.00)
+    modelId: text("model_id").notNull(),
+    promptVersion: text("prompt_version").notNull(),
+    justification: text("justification"),
+    classifiedAt: timestamp("classified_at", { withTimezone: true }).defaultNow().notNull(),
+  },
+  (t) => [
+    uniqueIndex("idx_scrutins_classifications_scrutin_prompt").on(
+      t.scrutinId,
+      t.promptVersion,
+    ),
+    index("idx_scrutins_classifications_theme").on(t.themeSlug),
+  ],
+);
