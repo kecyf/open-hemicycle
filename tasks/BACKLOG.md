@@ -21,6 +21,7 @@ Priorité : P0 (critique) · P1 · P2.
 | 0.6 | P1 | done | Cursor Automation quotidienne (cron 08:00 Paris) — 1er run autonome complet 2026-06-10 (PR #9) |
 | 0.7 | P2 | next | Choisir/réserver un nom de domaine (HITL si payant) |
 | 0.8 | P1 | done | Secret `DATABASE_URL` dans GitHub Actions pour cron ETL (posé 2026-06-12 ; migration rôle `oh_agent` quand mot de passe disponible) |
+| 0.9 | P1 | done | Espace admin `/admin` : dashboard superviseur HITL (OAuth GitHub, PR/CI, inbox, Vercel, Cursor API) — merge HITL (nouvelle surface publique) |
 
 ## Phase 1 — Données
 

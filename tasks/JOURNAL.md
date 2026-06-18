@@ -36,6 +36,13 @@ Entrées les plus récentes en haut. Le dépôt est la mémoire de l'agent : ce 
 
 ---
 
+## 2026-06-16 — Espace admin HITL + hygiène boucle autonomie
+
+- **Fait** : `/admin` (OAuth GitHub), dashboard PR/CI/HITL, `supervisor-inbox.md`, checklist post-PR, shadcn/ui.
+- **Livraison** : PR #22 mergée → prod (HITL superviseur).
+
+---
+
 ## 2026-06-16 — Taxonomie thématique neutre (4.7)
 
 🔔 Pour le superviseur :
