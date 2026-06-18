@@ -9,9 +9,6 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   session: { strategy: "jwt" },
-  pages: {
-    signIn: "/admin",
-  },
   callbacks: {
     async signIn({ profile }) {
       const allowed = process.env.ADMIN_GITHUB_LOGIN;
