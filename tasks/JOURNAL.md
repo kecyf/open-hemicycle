@@ -4,6 +4,31 @@ Entrées les plus récentes en haut. Le dépôt est la mémoire de l'agent : ce 
 
 ---
 
+## 2026-06-18 — Couche d'enrichissement LLM (4.8 fondations)
+
+🔔 Pour le superviseur :
+1. **`DATABASE_URL` cloud** : toujours en échec (`password authentication failed for user "postgres"`) — mettre à jour le secret avec le rôle `oh_agent` (mot de passe valide). Bloque `pnpm etl stats` / `classify:scrutins` depuis le cloud.
+2. **`OPENROUTER_API_KEY`** : absent en cloud — requis pour classification live (secret superviseur).
+3. **Migration `scrutins_classifications`** : schéma ajouté dans `packages/db/src/schema.ts` — application DDL en prod = **HITL** (AGENTS.md §3).
+4. **PR #23 (4.9 atlas `/themes/[slug]`)** : CI verte, en attente relecture superviseur (HITL — pas d'auto-merge). Ne pas dupliquer.
+5. **PR #19 (4.3b revendications)** : toujours DRAFT HITL.
+
+- **Objectif du jour** : tâche backlog **4.8** — fondations couche d'enrichissement LLM (classification scrutin → thème).
+- **Contexte** : PR #23 ouverte (4.9 HITL, CI verte) ; `DATABASE_URL` cloud KO ; pas de clé OpenRouter.
+- **Fait** :
+  - **Core** `classification-scrutin.ts` : parse JSON LLM, seuil 0,75, métriques échantillon-or (10 tests vitest).
+  - **Échantillon-or** 15 scrutins annotés + benchmark offline (86,7 % accuracy).
+  - **ETL** : prompt v1, client OpenRouter, `validate:enrichissement`, job `classify:scrutins` (dry-run).
+  - **Schéma** `scrutins_classifications` (versionné par prompt_version).
+  - **Docs** : `docs/enrichissement-llm.md`, `METHODOLOGY.md` §5, `.env.example`.
+  - **CI** : `pnpm typecheck` ✓, `pnpm test` ✓ (49/49), `pnpm build` ✓, `validate:enrichissement` ✓.
+- **Appris** : la chaîne offline (gold + benchmark fixtures) permet de valider la méthode sans DB ni API ; 2 faux positifs simulés suffisent à tester les métriques FP/recall.
+- **Bloqueurs** : credentials cloud DB + OpenRouter (superviseur) ; migration DDL HITL ; relecture PR #23.
+- **Prochaine étape** : appliquer migration + corriger secrets → run pilote `classify:scrutins --limit=50` ; mesurer précision live sur échantillon-or ; enchaîner merge PR #23 (HITL).
+- **Commits** : PR (auto-merge — logique pure + docs + schéma non appliqué, travail sûr).
+
+---
+
 ## 2026-06-16 — Taxonomie thématique neutre (4.7)
 
 🔔 Pour le superviseur :

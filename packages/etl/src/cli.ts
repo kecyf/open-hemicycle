@@ -17,6 +17,8 @@
  *   stats             Affiche les compteurs DB (députés, scrutins, votes).
  *   validate:revendications  Vérifie la structure des revendications sourcées (sans DB).
  *   validate:taxonomie     Vérifie la taxonomie thématique (8 commissions AN, sans DB).
+ *   validate:enrichissement  Valide échantillon-or + benchmark offline classification LLM (sans DB).
+ *   classify:scrutins     Classifie scrutins sans dossier (OpenRouter + DB ; HITL migration).
  *
  * Les commandes d'ingestion nécessitent DATABASE_URL (voir .env.example).
  */
@@ -34,7 +36,9 @@ import { computeActiviteJournaliere } from "./jobs/activite.ts";
 import { validateNosdeputes } from "./validate/nosdeputes.ts";
 import { validateRevendications } from "./validate/revendications.ts";
 import { validateTaxonomie } from "./validate/taxonomie.ts";
+import { validateEnrichissement } from "./validate/enrichissement.ts";
 import { auditDossiersScrutins } from "./audit/dossiers-scrutins.ts";
+import { jobClassifyScrutinsSansDossier } from "./jobs/classify-scrutins.ts";
 
 const LEGISLATURE = process.env.AN_LEGISLATURE ?? "17";
 
@@ -157,9 +161,19 @@ async function main(): Promise<void> {
     case "validate:taxonomie":
       validateTaxonomie();
       break;
+    case "validate:enrichissement":
+      validateEnrichissement();
+      break;
+    case "classify:scrutins": {
+      const limitArg = process.argv.find((a) => a.startsWith("--limit="));
+      const limit = limitArg ? Number(limitArg.split("=")[1]) : 50;
+      const dryRun = process.argv.includes("--dry-run");
+      await jobClassifyScrutinsSansDossier({ limit, dryRun });
+      break;
+    }
     default:
       console.error(
-        `Commande inconnue: ${cmd}\nUsage: oh-etl [sources|check|download|ingest:deputes|ingest:acteurs-historique|backfill:votes|ingest:dossiers|ingest:scrutins|seed:themes|ingest:all|job:activite|stats|validate:nosdeputes|validate:revendications|validate:taxonomie|audit:dossiers-scrutins]`,
+        `Commande inconnue: ${cmd}\nUsage: oh-etl [sources|check|download|ingest:deputes|ingest:acteurs-historique|backfill:votes|ingest:dossiers|ingest:scrutins|seed:themes|ingest:all|job:activite|stats|validate:nosdeputes|validate:revendications|validate:taxonomie|validate:enrichissement|classify:scrutins|audit:dossiers-scrutins]`,
       );
       process.exit(1);
   }

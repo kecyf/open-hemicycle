@@ -137,7 +137,7 @@ La nomenclature exhaustive repose sur les **8 commissions permanentes** de l'Ass
 
 ### Méthodes futures envisagées (par ordre de préférence)
 1. Métadonnées thématiques des dossiers législatifs (quand exploitables).
-2. Classification assistée (mots-clés / modèle), **avec relecture humaine** et thème toujours rattaché à une source — voir couche d'enrichissement LLM (4.8).
+2. **Classification assistée LLM (4.8 — en cours)** : modèle + prompt versionnés, seuil de confiance, fallback « non classé », précision mesurée sur échantillon-or. Voir [`docs/enrichissement-llm.md`](enrichissement-llm.md).
 3. Jamais de thème « deviné » sans trace vérifiable.
 
 ---

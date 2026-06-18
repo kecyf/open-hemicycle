@@ -47,7 +47,7 @@ Horizon de référence : **Jalon M1 à ~1 mois** (POC public fonctionnel). Le d�
 - [x] Cohérence d'affichage des effectifs (577 en mandat / 645 ayant siégé) sur homepage + annuaire + bandeau POC.
 - [x] Taxonomie de thèmes **neutre et exhaustive** (8 commissions permanentes AN, méthode anti-biais publiée dans `docs/theme-taxonomy.md`).
 - [ ] Migration des slugs pilotes vers taxonomie commissions + projection DB.
-- [ ] Couche d'enrichissement : classification scrutin → thème par LLM, **sortie figée/versionnée/auditable** (modèle + prompt + confiance + date) ; fallback « non classé » ; précision mesurée sur échantillon annoté.
+- [~] Couche d'enrichissement : classification scrutin → thème par LLM — **fondations livrées** (core, prompt v1, échantillon-or, validate, schéma) ; migration DB + run live en attente (HITL + secrets).
 - [ ] Page thème publique : positionnement par groupe (symétrique, sourcé, scrutins cliquables) — niveau groupe, non nominatif.
 
 **Cohérence v0 (en partie HITL)**

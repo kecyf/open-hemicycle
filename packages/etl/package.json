@@ -24,6 +24,8 @@
     "validate:nosdeputes": "tsx src/cli.ts validate:nosdeputes",
     "validate:revendications": "tsx src/cli.ts validate:revendications",
     "validate:taxonomie": "tsx src/cli.ts validate:taxonomie",
+    "validate:enrichissement": "tsx src/cli.ts validate:enrichissement",
+    "classify:scrutins": "tsx src/cli.ts classify:scrutins",
     "audit:dossiers-scrutins": "tsx src/cli.ts audit:dossiers-scrutins",
     "typecheck": "tsc --noEmit"
   },
