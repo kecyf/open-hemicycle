@@ -4,6 +4,17 @@ Entrées les plus récentes en haut. Le dépôt est la mémoire de l'agent : ce 
 
 ---
 
+## 2026-06-18 — Ship atlas + admin en production
+
+🔔 Pour le superviseur : `/admin` accessible sur https://open-hemicycle.vercel.app/admin après déploiement (OAuth GitHub, compte `kecyf`). Secrets OAuth déjà sur Vercel ; PAT/Cursor optionnels pour panneaux avancés.
+
+- **Objectif** : résoudre conflits PR #22 + #23, livrer la version la plus avancée en prod.
+- **Fait** : branche `feat/ship-atlas-admin` (atlas 4.9 + admin HITL + main/#24), conflits résolus, CI locale verte (52 tests, build OK).
+- **Livraison** : PR mergée → prod.
+- **Prochaine étape** : stabiliser la boucle (moins de PR qui s'empilent) ; configurer `GITHUB_ADMIN_TOKEN` + `CURSOR_API_KEY` pour l'admin complet.
+
+---
+
 ## 2026-06-18 — Couche d'enrichissement LLM (4.8 fondations)
 
 🔔 Pour le superviseur :
