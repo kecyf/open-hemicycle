@@ -11,4 +11,5 @@ export * from "./validate/revendications.ts";
 export * from "./validate/taxonomie.ts";
 export * from "./participation.ts";
 export * from "./participation-theme.ts";
+export * from "./positionnement-theme.ts";
 export * from "./taux-participation.ts";

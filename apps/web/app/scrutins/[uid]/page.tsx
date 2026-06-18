@@ -1,12 +1,12 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getScrutinDetail, type GroupeVentilation } from "../../../lib/queries";
+import { GroupeVentilationBar } from "../../_components/groupe-ventilation-bar";
+import { getScrutinDetail } from "../../../lib/queries";
 import { DataNotice } from "../../_components/data-notice";
 import {
   POSITION_COLORS,
   capitalize,
   dateFr,
-  groupColor,
   sortBadge,
   typeLabel,
   urlScrutinOfficiel,
@@ -27,13 +27,6 @@ export async function generateMetadata({
     description: capitalize(s.objet).slice(0, 160),
   };
 }
-
-const POSITIONS = [
-  { key: "pour", label: "Pour", color: POSITION_COLORS.pour },
-  { key: "contre", label: "Contre", color: POSITION_COLORS.contre },
-  { key: "abstention", label: "Abstention", color: POSITION_COLORS.abstention },
-  { key: "nonVotant", label: "Non-votant", color: POSITION_COLORS.nonVotant },
-] as const;
 
 export default async function ScrutinPage({
   params,
@@ -79,7 +72,7 @@ export default async function ScrutinPage({
             {scrutin.themes.map((t) => (
               <Link
                 key={t.slug}
-                href={`/scrutins?theme=${t.slug}`}
+                href={`/themes/${t.slug}`}
                 className="inline-flex items-center rounded-full border border-accent bg-accent/10 px-2.5 py-0.5 text-xs text-foreground transition-colors hover:bg-accent/20"
               >
                 {t.nom}
@@ -160,7 +153,9 @@ export default async function ScrutinPage({
         ) : (
           <ul className="flex flex-col gap-3">
             {scrutin.groupes.map((g) => (
-              <GroupeRow key={g.groupeId ?? g.sigle ?? "x"} g={g} />
+              <li key={g.groupeId ?? g.sigle ?? "x"}>
+                <GroupeVentilationBar g={g} />
+              </li>
             ))}
           </ul>
         )}
@@ -180,53 +175,5 @@ export default async function ScrutinPage({
 
       <DataNotice />
     </main>
-  );
-}
-
-function GroupeRow({ g }: { g: GroupeVentilation }) {
-  const color = groupColor(g.couleurHex);
-  const segments = [
-    { key: "pour", value: g.pour, color: POSITIONS[0].color },
-    { key: "contre", value: g.contre, color: POSITIONS[1].color },
-    { key: "abstention", value: g.abstention, color: POSITIONS[2].color },
-    { key: "nonVotant", value: g.nonVotant, color: POSITIONS[3].color },
-  ];
-  return (
-    <li className="rounded-xl border border-border bg-card p-4">
-      <div className="mb-2 flex items-center justify-between gap-3">
-        <span className="flex items-center gap-2 text-sm font-medium">
-          <span className="size-2.5 shrink-0 rounded-full" style={{ backgroundColor: color }} aria-hidden />
-          {g.sigle ?? g.nom ?? "Sans groupe"}
-        </span>
-        <span className="text-xs text-muted">
-          {g.total} vote{g.total > 1 ? "s" : ""}
-        </span>
-      </div>
-      <div
-        className="flex h-2.5 w-full overflow-hidden rounded-full bg-border"
-        role="img"
-        aria-label={`${g.sigle ?? "groupe"} : ${g.pour} pour, ${g.contre} contre, ${g.abstention} abstention, ${g.nonVotant} non-votant`}
-      >
-        {segments.map((s) =>
-          s.value > 0 ? (
-            <span
-              key={s.key}
-              style={{ width: `${(s.value / g.total) * 100}%`, backgroundColor: s.color }}
-              title={`${s.key} : ${s.value}`}
-            />
-          ) : null,
-        )}
-      </div>
-      <ul className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-xs tabular-nums text-muted">
-        {segments.map((s) =>
-          s.value > 0 ? (
-            <li key={s.key} className="flex items-center gap-1.5">
-              <span className="size-2 rounded-full" style={{ backgroundColor: s.color }} aria-hidden />
-              {POSITIONS.find((p) => p.key === s.key)?.label} {s.value}
-            </li>
-          ) : null,
-        )}
-      </ul>
-    </li>
   );
 }

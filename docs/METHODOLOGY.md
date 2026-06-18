@@ -135,6 +135,17 @@ La nomenclature exhaustive repose sur les **8 commissions permanentes** de l'Ass
 - **Phase pilote** : quatre thèmes ad hoc encore actifs en base (`budget-finances`, `securite-immigration`, `agriculture`, `defense`) — en cours de remplacement par la taxonomie commissions.
 - Un thème est un **regroupement neutre**, jamais un jugement ; le périmètre est restreint, symétrique et public.
 
+### Atlas thématique (4.9 — page `/themes/[slug]`)
+
+Page publique **non nominative** : pour un thème donné, affiche le positionnement agrégé de **chaque groupe politique** sur l'ensemble des scrutins rattachés.
+
+- **Donnée** : votes nominatifs publiés par l'AN, rattachés au groupe **courant** de chaque député·e (même limite que la ventilation par groupe sur un scrutin).
+- **Ventilation** : barres empilées pour / contre / abstention / non-votant, agrégées sur tous les scrutins du thème.
+- **Phrase factuelle** : générée par `phrasePositionnementGroupe` (`packages/core/src/positionnement-theme.ts`) — effectifs, parts des votes exprimés, décompte des positions majoritaires du groupe scrutin par scrutin. Aucun adjectif moral.
+- **Symétrie** : tous les groupes de la législature sont listés (tri par sigle), y compris ceux sans vote sur le périmètre.
+- **Sources** : liste des scrutins récents cliquables (lien vers fiche scrutin + page officielle AN).
+- **Ce que ce n'est pas** : un score de loyauté, un classement « top des incohérents », ni une inférence sur des personnes.
+
 ### Méthodes futures envisagées (par ordre de préférence)
 1. Métadonnées thématiques des dossiers législatifs (quand exploitables).
 2. **Classification assistée LLM (4.8 — en cours)** : modèle + prompt versionnés, seuil de confiance, fallback « non classé », précision mesurée sur échantillon-or. Voir [`docs/enrichissement-llm.md`](enrichissement-llm.md).

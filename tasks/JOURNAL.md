@@ -4,14 +4,24 @@ Entrées les plus récentes en haut. Le dépôt est la mémoire de l'agent : ce 
 
 ---
 
+## 2026-06-18 — Ship atlas + admin en production
+
+🔔 Pour le superviseur : `/admin` accessible sur https://open-hemicycle.vercel.app/admin après déploiement (OAuth GitHub, compte `kecyf`). Secrets OAuth déjà sur Vercel ; PAT/Cursor optionnels pour panneaux avancés.
+
+- **Objectif** : résoudre conflits PR #22 + #23, livrer la version la plus avancée en prod.
+- **Fait** : branche `feat/ship-atlas-admin` (atlas 4.9 + admin HITL + main/#24), conflits résolus, CI locale verte (52 tests, build OK).
+- **Livraison** : PR mergée → prod.
+- **Prochaine étape** : stabiliser la boucle (moins de PR qui s'empilent) ; configurer `GITHUB_ADMIN_TOKEN` + `CURSOR_API_KEY` pour l'admin complet.
+
+---
+
 ## 2026-06-18 — Couche d'enrichissement LLM (4.8 fondations)
 
 🔔 Pour le superviseur :
 1. **`DATABASE_URL` cloud** : toujours en échec (`password authentication failed for user "postgres"`) — mettre à jour le secret avec le rôle `oh_agent` (mot de passe valide). Bloque `pnpm etl stats` / `classify:scrutins` depuis le cloud.
 2. **`OPENROUTER_API_KEY`** : absent en cloud — requis pour classification live (secret superviseur).
 3. **Migration `scrutins_classifications`** : schéma ajouté dans `packages/db/src/schema.ts` — application DDL en prod = **HITL** (AGENTS.md §3).
-4. **PR #23 (4.9 atlas `/themes/[slug]`)** : CI verte, en attente relecture superviseur (HITL — pas d'auto-merge). Ne pas dupliquer.
-5. **PR #19 (4.3b revendications)** : toujours DRAFT HITL.
+4. **PR #19 (4.3b revendications)** : toujours DRAFT HITL.
 
 - **Objectif du jour** : tâche backlog **4.8** — fondations couche d'enrichissement LLM (classification scrutin → thème).
 - **Contexte** : PR #23 ouverte (4.9 HITL, CI verte) ; `DATABASE_URL` cloud KO ; pas de clé OpenRouter.
@@ -25,7 +35,22 @@ Entrées les plus récentes en haut. Le dépôt est la mémoire de l'agent : ce 
 - **Appris** : la chaîne offline (gold + benchmark fixtures) permet de valider la méthode sans DB ni API ; 2 faux positifs simulés suffisent à tester les métriques FP/recall.
 - **Bloqueurs** : credentials cloud DB + OpenRouter (superviseur) ; migration DDL HITL ; relecture PR #23.
 - **Prochaine étape** : appliquer migration + corriger secrets → run pilote `classify:scrutins --limit=50` ; mesurer précision live sur échantillon-or ; enchaîner merge PR #23 (HITL).
-- **Commits** : PR (auto-merge — logique pure + docs + schéma non appliqué, travail sûr).
+- **Commits** : PR #24 (auto-merge).
+
+---
+
+## 2026-06-17 — Atlas thématique (4.9)
+
+- **Objectif du jour** : page atlas `/themes/[slug]` (positionnement par groupe, non nominatif).
+- **Fait** : `positionnement-theme.ts`, `getThemeAtlas`, `GroupeVentilationBar`, page atlas.
+- **Commits** : PR #23 (HITL).
+
+---
+
+## 2026-06-16 — Espace admin HITL + hygiène boucle autonomie
+
+- **Fait** : `/admin` (OAuth GitHub), dashboard PR/CI/HITL, `supervisor-inbox.md`, checklist post-PR, shadcn/ui.
+- **Livraison** : PR #22 mergée → prod (HITL superviseur).
 
 ---
 

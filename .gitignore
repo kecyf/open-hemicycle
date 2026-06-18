@@ -40,3 +40,4 @@ coverage/
 # Vercel / Supabase
 .vercel/
 .supabase/
+.vercel

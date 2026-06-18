@@ -8,16 +8,20 @@
 
 import {
   computeComparaisonParticipationTheme,
+  computeComptesMajoriteGroupeTheme,
   computeTauxAlignementGroupe,
   computeTauxParticipationTriple,
   getThemesRevendiques,
+  phrasePositionnementGroupe,
   type ComparaisonParticipationTheme,
+  type ComptesMajoriteGroupeTheme,
   type EnregistrementVote,
   type PositionVote,
   type TauxAlignementGroupe,
   type TauxParticipationTriple,
   type ThemeRevendiqueClaim,
   type VentilationGroupe,
+  type VentilationGroupeScrutin,
 } from "@open-hemicycle/core";
 import { and, asc, desc, eq, inArray, isNull, sql } from "drizzle-orm";
 import {
@@ -464,6 +468,140 @@ export async function listThemes(): Promise<ThemeRow[]> {
 export async function getThemeBySlug(slug: string): Promise<ThemeRow | null> {
   const all = await listThemes();
   return all.find((t) => t.slug === slug) ?? null;
+}
+
+export interface ThemeAtlasGroupe extends GroupeVentilation {
+  phrase: string;
+  comptesMajorite: ComptesMajoriteGroupeTheme;
+}
+
+export interface ThemeAtlas {
+  theme: ThemeRow;
+  /** Tous les groupes de la législature, triés par sigle (symétrie). */
+  groupes: ThemeAtlasGroupe[];
+  scrutinsRecents: ScrutinRow[];
+  totalScrutins: number;
+}
+
+/**
+ * Atlas thématique : positionnement agrégé par groupe sur les scrutins rattachés
+ * au thème (niveau groupe, non nominatif). Voir docs/METHODOLOGY.md §5.
+ */
+export async function getThemeAtlas(slug: string): Promise<ThemeAtlas | null> {
+  const theme = await getThemeBySlug(slug);
+  if (!theme) return null;
+
+  const db = getDb();
+  const [allGroupes, rows, scrutinsRecents, totalScrutins] = await Promise.all([
+    listGroupes(),
+    db
+      .select({
+        scrutinId: votes.scrutinId,
+        groupeId: groupesPolitiques.id,
+        sigle: groupesPolitiques.sigle,
+        nom: groupesPolitiques.nom,
+        couleurHex: groupesPolitiques.couleurHex,
+        position: votes.position,
+        n: sql<number>`count(*)::int`,
+      })
+      .from(votes)
+      .innerJoin(scrutins, eq(scrutins.id, votes.scrutinId))
+      .innerJoin(
+        affiliationsGroupe,
+        and(
+          eq(affiliationsGroupe.deputeId, votes.deputeId),
+          isNull(affiliationsGroupe.validTo),
+        ),
+      )
+      .innerJoin(groupesPolitiques, eq(groupesPolitiques.id, affiliationsGroupe.groupeId))
+      .where(
+        and(
+          eq(scrutins.legislature, LEGISLATURE),
+          inArray(scrutins.dossierId, dossierIdsForTheme(slug)),
+        ),
+      )
+      .groupBy(
+        votes.scrutinId,
+        groupesPolitiques.id,
+        groupesPolitiques.sigle,
+        groupesPolitiques.nom,
+        groupesPolitiques.couleurHex,
+        votes.position,
+      ),
+    listScrutins({ theme: slug, limit: 15 }),
+    countScrutins(undefined, slug),
+  ]);
+
+  const parGroupeScrutin = new Map<string, VentilationGroupeScrutin[]>();
+  const metaByGroupe = new Map<
+    string,
+    { sigle: string | null; nom: string | null; couleurHex: string | null }
+  >();
+
+  for (const r of rows) {
+    metaByGroupe.set(r.groupeId, {
+      sigle: r.sigle,
+      nom: r.nom,
+      couleurHex: r.couleurHex,
+    });
+    let list = parGroupeScrutin.get(r.groupeId);
+    if (!list) {
+      list = [];
+      parGroupeScrutin.set(r.groupeId, list);
+    }
+    let entry = list.find((e) => e.scrutinId === r.scrutinId);
+    if (!entry) {
+      entry = {
+        scrutinId: r.scrutinId,
+        ventilation: { pour: 0, contre: 0, abstention: 0, nonVotant: 0 },
+      };
+      list.push(entry);
+    }
+    addPositionToVentilation(entry.ventilation, r.position, r.n);
+  }
+
+  const groupes: ThemeAtlasGroupe[] = allGroupes.map((g) => {
+    const parScrutin = parGroupeScrutin.get(g.id) ?? [];
+    const ventilation: VentilationGroupe = {
+      pour: 0,
+      contre: 0,
+      abstention: 0,
+      nonVotant: 0,
+    };
+    for (const { ventilation: v } of parScrutin) {
+      ventilation.pour += v.pour;
+      ventilation.contre += v.contre;
+      ventilation.abstention += v.abstention;
+      ventilation.nonVotant += v.nonVotant;
+    }
+    const total =
+      ventilation.pour + ventilation.contre + ventilation.abstention + ventilation.nonVotant;
+    const comptesMajorite = computeComptesMajoriteGroupeTheme(parScrutin);
+    const meta = metaByGroupe.get(g.id);
+    return {
+      groupeId: g.id,
+      sigle: meta?.sigle ?? g.sigle,
+      nom: meta?.nom ?? g.nom,
+      couleurHex: meta?.couleurHex ?? g.couleurHex,
+      ...ventilation,
+      total,
+      comptesMajorite,
+      phrase: phrasePositionnementGroupe({
+        sigle: meta?.sigle ?? g.sigle,
+        nom: meta?.nom ?? g.nom,
+        ventilation: { ...ventilation, total },
+        comptesMajorite,
+      }),
+    };
+  });
+
+  groupes.sort((a, b) => {
+    const sa = (a.sigle ?? a.nom ?? "").toLocaleLowerCase("fr");
+    const sb = (b.sigle ?? b.nom ?? "").toLocaleLowerCase("fr");
+    return sa.localeCompare(sb, "fr");
+  });
+
+  return { theme, groupes, scrutinsRecents, totalScrutins };
 }
 
 /** Sous-requête : ids de dossiers rattachés à un thème (par slug). */

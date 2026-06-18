@@ -21,6 +21,7 @@ Priorité : P0 (critique) · P1 · P2.
 | 0.6 | P1 | done | Cursor Automation quotidienne (cron 08:00 Paris) — 1er run autonome complet 2026-06-10 (PR #9) |
 | 0.7 | P2 | next | Choisir/réserver un nom de domaine (HITL si payant) |
 | 0.8 | P1 | done | Secret `DATABASE_URL` dans GitHub Actions pour cron ETL (posé 2026-06-12 ; migration rôle `oh_agent` quand mot de passe disponible) |
+| 0.9 | P1 | done | Espace admin `/admin` : dashboard superviseur HITL (OAuth GitHub, PR/CI, inbox, Vercel, Cursor API) — merge HITL (nouvelle surface publique) |
 
 ## Phase 1 — Données
 
@@ -73,4 +74,4 @@ Priorité : P0 (critique) · P1 · P2.
 | 4.6 | P1 | done | **Cohérence effectifs** : afficher « 577 en mandat / 645 ayant siégé » (homepage `getGlobalCounts` + bandeau `DataNotice` dynamique + header `/deputes`). Fix d'incohérence, non nominatif |
 | 4.7 | P0 | done | **Taxonomie de thèmes neutre** : nomenclature exhaustive (8 commissions permanentes AN) + méthode de sélection publiée (`docs/theme-taxonomy.md`) ; migration progressive des slugs pilotes |
 | 4.8 | P0 | in-progress | **Couche d'enrichissement LLM** : core parse/seuil + prompt v1 + échantillon-or (15) + `validate:enrichissement` + schéma `scrutins_classifications` + job `classify:scrutins` (dry-run). Reste : migration DB (HITL), clé OpenRouter, run prod |
-| 4.9 | P1 | next | **Page thème publique** (atlas) : positionnement par groupe (barres symétriques, phrase factuelle, scrutins cliquables, sources). Niveau groupe → non nominatif |
+| 4.9 | P1 | done | **Page thème publique** (atlas) : positionnement par groupe (barres symétriques, phrase factuelle, scrutins cliquables, sources). Niveau groupe → non nominatif |

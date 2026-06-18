@@ -110,7 +110,12 @@ Boucle standard :
 5. **Décider du mode de merge selon la nature du travail** :
    - **Travail sûr** (logique pure testée, docs, outillage, refactor non visible) → **activer l'auto-merge** : `gh pr merge --auto --squash`. La PR se merge seule dès que la CI passe ; la branche est supprimée automatiquement. Pas besoin d'attendre un humain.
    - **Indicateur sensible / nominatif** (§3), **release majeure** (§6 bis), ou **toute nouvelle surface publique** → **PAS d'auto-merge**. À la place : **demander le superviseur en reviewer** + **commenter la PR** avec le flag « 🔔 superviseur » (décision, contexte, lien). Le merge est **HITL**.
-6. **Review automatisée** : Bugbot relit la PR selon `.cursor/BUGBOT.md` (priorité aux garde-fous éditoriaux). Traiter les remarques avant merge (y compris sur les PR en auto-merge : corriger relance la CI).
+6. **Checklist post-PR** (travail sûr, avant de clôturer la session) :
+   - `gh pr ready <n>` — retirer le draft si besoin.
+   - Vérifier `mergeStateStatus` (`gh pr view <n> --json mergeStateStatus`) : si `DIRTY`, rebaser sur `main` puis repousser.
+   - `gh pr merge <n> --auto --squash` — activer l'auto-merge (sauf HITL).
+   - Journaliser explicitement `PR #N mergée → prod` ou `PR #N ouverte (HITL)` — ne pas confondre PR ouverte et déploiement prod.
+7. **Review automatisée** : Bugbot relit la PR selon `.cursor/BUGBOT.md` (priorité aux garde-fous éditoriaux). Traiter les remarques avant merge (y compris sur les PR en auto-merge : corriger relance la CI).
 
 Exceptions tolérées (direct sur `main`) : uniquement les changements **triviaux et sans risque** (typo de doc, journal). En cas de doute → PR.
 
