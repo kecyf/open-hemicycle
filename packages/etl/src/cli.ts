@@ -14,6 +14,7 @@
  *   seed:themes       (Re)pose la classification thématique des dossiers (fichier versionné).
  *   ingest:all        Enchaîne deputes, dossiers, scrutins, themes, puis activite.
  *   job:activite      (Re)calcule la table activite_journaliere (heatmap).
+ *   check:db          Diagnostic DATABASE_URL (format, auth, migration classif.).
  *   stats             Affiche les compteurs DB (députés, scrutins, votes).
  *   validate:revendications  Vérifie la structure des revendications sourcées (sans DB).
  *   validate:taxonomie     Vérifie la taxonomie thématique (8 commissions AN, sans DB).
@@ -39,6 +40,7 @@ import { validateTaxonomie } from "./validate/taxonomie.ts";
 import { validateEnrichissement } from "./validate/enrichissement.ts";
 import { auditDossiersScrutins } from "./audit/dossiers-scrutins.ts";
 import { jobClassifyScrutinsSansDossier } from "./jobs/classify-scrutins.ts";
+import { runCheckDb } from "./check-db.ts";
 
 const LEGISLATURE = process.env.AN_LEGISLATURE ?? "17";
 
@@ -146,6 +148,9 @@ async function main(): Promise<void> {
     case "job:activite":
       await computeActiviteJournaliere();
       break;
+    case "check:db":
+      await runCheckDb();
+      break;
     case "stats":
       await printDbStats("now");
       break;
@@ -173,7 +178,7 @@ async function main(): Promise<void> {
     }
     default:
       console.error(
-        `Commande inconnue: ${cmd}\nUsage: oh-etl [sources|check|download|ingest:deputes|ingest:acteurs-historique|backfill:votes|ingest:dossiers|ingest:scrutins|seed:themes|ingest:all|job:activite|stats|validate:nosdeputes|validate:revendications|validate:taxonomie|validate:enrichissement|classify:scrutins|audit:dossiers-scrutins]`,
+        `Commande inconnue: ${cmd}\nUsage: oh-etl [sources|check|download|ingest:deputes|ingest:acteurs-historique|backfill:votes|ingest:dossiers|ingest:scrutins|seed:themes|ingest:all|job:activite|check:db|stats|validate:nosdeputes|validate:revendications|validate:taxonomie|validate:enrichissement|classify:scrutins|audit:dossiers-scrutins]`,
       );
       process.exit(1);
   }

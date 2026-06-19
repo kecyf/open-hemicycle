@@ -20,6 +20,7 @@
     "seed:themes": "tsx src/cli.ts seed:themes",
     "ingest:all": "tsx src/cli.ts ingest:all",
     "job:activite": "tsx src/cli.ts job:activite",
+    "check:db": "tsx src/cli.ts check:db",
     "stats": "tsx src/cli.ts stats",
     "validate:nosdeputes": "tsx src/cli.ts validate:nosdeputes",
     "validate:revendications": "tsx src/cli.ts validate:revendications",
