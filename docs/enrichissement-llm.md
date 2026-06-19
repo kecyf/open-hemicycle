@@ -64,6 +64,18 @@ Précision cible publiée : **≥ 80 %** sur l'échantillon-or avant extension d
 
 La table `scrutins_classifications` est définie dans `packages/db/src/schema.ts`. **L'application de la migration en production requiert validation superviseur** (AGENTS.md §3 — DDL).
 
+Fichier SQL idempotent : `packages/db/drizzle/0001_scrutins_classifications.sql`.
+
+```bash
+# Vérifier la connexion et l'état de la migration
+pnpm etl check:db
+
+# Appliquer en prod (HITL) — Supabase SQL Editor ou psql
+# \i packages/db/drizzle/0001_scrutins_classifications.sql
+```
+
+Après application : `pnpm etl check:db` doit afficher `table classif. : OK`.
+
 ---
 
 ## Secrets requis

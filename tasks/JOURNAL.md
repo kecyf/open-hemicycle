@@ -4,6 +4,28 @@ Entrées les plus récentes en haut. Le dépôt est la mémoire de l'agent : ce 
 
 ---
 
+## 2026-06-19 — Migration DDL classif. + diagnostic DB (4.8)
+
+🔔 Pour le superviseur :
+1. **`DATABASE_URL` cloud** : format OK mais **auth toujours en échec** (`password authentication failed for user "postgres"`) — mettre à jour le secret avec le rôle **`oh_agent`** et un mot de passe valide. `pnpm etl check:db` permet de vérifier en une commande.
+2. **Migration `scrutins_classifications`** : SQL prêt dans `packages/db/drizzle/0001_scrutins_classifications.sql` — **application en prod = HITL** (DDL). Après application + secrets OK → `pnpm etl classify:scrutins --limit=50`.
+3. **`OPENROUTER_API_KEY`** : absent en cloud — requis pour classification live.
+4. **PR #19 (4.3b revendications)** : toujours DRAFT HITL, **CONFLICTING** avec `main` — rebaser avant relecture.
+
+- **Objectif du jour** : tâche backlog **4.8** — préparer migration DDL + diagnostic connexion DB (cloud-safe).
+- **Contexte** : `main` à jour (atlas 4.9 + admin en prod, #25–#27) ; une seule PR ouverte (#19 HITL) ; DB cloud KO.
+- **Fait** :
+  - **Migration SQL** `0001_scrutins_classifications.sql` (idempotent, FK + index).
+  - **`pnpm etl check:db`** : format URL, auth, compteur scrutins, présence table classif.
+  - **Docs** : `docs/enrichissement-llm.md`, `.env.example` (rôle `oh_agent`).
+  - **CI** : `pnpm typecheck` ✓, `pnpm test` ✓ (52/52), `pnpm build` ✓, `validate:enrichissement` ✓.
+- **Appris** : le secret cloud utilise encore le rôle `postgres` (mot de passe invalide) malgré la consigne `oh_agent` — le diagnostic `check:db` le signale explicitement.
+- **Bloqueurs** : credentials cloud DB + OpenRouter (superviseur) ; application migration DDL (HITL) ; relecture PR #19.
+- **Prochaine étape** : superviseur applique migration + corrige secrets → run pilote `classify:scrutins` ; rebaser PR #19 ; configurer `GITHUB_ADMIN_TOKEN` + `CURSOR_API_KEY` pour admin complet.
+- **Commits** : PR (auto-merge — outillage + SQL, pas de surface publique).
+
+---
+
 ## 2026-06-18 — Ship atlas + admin en production
 
 🔔 Pour le superviseur : `/admin` sur https://open-hemicycle.vercel.app/admin — OAuth GitHub (`kecyf`). Correctif boucle de redirection (signIn custom) déployé en #26.
