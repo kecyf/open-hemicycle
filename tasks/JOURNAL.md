@@ -22,7 +22,8 @@ Entrées les plus récentes en haut. Le dépôt est la mémoire de l'agent : ce 
 - **Appris** : le secret cloud utilise encore le rôle `postgres` (mot de passe invalide) malgré la consigne `oh_agent` — le diagnostic `check:db` le signale explicitement.
 - **Bloqueurs** : credentials cloud DB + OpenRouter (superviseur) ; application migration DDL (HITL) ; relecture PR #19.
 - **Prochaine étape** : superviseur applique migration + corrige secrets → run pilote `classify:scrutins` ; rebaser PR #19 ; configurer `GITHUB_ADMIN_TOKEN` + `CURSOR_API_KEY` pour admin complet.
-- **Commits** : PR (auto-merge — outillage + SQL, pas de surface publique).
+- **Livraison** : `PR #28 mergée → prod` (auto-merge, CI verte).
+- **Commits** : PR #28 (auto-merge).
 
 ---
 
