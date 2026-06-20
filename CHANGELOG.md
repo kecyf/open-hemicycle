@@ -14,6 +14,7 @@ Catégories : `Ajouté` · `Modifié` · `Corrigé` · `Supprimé` · `Données`
 ## [Non publié]
 
 ### Ajouté
+- **Résolution slugs pilote → taxonomie** : `theme-slug-resolution.ts` (canonical URL, requêtes DB, enrichissement libellés) ; redirection `/themes/budget-finances` → `/themes/finances-controle-budgetaire` ; filtres scrutins acceptent les deux slugs ; 6 tests vitest.
 - **Migration DDL `scrutins_classifications` (4.8)** : fichier SQL idempotent `packages/db/drizzle/0001_scrutins_classifications.sql` (application prod = HITL) ; commande `pnpm etl check:db` (diagnostic format/auth/migration).
 - **Couche d'enrichissement LLM (4.8 — fondations)** : `classification-scrutin.ts` (parse réponse LLM, seuil confiance 0,75, métriques échantillon-or) ; échantillon-or 15 scrutins annotés ; prompt v1 + client OpenRouter ; `pnpm etl validate:enrichissement` (benchmark offline 86,7 %) ; job `classify:scrutins` (dry-run) ; table `scrutins_classifications` (schéma, migration HITL) ; `docs/enrichissement-llm.md`.
 - **Taxonomie thématique neutre (4.7)** : nomenclature exhaustive calquée sur les 8 commissions permanentes AN (art. 36 Règlement) — `packages/core/src/data/theme-taxonomie.ts` (UID `PO*` vérifiés via dump AMO10). Méthode de sélection anti-biais publiée dans `docs/theme-taxonomy.md`. Validation : `pnpm etl validate:taxonomie` + 6 tests vitest. Correspondance migration pilote → taxonomie (`PILOT_TO_TAXONOMIE_SLUG`).

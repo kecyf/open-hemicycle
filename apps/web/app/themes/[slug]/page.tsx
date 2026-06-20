@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
+import { getCanonicalThemeSlug, isDeprecatedPilotThemeSlug } from "@open-hemicycle/core";
 import { GroupeVentilationBar } from "../../_components/groupe-ventilation-bar";
 import { DataNotice } from "../../_components/data-notice";
 import { getThemeAtlas } from "../../../lib/queries";
@@ -13,6 +14,9 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
+  if (isDeprecatedPilotThemeSlug(slug)) {
+    redirect(`/themes/${getCanonicalThemeSlug(slug)}`);
+  }
   const atlas = await getThemeAtlas(slug);
   if (!atlas) return { title: "Thème introuvable — Open Hémicycle" };
   return {
@@ -29,6 +33,9 @@ export default async function ThemeAtlasPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
+  if (isDeprecatedPilotThemeSlug(slug)) {
+    redirect(`/themes/${getCanonicalThemeSlug(slug)}`);
+  }
   const atlas = await getThemeAtlas(slug);
   if (!atlas) notFound();
 
