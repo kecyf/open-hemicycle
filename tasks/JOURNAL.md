@@ -4,6 +4,28 @@ Entrées les plus récentes en haut. Le dépôt est la mémoire de l'agent : ce 
 
 ---
 
+## 2026-06-20 — Résolution slugs pilote → taxonomie (migration web)
+
+🔔 Pour le superviseur :
+1. **`DATABASE_URL` cloud** : format OK mais **auth toujours en échec** (`password authentication failed for user "postgres.lswnzmhzxyjfqhwgxhoa"`) — mettre à jour le secret avec le rôle **`oh_agent`** et un mot de passe valide. `pnpm etl check:db` pour vérifier.
+2. **Migration `scrutins_classifications`** : SQL prêt (`0001`) — **application prod = HITL** (DDL). Après application + secrets OK → `pnpm etl classify:scrutins --limit=50`.
+3. **`OPENROUTER_API_KEY`** : absent en cloud — requis pour classification live.
+4. **PR #19 (4.3b revendications)** : toujours DRAFT HITL — à rebaser sur `main` avant relecture superviseur.
+
+- **Objectif du jour** : migration progressive slugs pilote → taxonomie (couche web, cloud-safe).
+- **Contexte** : `main` à jour (#28 check:db) ; DB cloud KO (rôle postgres invalide) ; PR #19 HITL en attente.
+- **Fait** :
+  - **Core** `theme-slug-resolution.ts` : `getCanonicalThemeSlug`, `resolveThemeSlugForDb`, `enrichThemeRowForDisplay` + 6 tests vitest.
+  - **Web** : `/themes/[slug]` redirige les slugs pilotes vers l'URL canonique taxonomie ; `listThemes` / `getThemeAtlas` / filtres scrutins résolvent les deux formes de slug.
+  - **CI** : `pnpm typecheck` ✓, `pnpm test` ✓ (58/58), `pnpm build` ✓.
+- **Appris** : la migration peut avancer côté web sans toucher la DB — les slugs pilotes restent en base, la couche de résolution fait le pont.
+- **Bloqueurs** : credentials cloud DB + OpenRouter (superviseur) ; application migration DDL (HITL) ; relecture PR #19.
+- **Prochaine étape** : superviseur corrige secrets → `seed:themes` avec slugs taxonomie ; rebaser PR #19 ; run pilote `classify:scrutins`.
+- **Livraison** : PR en cours (auto-merge — logique pure, pas de surface nominative nouvelle).
+- **Commits** : `feat(core): résolution slugs pilote → taxonomie (migration progressive)`.
+
+---
+
 ## 2026-06-19 — Migration DDL classif. + diagnostic DB (4.8)
 
 🔔 Pour le superviseur :
