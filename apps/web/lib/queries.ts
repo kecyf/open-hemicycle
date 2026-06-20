@@ -12,6 +12,9 @@ import {
   computeTauxAlignementGroupe,
   computeTauxParticipationTriple,
   getThemesRevendiques,
+  enrichThemeRowForDisplay,
+  getCanonicalThemeSlug,
+  resolveThemeSlugForDb,
   phrasePositionnementGroupe,
   type ComparaisonParticipationTheme,
   type ComptesMajoriteGroupeTheme,
@@ -461,13 +464,21 @@ export async function listThemes(): Promise<ThemeRow[]> {
     .leftJoin(scrutins, eq(scrutins.dossierId, dossiersThemes.dossierId))
     .groupBy(themes.slug, themes.nom, themes.description)
     .orderBy(desc(sql`count(distinct ${scrutins.id})`));
-  return rows;
+  return rows.map((r) =>
+    enrichThemeRowForDisplay({
+      slug: r.slug,
+      nom: r.nom,
+      description: r.description,
+      nbScrutins: r.nbScrutins,
+    }),
+  ) as ThemeRow[];
 }
 
-/** Un thème par slug (pour l'en-tête d'une vue filtrée). */
+/** Un thème par slug (pilote ou taxonomie — résolution transparente). */
 export async function getThemeBySlug(slug: string): Promise<ThemeRow | null> {
+  const canonical = getCanonicalThemeSlug(slug);
   const all = await listThemes();
-  return all.find((t) => t.slug === slug) ?? null;
+  return all.find((t) => t.slug === canonical) ?? null;
 }
 
 export interface ThemeAtlasGroupe extends GroupeVentilation {
@@ -491,6 +502,7 @@ export async function getThemeAtlas(slug: string): Promise<ThemeAtlas | null> {
   const theme = await getThemeBySlug(slug);
   if (!theme) return null;
 
+  const dbSlug = resolveThemeSlugForDb(slug);
   const db = getDb();
   const [allGroupes, rows, scrutinsRecents, totalScrutins] = await Promise.all([
     listGroupes(),
@@ -517,7 +529,7 @@ export async function getThemeAtlas(slug: string): Promise<ThemeAtlas | null> {
       .where(
         and(
           eq(scrutins.legislature, LEGISLATURE),
-          inArray(scrutins.dossierId, dossierIdsForTheme(slug)),
+          inArray(scrutins.dossierId, dossierIdsForTheme(dbSlug)),
         ),
       )
       .groupBy(
@@ -528,8 +540,8 @@ export async function getThemeAtlas(slug: string): Promise<ThemeAtlas | null> {
         groupesPolitiques.couleurHex,
         votes.position,
       ),
-    listScrutins({ theme: slug, limit: 15 }),
-    countScrutins(undefined, slug),
+    listScrutins({ theme: dbSlug, limit: 15 }),
+    countScrutins(undefined, dbSlug),
   ]);
 
   const parGroupeScrutin = new Map<string, VentilationGroupeScrutin[]>();
@@ -604,14 +616,15 @@ export async function getThemeAtlas(slug: string): Promise<ThemeAtlas | null> {
   return { theme, groupes, scrutinsRecents, totalScrutins };
 }
 
-/** Sous-requête : ids de dossiers rattachés à un thème (par slug). */
+/** Sous-requête : ids de dossiers rattachés à un thème (par slug pilote ou taxonomie). */
 function dossierIdsForTheme(slug: string) {
+  const dbSlug = resolveThemeSlugForDb(slug);
   const db = getDb();
   return db
     .select({ id: dossiersThemes.dossierId })
     .from(dossiersThemes)
     .innerJoin(themes, eq(themes.id, dossiersThemes.themeId))
-    .where(eq(themes.slug, slug));
+    .where(eq(themes.slug, dbSlug));
 }
 
 export interface ScrutinRow {
@@ -646,7 +659,8 @@ function typeCondition(type?: TypeScrutinFiltre) {
 }
 
 function themeCondition(theme?: string) {
-  return theme ? inArray(scrutins.dossierId, dossierIdsForTheme(theme)) : undefined;
+  if (!theme) return undefined;
+  return inArray(scrutins.dossierId, dossierIdsForTheme(resolveThemeSlugForDb(theme)));
 }
 
 export async function listScrutins(opts?: {
