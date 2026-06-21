@@ -4,7 +4,6 @@ import {
   getCanonicalThemeSlug,
   isDeprecatedPilotThemeSlug,
   resolveThemeSlugForDb,
-  TAXONOMIE_TO_PILOT_SLUG,
 } from "./theme-slug-resolution.ts";
 import { THEME_SLUGS_PILOTE } from "./data/theme-slugs.ts";
 import { PILOT_TO_TAXONOMIE_SLUG } from "./data/theme-taxonomie.ts";
@@ -24,17 +23,19 @@ describe("theme-slug-resolution", () => {
     );
   });
 
-  it("résout taxonomie → pilote pour les requêtes DB", () => {
-    expect(resolveThemeSlugForDb("finances-controle-budgetaire")).toBe("budget-finances");
-    expect(resolveThemeSlugForDb("budget-finances")).toBe("budget-finances");
+  it("résout pilote → taxonomie pour les requêtes DB", () => {
+    expect(resolveThemeSlugForDb("finances-controle-budgetaire")).toBe(
+      "finances-controle-budgetaire",
+    );
+    expect(resolveThemeSlugForDb("budget-finances")).toBe("finances-controle-budgetaire");
     expect(resolveThemeSlugForDb("affaires-culturelles-education")).toBe(
       "affaires-culturelles-education",
     );
   });
 
-  it("TAXONOMIE_TO_PILOT_SLUG est l'inverse exact de PILOT_TO_TAXONOMIE_SLUG", () => {
-    for (const [pilot, tax] of Object.entries(PILOT_TO_TAXONOMIE_SLUG)) {
-      expect(TAXONOMIE_TO_PILOT_SLUG[tax]).toBe(pilot);
+  it("mappe chaque pilote vers taxonomie en requête DB", () => {
+    for (const pilot of THEME_SLUGS_PILOTE) {
+      expect(resolveThemeSlugForDb(pilot)).toBe(PILOT_TO_TAXONOMIE_SLUG[pilot]);
     }
   });
 

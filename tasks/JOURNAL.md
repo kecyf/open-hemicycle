@@ -4,6 +4,31 @@ Entrées les plus récentes en haut. Le dépôt est la mémoire de l'agent : ce 
 
 ---
 
+## 2026-06-21 — Seed thèmes taxonomie (4.7)
+
+🔔 Pour le superviseur :
+1. **`DATABASE_URL` cloud** : format OK mais **auth toujours en échec** (`password authentication failed for user "postgres"`) — mettre à jour le secret avec le rôle **`oh_agent`** et un mot de passe valide. `pnpm etl check:db` pour vérifier. Bloque `seed:themes` en prod depuis le cloud.
+2. **Migration `scrutins_classifications`** : SQL prêt (`0001`) — **application prod = HITL** (DDL). Après application + secrets OK → `pnpm etl classify:scrutins --limit=50`.
+3. **`OPENROUTER_API_KEY`** : absent en cloud — requis pour classification live.
+4. **PR #19 (4.3b revendications)** : rebasée sur `main` (2026-06-21) — toujours DRAFT HITL, relecture superviseur requise avant merge.
+
+- **Objectif du jour** : finaliser migration 4.7 — basculer `seed:themes` sur slugs taxonomie (cloud-safe).
+- **Contexte** : `main` à jour (#29 résolution web) ; DB cloud KO ; PR #19 HITL rebasée.
+- **Fait** :
+  - **ETL** `themes.ts` : 8 thèmes commissions AN, dossiers pilotes migrés vers slugs taxonomie.
+  - **`seedThemes`** : détache les liens des slugs pilotes dépréciés (sans DELETE sur table `themes`).
+  - **Core** `resolveThemeSlugForDb` : pilote → taxonomie pour requêtes DB.
+  - **`pnpm etl validate:themes`** : vérifie l'alignement du fichier seed.
+  - **PR #19** : rebasée sur `main`, conflits résolus, poussée.
+  - **CI** : `pnpm typecheck` ✓, `pnpm test` ✓ (58/58), `pnpm build` ✓, `validate:themes` ✓, `validate:taxonomie` ✓.
+- **Appris** : le code peut basculer sur taxonomie avant l'exécution prod — le prochain `seed:themes` (cron ou manuel) projetera les 8 thèmes et migrera les dossiers.
+- **Bloqueurs** : credentials cloud DB + OpenRouter (superviseur) ; application migration DDL (HITL) ; relecture PR #19.
+- **Prochaine étape** : superviseur corrige secrets → `pnpm etl seed:themes` en prod ; run pilote `classify:scrutins` ; merge HITL PR #19.
+- **Livraison** : PR en cours (auto-merge — ETL + core, pas de surface nominative nouvelle).
+- **Commits** : `feat(etl): seed:themes basculé sur slugs taxonomie (8 commissions)`.
+
+---
+
 ## 2026-06-20 — Résolution slugs pilote → taxonomie (migration web)
 
 🔔 Pour le superviseur :

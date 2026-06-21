@@ -72,6 +72,6 @@ Priorité : P0 (critique) · P1 · P2.
 | 4.4 | P0 | hitl | Validation manuelle échantillon + check-list juridique |
 | 4.5 | P0 | hitl | Relecture humaine avant publication nominative |
 | 4.6 | P1 | done | **Cohérence effectifs** : afficher « 577 en mandat / 645 ayant siégé » (homepage `getGlobalCounts` + bandeau `DataNotice` dynamique + header `/deputes`). Fix d'incohérence, non nominatif |
-| 4.7 | P0 | done | **Taxonomie de thèmes neutre** : nomenclature exhaustive (8 commissions permanentes AN) + méthode de sélection publiée (`docs/theme-taxonomy.md`) ; migration progressive des slugs pilotes — **couche web livrée** (résolution + redirect) ; projection DB `seed:themes` en attente credentials |
+| 4.7 | P0 | done | **Taxonomie de thèmes neutre** : nomenclature exhaustive (8 commissions permanentes AN) + méthode de sélection publiée (`docs/theme-taxonomy.md`) ; migration progressive des slugs pilotes — **couche web + seed ETL** livrées ; exécution `seed:themes` en prod en attente credentials |
 | 4.8 | P0 | in-progress | **Couche d'enrichissement LLM** : core parse/seuil + prompt v1 + échantillon-or (15) + `validate:enrichissement` + schéma `scrutins_classifications` + migration SQL `0001` + `check:db` + job `classify:scrutins` (dry-run). Reste : appliquer migration (HITL), clé OpenRouter, run prod |
 | 4.9 | P1 | done | **Page thème publique** (atlas) : positionnement par groupe (barres symétriques, phrase factuelle, scrutins cliquables, sources). Niveau groupe → non nominatif |

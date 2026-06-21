@@ -1,23 +1,15 @@
 /**
  * Résolution des slugs thématiques — migration progressive pilote → taxonomie.
  *
- * Tant que la projection DB utilise encore les slugs pilotes (`budget-finances`, …),
- * les URLs canoniques pointent vers la taxonomie commissions (`finances-controle-budgetaire`, …).
- * Voir `docs/theme-taxonomy.md` §4.
+ * La projection DB (`seed:themes`) utilise les slugs taxonomie ; les URLs pilotes
+ * restent redirigées vers les slugs canoniques. Voir `docs/theme-taxonomy.md` §4.
  */
 
 import {
   getThemeTaxonomieBySlug,
-  isThemeSlugTaxonomie,
   PILOT_TO_TAXONOMIE_SLUG,
-  type ThemeSlugTaxonomie,
 } from "./data/theme-taxonomie.ts";
-import { isThemeSlugPilote, type ThemeSlugPilote } from "./data/theme-slugs.ts";
-
-/** Inverse de `PILOT_TO_TAXONOMIE_SLUG` (taxonomie → pilote en base). */
-export const TAXONOMIE_TO_PILOT_SLUG = Object.fromEntries(
-  Object.entries(PILOT_TO_TAXONOMIE_SLUG).map(([pilot, tax]) => [tax, pilot]),
-) as Record<ThemeSlugTaxonomie, ThemeSlugPilote>;
+import { isThemeSlugPilote } from "./data/theme-slugs.ts";
 
 export interface ThemeDisplayRow {
   slug: string;
@@ -34,13 +26,10 @@ export function getCanonicalThemeSlug(slug: string): string {
   return slug;
 }
 
-/**
- * Slug à utiliser pour interroger la base tant que `seed:themes` n'a pas basculé
- * sur les slugs taxonomie.
- */
+/** Slug à utiliser pour interroger la base (pilote déprécié → taxonomie). */
 export function resolveThemeSlugForDb(slug: string): string {
-  if (isThemeSlugTaxonomie(slug) && slug in TAXONOMIE_TO_PILOT_SLUG) {
-    return TAXONOMIE_TO_PILOT_SLUG[slug as ThemeSlugTaxonomie];
+  if (isThemeSlugPilote(slug)) {
+    return PILOT_TO_TAXONOMIE_SLUG[slug];
   }
   return slug;
 }
