@@ -14,6 +14,7 @@ Catégories : `Ajouté` · `Modifié` · `Corrigé` · `Supprimé` · `Données`
 ## [Non publié]
 
 ### Ajouté
+- **Seed thèmes taxonomie (4.7)** : `packages/etl/src/data/themes.ts` basculé sur les 8 slugs commissions AN ; `seed:themes` détache les liens pilotes dépréciés ; `pnpm etl validate:themes`.
 - **Résolution slugs pilote → taxonomie** : `theme-slug-resolution.ts` (canonical URL, requêtes DB, enrichissement libellés) ; redirection `/themes/budget-finances` → `/themes/finances-controle-budgetaire` ; filtres scrutins acceptent les deux slugs ; 6 tests vitest.
 - **Migration DDL `scrutins_classifications` (4.8)** : fichier SQL idempotent `packages/db/drizzle/0001_scrutins_classifications.sql` (application prod = HITL) ; commande `pnpm etl check:db` (diagnostic format/auth/migration).
 - **Couche d'enrichissement LLM (4.8 — fondations)** : `classification-scrutin.ts` (parse réponse LLM, seuil confiance 0,75, métriques échantillon-or) ; échantillon-or 15 scrutins annotés ; prompt v1 + client OpenRouter ; `pnpm etl validate:enrichissement` (benchmark offline 86,7 %) ; job `classify:scrutins` (dry-run) ; table `scrutins_classifications` (schéma, migration HITL) ; `docs/enrichissement-llm.md`.
@@ -24,6 +25,7 @@ Catégories : `Ajouté` · `Modifié` · `Corrigé` · `Supprimé` · `Données`
 - **`tasks/supervisor-inbox.md`** : fichier append-only pour les décisions du superviseur, lu par l'agent au standup.
 
 ### Modifié
+- **`resolveThemeSlugForDb`** : requêtes DB sur slugs taxonomie (pilote déprécié → taxonomie).
 - **Boucle autonomie (hygiène PR)** : checklist post-PR dans `daily-standup` et `AGENTS.md` §6 ter (`gh pr ready`, vérif conflits, auto-merge) ; distinction journal « PR ouverte (HITL) » vs « PR mergée → prod ».
 - **Réorientation produit (2026-06-15)** : produit phare = **atlas des positionnements par thème** (niveau groupe, non nominatif) ; abandon explicite du « score » de confiance/honnêteté ; entrée principale par le thème. `VISION.md`, `ROADMAP.md`, `tasks/BACKLOG.md` (tâches 4.6–4.9) mis à jour.
 

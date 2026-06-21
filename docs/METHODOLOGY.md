@@ -124,15 +124,15 @@ La nomenclature exhaustive repose sur les **8 commissions permanentes** de l'Ass
 
 - **Source de vérité** : `packages/core/src/data/theme-taxonomie.ts` (slugs, libellés officiels, UID `PO*` des commissions).
 - **Méthode de sélection anti-biais** : [`docs/theme-taxonomy.md`](theme-taxonomy.md) (ancrage institutionnel, limites, règles de rattachement).
-- **Validation** : `pnpm etl validate:taxonomie` (structure, unicité, correspondance pilote).
-- **Migration** : les 4 thèmes pilotes (`budget-finances`, etc.) seront remplacés progressivement par les slugs taxonomie (`finances-controle-budgetaire`, etc.) — voir `PILOT_TO_TAXONOMIE_SLUG`.
+- **Validation** : `pnpm etl validate:taxonomie` + `pnpm etl validate:themes` (structure seed alignée sur taxonomie).
+- **Migration** : le fichier seed et `seed:themes` utilisent les slugs taxonomie ; les URLs pilotes restent redirigées (`PILOT_TO_TAXONOMIE_SLUG`). Exécution prod du seed en attente credentials.
 
 ### Implémentation actuelle (pilote — en migration)
 
 - **Rattachement au niveau du dossier législatif** : un scrutin hérite du thème de son dossier, via le lien officiel scrutin → dossier publié par l'Assemblée nationale. Tables `themes` et `dossiers_themes`.
 - **Classification manuelle et conservatrice** : un dossier n'entre dans un thème que si son **titre officiel (verbatim AN)** concerne sans ambiguïté le cœur du thème. **En cas de doute, on n'inclut pas.** Un dossier peut n'appartenir à aucun thème.
 - **Source de vérité versionnée et auditable** : le mapping complet (thème → dossiers, avec leur titre officiel justifiant le rattachement) vit dans `packages/etl/src/data/themes.ts` ; toute modification passe par une PR. La base n'est qu'une projection de ce fichier (`pnpm --filter @open-hemicycle/etl seed:themes`).
-- **Phase pilote** : quatre thèmes ad hoc encore actifs en base (`budget-finances`, `securite-immigration`, `agriculture`, `defense`) — en cours de remplacement par la taxonomie commissions.
+- **Nomenclature** : 8 thèmes commissions permanentes AN ; 4 dossiers pilotes rattachés (migration depuis slugs ad hoc). Les lignes pilotes dépréciées en base sont détachées à chaque `seed:themes`.
 - Un thème est un **regroupement neutre**, jamais un jugement ; le périmètre est restreint, symétrique et public.
 
 ### Atlas thématique (4.9 — page `/themes/[slug]`)
