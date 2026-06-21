@@ -7,6 +7,7 @@
  */
 
 import { eq, inArray } from "drizzle-orm";
+import { THEME_SLUGS_PILOTE } from "@open-hemicycle/core";
 import {
   getDb,
   themes as themesTable,
@@ -51,5 +52,18 @@ export async function seedThemes(): Promise<void> {
     }
     console.log(`[themes] ${t.slug} → ${dossiers.length} dossier(s) rattaché(s)`);
   }
+
+  // Détache les liens des slugs pilotes dépréciés (migration progressive, sans DELETE sur `themes`).
+  for (const pilotSlug of THEME_SLUGS_PILOTE) {
+    const [pilotTheme] = await db
+      .select({ id: themesTable.id })
+      .from(themesTable)
+      .where(eq(themesTable.slug, pilotSlug))
+      .limit(1);
+    if (!pilotTheme) continue;
+    await db.delete(dossiersThemes).where(eq(dossiersThemes.themeId, pilotTheme.id));
+    console.log(`[themes] liens pilote déprécié détachés : ${pilotSlug}`);
+  }
+
   console.log(`[themes] OK\n`);
 }

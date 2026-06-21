@@ -67,7 +67,7 @@ Inchangées par rapport au pilote, mais appliquées à la nouvelle nomenclature 
 | `agriculture` | `affaires-economiques` |
 | `defense` | `defense-forces-armees` |
 
-La migration des slugs en base et en URL (`/themes`, `/scrutins?theme=`) est **progressive** : les slugs pilotes restent actifs tant que la projection DB n'est pas basculée (évite de casser les liens existants).
+La migration des slugs en base et en URL (`/themes`, `/scrutins?theme=`) est **progressive** : les slugs pilotes restent redirigés vers les URLs canoniques taxonomie. La projection DB (`pnpm etl seed:themes`) utilise désormais les **slugs taxonomie** ; les lignes pilotes dépréciées sont détachées (sans suppression de la table `themes`).
 
 Correspondance implémentée dans `packages/core/src/data/theme-taxonomie.ts` (`PILOT_TO_TAXONOMIE_SLUG`).
 
@@ -77,6 +77,7 @@ Correspondance implémentée dans `packages/core/src/data/theme-taxonomie.ts` (`
 
 ```bash
 pnpm etl validate:taxonomie   # structure + unicité + correspondance pilote
+pnpm etl validate:themes      # fichier seed themes.ts aligné sur la taxonomie
 pnpm test                     # tests vitest (packages/core)
 ```
 

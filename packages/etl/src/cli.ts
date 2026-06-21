@@ -18,6 +18,7 @@
  *   stats             Affiche les compteurs DB (députés, scrutins, votes).
  *   validate:revendications  Vérifie la structure des revendications sourcées (sans DB).
  *   validate:taxonomie     Vérifie la taxonomie thématique (8 commissions AN, sans DB).
+ *   validate:themes        Vérifie le fichier seed themes.ts (slugs taxonomie, sans DB).
  *   validate:enrichissement  Valide échantillon-or + benchmark offline classification LLM (sans DB).
  *   classify:scrutins     Classifie scrutins sans dossier (OpenRouter + DB ; HITL migration).
  *
@@ -37,6 +38,7 @@ import { computeActiviteJournaliere } from "./jobs/activite.ts";
 import { validateNosdeputes } from "./validate/nosdeputes.ts";
 import { validateRevendications } from "./validate/revendications.ts";
 import { validateTaxonomie } from "./validate/taxonomie.ts";
+import { validateThemesSeed } from "./validate/themes.ts";
 import { validateEnrichissement } from "./validate/enrichissement.ts";
 import { auditDossiersScrutins } from "./audit/dossiers-scrutins.ts";
 import { jobClassifyScrutinsSansDossier } from "./jobs/classify-scrutins.ts";
@@ -166,6 +168,9 @@ async function main(): Promise<void> {
     case "validate:taxonomie":
       validateTaxonomie();
       break;
+    case "validate:themes":
+      validateThemesSeed();
+      break;
     case "validate:enrichissement":
       validateEnrichissement();
       break;
@@ -178,7 +183,7 @@ async function main(): Promise<void> {
     }
     default:
       console.error(
-        `Commande inconnue: ${cmd}\nUsage: oh-etl [sources|check|download|ingest:deputes|ingest:acteurs-historique|backfill:votes|ingest:dossiers|ingest:scrutins|seed:themes|ingest:all|job:activite|check:db|stats|validate:nosdeputes|validate:revendications|validate:taxonomie|validate:enrichissement|classify:scrutins|audit:dossiers-scrutins]`,
+        `Commande inconnue: ${cmd}\nUsage: oh-etl [sources|check|download|ingest:deputes|ingest:acteurs-historique|backfill:votes|ingest:dossiers|ingest:scrutins|seed:themes|ingest:all|job:activite|check:db|stats|validate:nosdeputes|validate:revendications|validate:taxonomie|validate:themes|validate:enrichissement|classify:scrutins|audit:dossiers-scrutins]`,
       );
       process.exit(1);
   }
