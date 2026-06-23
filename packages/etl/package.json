@@ -29,6 +29,8 @@
     "validate:enrichissement": "tsx src/cli.ts validate:enrichissement",
     "classify:scrutins": "tsx src/cli.ts classify:scrutins",
     "audit:dossiers-scrutins": "tsx src/cli.ts audit:dossiers-scrutins",
+    "test": "vitest run",
+    "test:watch": "vitest",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
@@ -42,6 +44,7 @@
     "@types/adm-zip": "^0.5.7",
     "@types/node": "^22.10.0",
     "tsx": "^4.19.2",
-    "typescript": "^5.7.0"
+    "typescript": "^5.7.0",
+    "vitest": "^3.0.0"
   }
 }

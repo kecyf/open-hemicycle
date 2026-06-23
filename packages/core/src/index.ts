@@ -12,5 +12,6 @@ export * from "./validate/taxonomie.ts";
 export * from "./participation.ts";
 export * from "./participation-theme.ts";
 export * from "./positionnement-theme.ts";
+export * from "./resolve-effective-theme.ts";
 export * from "./theme-slug-resolution.ts";
 export * from "./taux-participation.ts";

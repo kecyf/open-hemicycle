@@ -4,20 +4,19 @@
  * Nécessite DATABASE_URL + migration `scrutins_classifications` appliquée (HITL).
  */
 
-import { eq, isNull, sql } from "drizzle-orm";
+import { and, eq, isNull, sql } from "drizzle-orm";
 import {
   getDb,
   scrutins,
   scrutinsClassifications,
   syncRuns,
 } from "@open-hemicycle/db";
-import type { ClassificationResult } from "@open-hemicycle/core";
-import { PROMPT_VERSION } from "@open-hemicycle/core";
+import {
+  confidenceToBasisPoints,
+  PROMPT_VERSION,
+  type ClassificationResult,
+} from "@open-hemicycle/core";
 import { classifyScrutin } from "../enrichissement/classify-scrutin.ts";
-
-function confidenceToBasisPoints(confidence: number): number {
-  return Math.round(Math.max(0, Math.min(1, confidence)) * 10_000);
-}
 
 export async function upsertScrutinClassification(
   scrutinId: string,
@@ -55,17 +54,24 @@ export async function upsertScrutinClassification(
 export async function jobClassifyScrutinsSansDossier(opts?: {
   limit?: number;
   dryRun?: boolean;
+  promptVersion?: string;
 }): Promise<void> {
   const db = getDb();
   const limit = opts?.limit ?? 50;
   const dryRun = opts?.dryRun ?? !process.env.OPENROUTER_API_KEY?.trim();
+  const promptVersion = opts?.promptVersion ?? PROMPT_VERSION;
 
   const [run] = await db
     .insert(syncRuns)
-    .values({ dataset: "classify-scrutins", notes: `limit=${limit} dryRun=${dryRun}` })
+    .values({
+      dataset: "classify-scrutins",
+      notes: `limit=${limit} dryRun=${dryRun} prompt=${promptVersion}`,
+    })
     .returning({ id: syncRuns.id });
 
-  console.log(`\n[classify:scrutins] démarrage (limit=${limit}, dryRun=${dryRun})\n`);
+  console.log(
+    `\n[classify:scrutins] démarrage (limit=${limit}, dryRun=${dryRun}, prompt=${promptVersion})\n`,
+  );
 
   const rows = await db
     .select({
@@ -75,14 +81,28 @@ export async function jobClassifyScrutinsSansDossier(opts?: {
       objet: scrutins.objet,
     })
     .from(scrutins)
-    .where(isNull(scrutins.dossierId))
+    .leftJoin(
+      scrutinsClassifications,
+      and(
+        eq(scrutinsClassifications.scrutinId, scrutins.id),
+        eq(scrutinsClassifications.promptVersion, promptVersion),
+      ),
+    )
+    .where(
+      and(
+        isNull(scrutins.dossierId),
+        isNull(scrutinsClassifications.scrutinId),
+      ),
+    )
     .limit(limit);
 
   let processed = 0;
   let errors = 0;
+  let skipped = 0;
 
   for (const row of rows) {
     if (!row.titre?.trim()) {
+      skipped += 1;
       console.warn(`[classify:scrutins] skip ${row.uidAn} — titre absent`);
       continue;
     }
@@ -95,7 +115,7 @@ export async function jobClassifyScrutinsSansDossier(opts?: {
         await upsertScrutinClassification(
           row.id,
           out.model,
-          out.promptVersion ?? PROMPT_VERSION,
+          out.promptVersion ?? promptVersion,
           out.result,
         );
       }
@@ -115,8 +135,11 @@ export async function jobClassifyScrutinsSansDossier(opts?: {
       finishedAt: sql`now()`,
       recordsProcessed: processed,
       errors,
+      notes: `limit=${limit} dryRun=${dryRun} prompt=${promptVersion} skipped=${skipped}`,
     })
     .where(eq(syncRuns.id, run!.id));
 
-  console.log(`\n[classify:scrutins] terminé — traités=${processed} erreurs=${errors}\n`);
+  console.log(
+    `\n[classify:scrutins] terminé — traités=${processed} ignorés=${skipped} erreurs=${errors}\n`,
+  );
 }
