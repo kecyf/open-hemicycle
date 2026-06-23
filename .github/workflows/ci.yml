@@ -38,6 +38,12 @@ jobs:
       - name: Tests unitaires (fonctions pures)
         run: pnpm -r run test
 
+      - name: Validation ETL offline (taxonomie, thèmes, enrichissement)
+        run: |
+          pnpm etl validate:taxonomie
+          pnpm etl validate:themes
+          pnpm etl validate:enrichissement
+
       # Le frontend est en `force-dynamic` : aucune requête base au build,
       # donc pas besoin de DATABASE_URL ici. Le build inclut le lint Next/ESLint.
       - name: Build web

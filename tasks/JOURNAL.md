@@ -4,6 +4,30 @@ Entrées les plus récentes en haut. Le dépôt est la mémoire de l'agent : ce 
 
 ---
 
+## 2026-06-23 — Enrichissement LLM offline (4.8)
+
+🔔 Pour le superviseur :
+1. **`DATABASE_URL` cloud** : format OK mais **auth toujours en échec** (`password authentication failed for user "postgres"`) — mettre à jour le secret avec le rôle **`oh_agent`** et un mot de passe valide. `pnpm etl check:db` pour vérifier. Bloque `seed:themes` et `classify:scrutins` depuis le cloud.
+2. **Migration `scrutins_classifications`** : SQL prêt (`0001`) — **application prod = HITL** (DDL). Après application + secrets OK → `pnpm etl classify:scrutins --limit=50`.
+3. **`OPENROUTER_API_KEY`** : absent en cloud — requis pour classification live.
+4. **PR #19 (4.3b revendications)** : toujours DRAFT HITL, **1 commit derrière `main`** — rebaser + relecture superviseur avant merge.
+
+- **Objectif du jour** : durcir la couche 4.8 en mode cloud-safe (tests, CI, lecture atlas).
+- **Contexte** : `main` à jour (#30 seed taxonomie) ; DB cloud KO ; PR #19 HITL en attente.
+- **Fait** :
+  - **Core** : `resolveEffectiveThemeSlug` (dossier > LLM) + `confidenceToBasisPoints` ; 7 tests vitest.
+  - **ETL** : `classify:scrutins` ignore les scrutins déjà classifiés (prompt v1) ; 4 tests vitest (`classify-scrutin`, `prompt-v1`).
+  - **CI** : `validate:taxonomie`, `validate:themes`, `validate:enrichissement` exécutés à chaque PR.
+  - **Docs** : `enrichissement-llm.md` (lecture atlas + skip rejeu).
+  - **CI locale** : `pnpm typecheck` ✓, `pnpm test` ✓ (69/69), `pnpm build` ✓, validates ✓.
+- **Appris** : la couche 4.8 peut avancer sans DB ni OpenRouter — la CI bloque désormais toute régression sur l'échantillon-or.
+- **Bloqueurs** : credentials cloud DB + OpenRouter (superviseur) ; application migration DDL (HITL) ; relecture PR #19.
+- **Prochaine étape** : superviseur corrige secrets → `seed:themes` + run pilote `classify:scrutins` ; rebaser PR #19 ; brancher `resolveEffectiveThemeSlug` dans l'atlas web.
+- **Livraison** : PR en cours (auto-merge — logique pure + outillage, pas de surface nominative nouvelle).
+- **Commits** : `feat(core): resolveEffectiveThemeSlug + confidenceToBasisPoints` ; `feat(etl): skip déjà classifiés + tests vitest` ; `ci: validate ETL offline`.
+
+---
+
 ## 2026-06-21 — Seed thèmes taxonomie (4.7)
 
 🔔 Pour le superviseur :

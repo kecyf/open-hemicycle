@@ -13,7 +13,25 @@ import {
 /** Seuil minimal de confiance pour accepter une classification (cf. VISION.md). */
 export const CONFIDENCE_THRESHOLD = 0.75;
 
+/** Précision stockée en base (0–10 000 = 0,00–1,00). */
+export const CONFIDENCE_BASIS_POINTS_MAX = 10_000;
+
 export const PROMPT_VERSION = "v1";
+
+/** Convertit une confiance [0, 1] en points de base pour la persistance DB. */
+export function confidenceToBasisPoints(confidence: number): number {
+  return Math.round(
+    Math.max(0, Math.min(1, confidence)) * CONFIDENCE_BASIS_POINTS_MAX,
+  );
+}
+
+/** Convertit des points de base DB en confiance [0, 1]. */
+export function basisPointsToConfidence(basisPoints: number): number {
+  return (
+    Math.max(0, Math.min(CONFIDENCE_BASIS_POINTS_MAX, basisPoints)) /
+    CONFIDENCE_BASIS_POINTS_MAX
+  );
+}
 
 export interface ScrutinClassificationInput {
   uidAn: string;
