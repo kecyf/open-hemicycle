@@ -35,6 +35,9 @@ Le modèle **classe des faits publics** (titre/objet d'un scrutin). Il ne produi
 4. **Parse + filtre** : `parseLlmClassificationResponse` → `resolveClassification` (core).
 5. **Persistance** : table `scrutins_classifications` (upsert idempotent).
 6. **Mesure** : échantillon-or `classification-gold-sample.ts` + `pnpm etl validate:enrichissement`.
+7. **Lecture atlas (à venir)** : `resolveEffectiveThemeSlug` (core) — rattachement dossier prioritaire, sinon classification LLM si confiance ≥ seuil.
+
+Le job `classify:scrutins` **ignore** les scrutins déjà classifiés pour la `prompt_version` courante (rejeu idempotent).
 
 ### Commandes
 
