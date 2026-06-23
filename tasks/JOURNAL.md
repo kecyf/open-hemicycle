@@ -23,7 +23,7 @@ Entrées les plus récentes en haut. Le dépôt est la mémoire de l'agent : ce 
 - **Appris** : la couche 4.8 peut avancer sans DB ni OpenRouter — la CI bloque désormais toute régression sur l'échantillon-or.
 - **Bloqueurs** : credentials cloud DB + OpenRouter (superviseur) ; application migration DDL (HITL) ; relecture PR #19.
 - **Prochaine étape** : superviseur corrige secrets → `seed:themes` + run pilote `classify:scrutins` ; rebaser PR #19 ; brancher `resolveEffectiveThemeSlug` dans l'atlas web.
-- **Livraison** : PR en cours (auto-merge — logique pure + outillage, pas de surface nominative nouvelle).
+- **Livraison** : PR #31 mergée → prod.
 - **Commits** : `feat(core): resolveEffectiveThemeSlug + confidenceToBasisPoints` ; `feat(etl): skip déjà classifiés + tests vitest` ; `ci: validate ETL offline`.
 
 ---
