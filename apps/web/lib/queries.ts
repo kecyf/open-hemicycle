@@ -41,6 +41,7 @@ import {
   activiteJournaliere,
   type Position,
 } from "@open-hemicycle/db";
+import { dossierIdsForTheme, themeScrutinCondition } from "./theme-scrutin-filter.ts";
 
 const LEGISLATURE = Number(process.env.AN_LEGISLATURE ?? "17");
 
@@ -503,6 +504,7 @@ export async function getThemeAtlas(slug: string): Promise<ThemeAtlas | null> {
   if (!theme) return null;
 
   const dbSlug = resolveThemeSlugForDb(slug);
+  const themeFilter = await themeScrutinCondition(dbSlug);
   const db = getDb();
   const [allGroupes, rows, scrutinsRecents, totalScrutins] = await Promise.all([
     listGroupes(),
@@ -526,12 +528,7 @@ export async function getThemeAtlas(slug: string): Promise<ThemeAtlas | null> {
         ),
       )
       .innerJoin(groupesPolitiques, eq(groupesPolitiques.id, affiliationsGroupe.groupeId))
-      .where(
-        and(
-          eq(scrutins.legislature, LEGISLATURE),
-          inArray(scrutins.dossierId, dossierIdsForTheme(dbSlug)),
-        ),
-      )
+      .where(and(eq(scrutins.legislature, LEGISLATURE), themeFilter))
       .groupBy(
         votes.scrutinId,
         groupesPolitiques.id,
@@ -616,17 +613,6 @@ export async function getThemeAtlas(slug: string): Promise<ThemeAtlas | null> {
   return { theme, groupes, scrutinsRecents, totalScrutins };
 }
 
-/** Sous-requête : ids de dossiers rattachés à un thème (par slug pilote ou taxonomie). */
-function dossierIdsForTheme(slug: string) {
-  const dbSlug = resolveThemeSlugForDb(slug);
-  const db = getDb();
-  return db
-    .select({ id: dossiersThemes.dossierId })
-    .from(dossiersThemes)
-    .innerJoin(themes, eq(themes.id, dossiersThemes.themeId))
-    .where(eq(themes.slug, dbSlug));
-}
-
 export interface ScrutinRow {
   uidAn: string;
   numero: number | null;
@@ -658,11 +644,6 @@ function typeCondition(type?: TypeScrutinFiltre) {
         : undefined;
 }
 
-function themeCondition(theme?: string) {
-  if (!theme) return undefined;
-  return inArray(scrutins.dossierId, dossierIdsForTheme(resolveThemeSlugForDb(theme)));
-}
-
 export async function listScrutins(opts?: {
   type?: TypeScrutinFiltre;
   theme?: string;
@@ -672,6 +653,9 @@ export async function listScrutins(opts?: {
   const db = getDb();
   const limit = Math.min(opts?.limit ?? 50, 200);
   const offset = Math.max(opts?.offset ?? 0, 0);
+  const themeFilter = opts?.theme
+    ? await themeScrutinCondition(resolveThemeSlugForDb(opts.theme))
+    : undefined;
 
   return db
     .select({
@@ -690,7 +674,7 @@ export async function listScrutins(opts?: {
       and(
         eq(scrutins.legislature, LEGISLATURE),
         typeCondition(opts?.type),
-        themeCondition(opts?.theme),
+        themeFilter,
       ),
     )
     .orderBy(desc(scrutins.dateScrutin), desc(scrutins.numero))
@@ -704,6 +688,9 @@ export async function countScrutins(
   theme?: string,
 ): Promise<number> {
   const db = getDb();
+  const themeFilter = theme
+    ? await themeScrutinCondition(resolveThemeSlugForDb(theme))
+    : undefined;
   const [r] = await db
     .select({ n: sql<number>`count(*)::int` })
     .from(scrutins)
@@ -711,7 +698,7 @@ export async function countScrutins(
       and(
         eq(scrutins.legislature, LEGISLATURE),
         typeCondition(type),
-        themeCondition(theme),
+        themeFilter,
       ),
     );
   return r?.n ?? 0;

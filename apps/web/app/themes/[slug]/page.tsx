@@ -56,8 +56,12 @@ export default async function ThemeAtlasPage({
           <span className="font-medium text-foreground">
             {totalScrutins.toLocaleString("fr-FR")} scrutin{totalScrutins > 1 ? "s" : ""}
           </span>{" "}
-          rattaché{totalScrutins > 1 ? "s" : ""} à ce thème via les dossiers législatifs
-          officiels. Données : votes nominatifs publiés par l&apos;Assemblée nationale (17ᵉ
+          rattaché{totalScrutins > 1 ? "s" : ""} à ce thème (dossiers législatifs officiels en
+          priorité ; classification assistée pour les scrutins sans dossier, voir{" "}
+          <Link href="/methodologie" className="text-accent hover:underline">
+            méthodologie
+          </Link>
+          ). Données : votes nominatifs publiés par l&apos;Assemblée nationale (17ᵉ
           législature).
         </p>
         <Link
