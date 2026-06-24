@@ -23,7 +23,7 @@ Entrées les plus récentes en haut. Le dépôt est la mémoire de l'agent : ce 
 - **Appris** : l'atlas peut déployer la logique LLM avant migration/run — comportement identique à l'existant tant que la table n'existe pas.
 - **Bloqueurs** : credentials cloud DB + OpenRouter (superviseur) ; application migration DDL (HITL) ; relecture PR #19.
 - **Prochaine étape** : superviseur corrige secrets → migration DDL → `seed:themes` + run pilote `classify:scrutins` ; rebaser PR #19.
-- **Livraison** : PR en cours (auto-merge — logique requête, pas de surface nominative nouvelle).
+- **Livraison** : PR #32 mergée → prod (auto-merge, CI verte).
 - **Commits** : `feat(web): atlas lit resolveEffectiveThemeSlug (dossier > LLM)`.
 
 ---
