@@ -44,3 +44,15 @@ export function resolveEffectiveThemeSlug(
 
   return null;
 }
+
+/**
+ * Indique si un scrutin appartient au thème cible selon la règle dossier > LLM.
+ * Utilisé pour aligner la logique SQL atlas (4.8) sur le core testable.
+ */
+export function scrutinBelongsToEffectiveTheme(
+  targetTheme: ThemeSlugTaxonomie,
+  input: EffectiveThemeResolutionInput,
+  threshold = CONFIDENCE_THRESHOLD,
+): boolean {
+  return resolveEffectiveThemeSlug(input, threshold) === targetTheme;
+}

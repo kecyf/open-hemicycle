@@ -4,7 +4,10 @@ import {
   confidenceToBasisPoints,
   CONFIDENCE_BASIS_POINTS_MAX,
 } from "./classification-scrutin.ts";
-import { resolveEffectiveThemeSlug } from "./resolve-effective-theme.ts";
+import {
+  resolveEffectiveThemeSlug,
+  scrutinBelongsToEffectiveTheme,
+} from "./resolve-effective-theme.ts";
 
 describe("confidenceToBasisPoints", () => {
   it("convertit 0.75 en 7500 points", () => {
@@ -61,5 +64,34 @@ describe("resolveEffectiveThemeSlug", () => {
         llmConfidence: 0.95,
       }),
     ).toBeNull();
+  });
+});
+
+describe("scrutinBelongsToEffectiveTheme", () => {
+  it("inclut via dossier même si le LLM propose un autre thème", () => {
+    expect(
+      scrutinBelongsToEffectiveTheme("finances-controle-budgetaire", {
+        dossierThemeSlug: "budget-finances",
+        llmThemeSlug: "defense-forces-armees",
+        llmConfidence: 0.99,
+      }),
+    ).toBe(true);
+    expect(
+      scrutinBelongsToEffectiveTheme("defense-forces-armees", {
+        dossierThemeSlug: "budget-finances",
+        llmThemeSlug: "defense-forces-armees",
+        llmConfidence: 0.99,
+      }),
+    ).toBe(false);
+  });
+
+  it("inclut via LLM seulement sans thème dossier", () => {
+    expect(
+      scrutinBelongsToEffectiveTheme("defense-forces-armees", {
+        dossierThemeSlug: null,
+        llmThemeSlug: "defense-forces-armees",
+        llmConfidence: 0.8,
+      }),
+    ).toBe(true);
   });
 });
