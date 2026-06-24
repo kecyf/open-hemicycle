@@ -4,6 +4,30 @@ Entrées les plus récentes en haut. Le dépôt est la mémoire de l'agent : ce 
 
 ---
 
+## 2026-06-24 — Lecture atlas : resolveEffectiveThemeSlug (4.8)
+
+🔔 Pour le superviseur :
+1. **`DATABASE_URL` cloud** : format OK mais **auth toujours en échec** (`password authentication failed for user "postgres"`) — mettre à jour le secret avec le rôle **`oh_agent`** et un mot de passe valide. `pnpm etl check:db` pour vérifier. Bloque `seed:themes` et `classify:scrutins` depuis le cloud.
+2. **Migration `scrutins_classifications`** : SQL prêt (`0001`) — **application prod = HITL** (DDL). Après application + secrets OK → `pnpm etl classify:scrutins --limit=50`. L'atlas web bascule automatiquement sur les classifications LLM une fois la table peuplée (dégradation gracieuse tant qu'elle est absente).
+3. **`OPENROUTER_API_KEY`** : absent en cloud — requis pour classification live.
+4. **PR #19 (4.3b revendications)** : toujours DRAFT HITL — rebaser + relecture superviseur avant merge.
+
+- **Objectif du jour** : brancher `resolveEffectiveThemeSlug` dans l'atlas web (couche 4.8).
+- **Contexte** : `main` à jour (#31 durcissement offline) ; DB cloud KO ; PR #19 HITL en attente.
+- **Fait** :
+  - **Web** : `themeScrutinCondition` — filtre combiné dossier + classifications LLM (prompt v1, seuil 0,75) ; dégradation si table absente.
+  - **Core** : `scrutinBelongsToEffectiveTheme` + 2 tests vitest.
+  - **UI** : copie atlas mentionne classification assistée (lien méthodologie).
+  - **Docs** : `enrichissement-llm.md` — lecture atlas documentée.
+  - **CI locale** : `pnpm typecheck` ✓, `pnpm test` ✓ (71/71), `pnpm build` ✓.
+- **Appris** : l'atlas peut déployer la logique LLM avant migration/run — comportement identique à l'existant tant que la table n'existe pas.
+- **Bloqueurs** : credentials cloud DB + OpenRouter (superviseur) ; application migration DDL (HITL) ; relecture PR #19.
+- **Prochaine étape** : superviseur corrige secrets → migration DDL → `seed:themes` + run pilote `classify:scrutins` ; rebaser PR #19.
+- **Livraison** : PR en cours (auto-merge — logique requête, pas de surface nominative nouvelle).
+- **Commits** : `feat(web): atlas lit resolveEffectiveThemeSlug (dossier > LLM)`.
+
+---
+
 ## 2026-06-23 — Enrichissement LLM offline (4.8)
 
 🔔 Pour le superviseur :

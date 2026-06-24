@@ -14,6 +14,7 @@ Catégories : `Ajouté` · `Modifié` · `Corrigé` · `Supprimé` · `Données`
 ## [Non publié]
 
 ### Ajouté
+- **Atlas web + enrichissement LLM (4.8)** : `themeScrutinCondition` (web) applique `resolveEffectiveThemeSlug` — dossier prioritaire, classifications LLM si confiance ≥ seuil ; dégradation gracieuse si migration absente ; `scrutinBelongsToEffectiveTheme` (core).
 - **Enrichissement LLM (4.8 — durcissement offline)** : `resolveEffectiveThemeSlug` (dossier > LLM) ; `confidenceToBasisPoints` / `basisPointsToConfidence` (core) ; job `classify:scrutins` ignore les scrutins déjà classifiés pour la version de prompt ; tests vitest ETL (`classify-scrutin`, `prompt-v1`) ; CI exécute `validate:taxonomie`, `validate:themes`, `validate:enrichissement`.
 - **Seed thèmes taxonomie (4.7)** : `packages/etl/src/data/themes.ts` basculé sur les 8 slugs commissions AN ; `seed:themes` détache les liens pilotes dépréciés ; `pnpm etl validate:themes`.
 - **Résolution slugs pilote → taxonomie** : `theme-slug-resolution.ts` (canonical URL, requêtes DB, enrichissement libellés) ; redirection `/themes/budget-finances` → `/themes/finances-controle-budgetaire` ; filtres scrutins acceptent les deux slugs ; 6 tests vitest.
