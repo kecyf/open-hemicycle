@@ -3,6 +3,7 @@ import {
   enrichThemeRowForDisplay,
   getCanonicalThemeSlug,
   isDeprecatedPilotThemeSlug,
+  isKnownThemeSlug,
   resolveThemeSlugForDb,
 } from "./theme-slug-resolution.ts";
 import { THEME_SLUGS_PILOTE } from "./data/theme-slugs.ts";
@@ -55,5 +56,11 @@ describe("theme-slug-resolution", () => {
   it("isDeprecatedPilotThemeSlug identifie les slugs pilotes", () => {
     expect(isDeprecatedPilotThemeSlug("agriculture")).toBe(true);
     expect(isDeprecatedPilotThemeSlug("finances-controle-budgetaire")).toBe(false);
+  });
+
+  it("isKnownThemeSlug accepte taxonomie et pilotes dépréciés", () => {
+    expect(isKnownThemeSlug("affaires-economiques")).toBe(true);
+    expect(isKnownThemeSlug("agriculture")).toBe(true);
+    expect(isKnownThemeSlug("invente")).toBe(false);
   });
 });

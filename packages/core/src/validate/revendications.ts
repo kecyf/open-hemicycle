@@ -3,8 +3,8 @@
  * Ne juge pas le fond éditorial — vérifie cohérence technique et traçabilité minimale.
  */
 
-import { isThemeSlugPilote } from "../data/theme-slugs.ts";
 import type { DeputeThemesRevendiques, ThemeRevendiqueClaim } from "../data/themes-revendiques.ts";
+import { isKnownThemeSlug } from "../theme-slug-resolution.ts";
 
 export interface RevendicationValidationIssue {
   path: string;
@@ -29,10 +29,10 @@ export function validateThemeRevendiqueClaim(
 ): RevendicationValidationIssue[] {
   const issues: RevendicationValidationIssue[] = [];
 
-  if (!isThemeSlugPilote(claim.themeSlug)) {
+  if (!isKnownThemeSlug(claim.themeSlug)) {
     issues.push({
       path: `${path}.themeSlug`,
-      message: `slug thème inconnu : « ${claim.themeSlug} » (attendu : pilote THEMES)`,
+      message: `slug thème inconnu : « ${claim.themeSlug} » (attendu : taxonomie ou pilote déprécié)`,
     });
   }
 

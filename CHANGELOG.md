@@ -14,6 +14,7 @@ Catégories : `Ajouté` · `Modifié` · `Corrigé` · `Supprimé` · `Données`
 ## [Non publié]
 
 ### Ajouté
+- **Tests validate enrichissement (4.8 offline)** : vitest `validate/enrichissement.test.ts` (structure échantillon-or, prédictions benchmark).
 - **Atlas web + enrichissement LLM (4.8)** : `themeScrutinCondition` (web) applique `resolveEffectiveThemeSlug` — dossier prioritaire, classifications LLM si confiance ≥ seuil ; dégradation gracieuse si migration absente ; `scrutinBelongsToEffectiveTheme` (core).
 - **Enrichissement LLM (4.8 — durcissement offline)** : `resolveEffectiveThemeSlug` (dossier > LLM) ; `confidenceToBasisPoints` / `basisPointsToConfidence` (core) ; job `classify:scrutins` ignore les scrutins déjà classifiés pour la version de prompt ; tests vitest ETL (`classify-scrutin`, `prompt-v1`) ; CI exécute `validate:taxonomie`, `validate:themes`, `validate:enrichissement`.
 - **Seed thèmes taxonomie (4.7)** : `packages/etl/src/data/themes.ts` basculé sur les 8 slugs commissions AN ; `seed:themes` détache les liens pilotes dépréciés ; `pnpm etl validate:themes`.
@@ -27,6 +28,7 @@ Catégories : `Ajouté` · `Modifié` · `Corrigé` · `Supprimé` · `Données`
 - **`tasks/supervisor-inbox.md`** : fichier append-only pour les décisions du superviseur, lu par l'agent au standup.
 
 ### Modifié
+- **Revendications + taxonomie (4.3b infra)** : `isKnownThemeSlug` ; `validate:revendications` accepte slugs taxonomie ; `hasThemeRevendique` et requêtes web résolvent via `resolveThemeSlugForDb`.
 - **`resolveThemeSlugForDb`** : requêtes DB sur slugs taxonomie (pilote déprécié → taxonomie).
 - **Boucle autonomie (hygiène PR)** : checklist post-PR dans `daily-standup` et `AGENTS.md` §6 ter (`gh pr ready`, vérif conflits, auto-merge) ; distinction journal « PR ouverte (HITL) » vs « PR mergée → prod ».
 - **Réorientation produit (2026-06-15)** : produit phare = **atlas des positionnements par thème** (niveau groupe, non nominatif) ; abandon explicite du « score » de confiance/honnêteté ; entrée principale par le thème. `VISION.md`, `ROADMAP.md`, `tasks/BACKLOG.md` (tâches 4.6–4.9) mis à jour.
