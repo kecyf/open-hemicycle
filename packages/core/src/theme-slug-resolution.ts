@@ -7,9 +7,15 @@
 
 import {
   getThemeTaxonomieBySlug,
+  isThemeSlugTaxonomie,
   PILOT_TO_TAXONOMIE_SLUG,
 } from "./data/theme-taxonomie.ts";
 import { isThemeSlugPilote } from "./data/theme-slugs.ts";
+
+/** Slug thème reconnu (taxonomie ou pilote déprécié). */
+export function isKnownThemeSlug(slug: string): boolean {
+  return isThemeSlugTaxonomie(slug) || isThemeSlugPilote(slug);
+}
 
 export interface ThemeDisplayRow {
   slug: string;

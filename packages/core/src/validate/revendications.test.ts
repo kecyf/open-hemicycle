@@ -10,6 +10,19 @@ describe("validate revendications", () => {
     expect(validateRevendicationsThematiques(REVENDICATIONS_THEMATIQUES)).toEqual([]);
   });
 
+  it("accepte slug taxonomie", () => {
+    const issues = validateThemeRevendiqueClaim(
+      {
+        themeSlug: "affaires-economiques",
+        sourceUrl: "https://www.assemblee-nationale.fr/",
+        sourceDate: "2026-01-01",
+        libelle: "Exemple neutre sourcé.",
+      },
+      "test",
+    );
+    expect(issues).toEqual([]);
+  });
+
   it("détecte slug thème inconnu", () => {
     const issues = validateThemeRevendiqueClaim(
       {

@@ -366,7 +366,7 @@ export async function getComparaisonsParticipationThemesRevendiques(
   if (claims.length === 0) return [];
 
   const db = getDb();
-  const themeSlugs = [...new Set(claims.map((c) => c.themeSlug))];
+  const themeSlugs = [...new Set(claims.map((c) => resolveThemeSlugForDb(c.themeSlug)))];
   const themeRows = await db
     .select({ slug: themes.slug, nom: themes.nom })
     .from(themes)
@@ -377,10 +377,11 @@ export async function getComparaisonsParticipationThemesRevendiques(
   const results: ComparaisonParticipationThemeRevendique[] = [];
 
   for (const claim of claims) {
-    const theme = await enregistrementsVotesDepute(deputeId, claim.themeSlug);
+    const dbSlug = resolveThemeSlugForDb(claim.themeSlug);
+    const theme = await enregistrementsVotesDepute(deputeId, dbSlug);
     results.push({
-      themeSlug: claim.themeSlug,
-      themeNom: nomBySlug.get(claim.themeSlug) ?? claim.themeSlug,
+      themeSlug: dbSlug,
+      themeNom: nomBySlug.get(dbSlug) ?? dbSlug,
       revendication: claim,
       comparaison: computeComparaisonParticipationTheme(theme, global),
     });

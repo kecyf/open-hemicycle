@@ -9,6 +9,8 @@
  * - Toute modification passe par une PR (traçable).
  */
 
+import { resolveThemeSlugForDb } from "../theme-slug-resolution.ts";
+
 export interface ThemeRevendiqueClaim {
   /** Slug du thème (cohérent avec `themes.slug` en base). */
   themeSlug: string;
@@ -36,5 +38,8 @@ export function getThemesRevendiques(deputeSlug: string): ThemeRevendiqueClaim[]
 
 /** `true` si le·la député·e revendique publiquement ce thème (source validée). */
 export function hasThemeRevendique(deputeSlug: string, themeSlug: string): boolean {
-  return getThemesRevendiques(deputeSlug).some((t) => t.themeSlug === themeSlug);
+  const dbSlug = resolveThemeSlugForDb(themeSlug);
+  return getThemesRevendiques(deputeSlug).some(
+    (t) => resolveThemeSlugForDb(t.themeSlug) === dbSlug,
+  );
 }
