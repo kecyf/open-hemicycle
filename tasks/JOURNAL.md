@@ -4,6 +4,30 @@ Entrées les plus récentes en haut. Le dépôt est la mémoire de l'agent : ce 
 
 ---
 
+## 2026-06-25 — Infra revendications taxonomie + rebase PR #19 (4.3b/4.8)
+
+🔔 Pour le superviseur :
+1. **`DATABASE_URL` cloud** : format OK mais **auth toujours en échec** (`password authentication failed for user "postgres"`) — mettre à jour le secret avec le rôle **`oh_agent`** et un mot de passe valide. `pnpm etl check:db` pour vérifier. Bloque `seed:themes` et `classify:scrutins` depuis le cloud.
+2. **Migration `scrutins_classifications`** : SQL prêt (`0001`) — **application prod = HITL** (DDL). Après application + secrets OK → `pnpm etl classify:scrutins --limit=50`.
+3. **`OPENROUTER_API_KEY`** : absent en cloud — requis pour classification live.
+4. **PR #19 (4.3b revendications)** : **rebasée sur `main`** (conflits CHANGELOG résolus) — toujours DRAFT HITL ; relecture superviseur requise avant merge. Migrer slugs pilote → taxonomie dans #19 après merge de l'infra (cette PR).
+
+- **Objectif du jour** : infra cloud-safe 4.3b (slugs taxonomie) + durcissement offline 4.8 + rebase PR #19.
+- **Contexte** : `main` à jour (#32 atlas LLM) ; DB cloud KO ; PR #19 en conflit depuis 10 jours.
+- **Fait** :
+  - **Core** : `isKnownThemeSlug` ; `validate:revendications` accepte taxonomie + pilotes dépréciés ; `hasThemeRevendique` résout via `resolveThemeSlugForDb`.
+  - **Web** : `getComparaisonsParticipationThemesRevendiques` résout slugs DB taxonomie.
+  - **Tests** : `validate/enrichissement.test.ts` (4 tests) ; `isKnownThemeSlug` + slug taxonomie dans revendications (73 tests core).
+  - **PR #19** : rebasée sur `main`, poussée (`cursor/proc-dure-daily-standup-c137`).
+  - **CI locale** : `pnpm typecheck` ✓, `pnpm test` ✓ (77/77), `pnpm build` ✓.
+- **Appris** : l'infra taxonomie pour revendications peut avancer sans DB ; PR #19 reste sur slugs pilotes jusqu'à merge de l'infra.
+- **Bloqueurs** : credentials cloud DB + OpenRouter (superviseur) ; application migration DDL (HITL) ; relecture PR #19.
+- **Prochaine étape** : superviseur corrige secrets → migration DDL → `seed:themes` + run pilote `classify:scrutins` ; merge infra puis migrer slugs PR #19 → taxonomie ; relecture HITL PR #19.
+- **Livraison** : PR en cours (auto-merge — infra pure, pas de surface nominative nouvelle).
+- **Commits** : `feat(core): revendications et validate enrichissement alignés taxonomie (4.3b/4.8)`.
+
+---
+
 ## 2026-06-24 — Lecture atlas : resolveEffectiveThemeSlug (4.8)
 
 🔔 Pour le superviseur :
