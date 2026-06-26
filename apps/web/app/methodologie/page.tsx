@@ -84,30 +84,40 @@ export default function MethodologiePage() {
       <Section titre="4. Classification thématique">
         <p>
           Les scrutins sont regroupés par <strong className="text-foreground">thème</strong> pour
-          permettre de suivre un sujet de bout en bout. Le rattachement se fait{" "}
-          <strong className="text-foreground">au niveau du dossier législatif</strong> (un scrutin
-          hérite du thème de son dossier), à partir du lien officiel scrutin → dossier publié par
-          l'Assemblée nationale.
+          permettre de suivre un sujet de bout en bout. La nomenclature repose sur les{" "}
+          <strong className="text-foreground">8 commissions permanentes</strong> de l&apos;Assemblée
+          nationale (méthode anti-biais publiée dans le dépôt).
         </p>
         <p>
-          La classification est <strong className="text-foreground">manuelle</strong> et suit une
-          règle <strong className="text-foreground">conservatrice</strong> : un dossier n'entre
-          dans un thème que si son <em>titre officiel</em> (verbatim AN) concerne sans ambiguïté le
-          cœur du thème. <strong className="text-foreground">En cas de doute, on n'inclut pas.</strong>{" "}
-          Un dossier peut n'appartenir à aucun thème.
+          Le rattachement principal se fait{" "}
+          <strong className="text-foreground">au niveau du dossier législatif</strong> (un scrutin
+          hérite du thème de son dossier), à partir du lien officiel scrutin → dossier publié par
+          l&apos;Assemblée nationale. Cette classification est{" "}
+          <strong className="text-foreground">manuelle et conservatrice</strong> : un dossier
+          n&apos;entre dans un thème que si son <em>titre officiel</em> (verbatim AN) concerne sans
+          ambiguïté le cœur du thème.{" "}
+          <strong className="text-foreground">En cas de doute, on n&apos;inclut pas.</strong>
+        </p>
+        <p>
+          Pour les scrutins <strong className="text-foreground">sans dossier législatif</strong>, une{" "}
+          <strong className="text-foreground">classification assistée</strong> (modèle + prompt
+          versionnés, seuil de confiance, fallback « non classé ») peut proposer un thème à partir
+          du titre et de l&apos;objet officiels. Le dossier reste{" "}
+          <strong className="text-foreground">prioritaire</strong> quand le lien existe. Voir{" "}
+          <code className="rounded bg-border/50 px-1.5 py-0.5 text-xs">docs/enrichissement-llm.md</code>{" "}
+          dans le dépôt.
         </p>
         <p className="text-sm text-muted">
-          Le mapping complet (thème → dossiers, avec leur titre officiel) est{" "}
+          Le mapping dossier → thème est{" "}
           <strong className="text-foreground">versionné et auditable</strong> dans le dépôt
-          (<code className="rounded bg-border/50 px-1.5 py-0.5 text-xs">packages/etl/src/data/themes.ts</code>) ;
-          toute modification passe par une revue. <strong className="text-foreground">Phase pilote :</strong>{" "}
-          deux thèmes seulement (« Budget &amp; finances publiques », « Sécurité &amp; immigration »),
-          la liste s'étoffera progressivement.
+          (<code className="rounded bg-border/50 px-1.5 py-0.5 text-xs">packages/etl/src/data/themes.ts</code>
+          ) ; toute modification passe par une revue. Les classifications assistées sont figées en
+          base (pas d&apos;appel à chaud sur le site).
         </p>
         <Callout>
           Un thème est un simple <strong className="text-foreground">regroupement neutre</strong>,
-          pas un jugement. Le périmètre est volontairement restreint et symétrique : aucun sujet
-          n'est mis en avant ni minoré, et le détail des dossiers retenus reste public.
+          pas un jugement. Le périmètre est symétrique : aucun sujet n&apos;est mis en avant ni
+          minoré, et le détail des rattachements reste public.
         </Callout>
       </Section>
 

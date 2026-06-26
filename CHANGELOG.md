@@ -28,6 +28,7 @@ Catégories : `Ajouté` · `Modifié` · `Corrigé` · `Supprimé` · `Données`
 - **`tasks/supervisor-inbox.md`** : fichier append-only pour les décisions du superviseur, lu par l'agent au standup.
 
 ### Modifié
+- **Pages méthodologie et thèmes (4.8 doc)** : copie alignée sur la taxonomie 8 commissions + classification assistée (dossier prioritaire) ; fin de la mention « phase pilote 2 thèmes ».
 - **Revendications + taxonomie (4.3b infra)** : `isKnownThemeSlug` ; `validate:revendications` accepte slugs taxonomie ; `hasThemeRevendique` et requêtes web résolvent via `resolveThemeSlugForDb`.
 - **`resolveThemeSlugForDb`** : requêtes DB sur slugs taxonomie (pilote déprécié → taxonomie).
 - **Boucle autonomie (hygiène PR)** : checklist post-PR dans `daily-standup` et `AGENTS.md` §6 ter (`gh pr ready`, vérif conflits, auto-merge) ; distinction journal « PR ouverte (HITL) » vs « PR mergée → prod ».
