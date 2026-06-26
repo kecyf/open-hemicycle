@@ -7,7 +7,7 @@ export const dynamic = "force-dynamic";
 export const metadata = {
   title: "Thèmes — Open Hémicycle",
   description:
-    "Explorez les scrutins regroupés par thème (classification éditoriale, manuelle et auditable).",
+    "Explorez les scrutins regroupés par thème (8 commissions AN, classification auditable et symétrique).",
 };
 
 export default async function ThemesPage() {
@@ -21,11 +21,10 @@ export default async function ThemesPage() {
         </Link>
         <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">Thèmes</h1>
         <p className="max-w-2xl text-base text-muted">
-          Regroupement des scrutins par grand sujet. Pour chaque thème, l&apos;atlas affiche le
-          positionnement agrégé de chaque groupe politique (votes nominatifs sourcés, symétrie
-          entre groupes). La classification est{" "}
-          <strong className="text-foreground">manuelle, conservatrice et auditable</strong>, faite
-          au niveau du dossier législatif — voir la{" "}
+          Regroupement des scrutins par grand sujet (8 commissions permanentes de l&apos;Assemblée
+          nationale). Pour chaque thème, l&apos;atlas affiche le positionnement agrégé de chaque
+          groupe politique (votes nominatifs sourcés, symétrie entre groupes). Rattachement
+          dossier prioritaire ; classification assistée pour les scrutins sans dossier — voir la{" "}
           <Link href="/methodologie" className="text-accent hover:underline">
             méthodologie
           </Link>
