@@ -41,7 +41,7 @@ import {
   activiteJournaliere,
   type Position,
 } from "@open-hemicycle/db";
-import { dossierIdsForTheme, themeScrutinCondition } from "./theme-scrutin-filter.ts";
+import { dossierIdsForTheme, getThemeScrutinSourceCounts, themeScrutinCondition } from "./theme-scrutin-filter.ts";
 
 const LEGISLATURE = Number(process.env.AN_LEGISLATURE ?? "17");
 
@@ -494,6 +494,12 @@ export interface ThemeAtlas {
   groupes: ThemeAtlasGroupe[];
   scrutinsRecents: ScrutinRow[];
   totalScrutins: number;
+  /** Répartition par source de rattachement (dossier officiel vs classification assistée). */
+  sourceCounts: {
+    viaDossier: number;
+    viaLlm: number;
+    llmAvailable: boolean;
+  };
 }
 
 /**
@@ -507,7 +513,7 @@ export async function getThemeAtlas(slug: string): Promise<ThemeAtlas | null> {
   const dbSlug = resolveThemeSlugForDb(slug);
   const themeFilter = await themeScrutinCondition(dbSlug);
   const db = getDb();
-  const [allGroupes, rows, scrutinsRecents, totalScrutins] = await Promise.all([
+  const [allGroupes, rows, scrutinsRecents, totalScrutins, sourceCounts] = await Promise.all([
     listGroupes(),
     db
       .select({
@@ -540,6 +546,7 @@ export async function getThemeAtlas(slug: string): Promise<ThemeAtlas | null> {
       ),
     listScrutins({ theme: dbSlug, limit: 15 }),
     countScrutins(undefined, dbSlug),
+    getThemeScrutinSourceCounts(dbSlug, LEGISLATURE),
   ]);
 
   const parGroupeScrutin = new Map<string, VentilationGroupeScrutin[]>();
@@ -611,7 +618,17 @@ export async function getThemeAtlas(slug: string): Promise<ThemeAtlas | null> {
     return sa.localeCompare(sb, "fr");
   });
 
-  return { theme, groupes, scrutinsRecents, totalScrutins };
+  return {
+    theme,
+    groupes,
+    scrutinsRecents,
+    totalScrutins,
+    sourceCounts: {
+      viaDossier: sourceCounts.viaDossier,
+      viaLlm: sourceCounts.viaLlm,
+      llmAvailable: sourceCounts.llmAvailable,
+    },
+  };
 }
 
 export interface ScrutinRow {

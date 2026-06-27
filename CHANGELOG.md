@@ -14,6 +14,7 @@ Catégories : `Ajouté` · `Modifié` · `Corrigé` · `Supprimé` · `Données`
 ## [Non publié]
 
 ### Ajouté
+- **Atlas thématique — transparence source (4.8)** : décompte par source de rattachement sur `/themes/[slug]` (dossier législatif vs classification assistée) ; `getThemeScrutinSourceCounts` + refactor `theme-scrutin-filter`.
 - **Tests validate enrichissement (4.8 offline)** : vitest `validate/enrichissement.test.ts` (structure échantillon-or, prédictions benchmark).
 - **Atlas web + enrichissement LLM (4.8)** : `themeScrutinCondition` (web) applique `resolveEffectiveThemeSlug` — dossier prioritaire, classifications LLM si confiance ≥ seuil ; dégradation gracieuse si migration absente ; `scrutinBelongsToEffectiveTheme` (core).
 - **Enrichissement LLM (4.8 — durcissement offline)** : `resolveEffectiveThemeSlug` (dossier > LLM) ; `confidenceToBasisPoints` / `basisPointsToConfidence` (core) ; job `classify:scrutins` ignore les scrutins déjà classifiés pour la version de prompt ; tests vitest ETL (`classify-scrutin`, `prompt-v1`) ; CI exécute `validate:taxonomie`, `validate:themes`, `validate:enrichissement`.

@@ -55,17 +55,15 @@ function dossierIdsWithAnyThemeLink() {
   return db.select({ id: dossiersThemes.dossierId }).from(dossiersThemes);
 }
 
-/** Condition Drizzle : scrutins rattachés au thème (dossier prioritaire sur LLM). */
-export async function themeScrutinCondition(themeSlug: string) {
-  const dbSlug = resolveThemeSlugForDb(themeSlug);
-  const viaDossier = inArray(scrutins.dossierId, dossierIdsForTheme(dbSlug));
+/** Condition Drizzle : scrutins rattachés via dossier législatif officiel. */
+export function dossierThemeScrutinCondition(dbSlug: string) {
+  return inArray(scrutins.dossierId, dossierIdsForTheme(dbSlug));
+}
 
-  if (!(await hasScrutinsClassificationsTable())) {
-    return viaDossier;
-  }
-
+/** Condition Drizzle : scrutins rattachés via classification LLM (sans dossier thématisé). */
+export function llmThemeScrutinCondition(dbSlug: string) {
   const db = getDb();
-  const viaLlm = and(
+  return and(
     inArray(
       scrutins.id,
       db
@@ -84,6 +82,58 @@ export async function themeScrutinCondition(themeSlug: string) {
       notInArray(scrutins.dossierId, dossierIdsWithAnyThemeLink()),
     ),
   );
+}
 
-  return or(viaDossier, viaLlm);
+export interface ThemeScrutinSourceCounts {
+  viaDossier: number;
+  viaLlm: number;
+  total: number;
+  /** Table `scrutins_classifications` présente (migration 0001). */
+  llmAvailable: boolean;
+}
+
+/** Compte les scrutins par source de rattachement (dossier vs classification assistée). */
+export async function getThemeScrutinSourceCounts(
+  themeSlug: string,
+  legislature: number,
+): Promise<ThemeScrutinSourceCounts> {
+  const dbSlug = resolveThemeSlugForDb(themeSlug);
+  const db = getDb();
+  const legislatureFilter = eq(scrutins.legislature, legislature);
+  const viaDossierFilter = dossierThemeScrutinCondition(dbSlug);
+
+  const [dossierRow] = await db
+    .select({ n: sql<number>`count(*)::int` })
+    .from(scrutins)
+    .where(and(legislatureFilter, viaDossierFilter));
+  const viaDossier = dossierRow?.n ?? 0;
+
+  const llmAvailable = await hasScrutinsClassificationsTable();
+  let viaLlm = 0;
+  if (llmAvailable) {
+    const [llmRow] = await db
+      .select({ n: sql<number>`count(*)::int` })
+      .from(scrutins)
+      .where(and(legislatureFilter, llmThemeScrutinCondition(dbSlug)));
+    viaLlm = llmRow?.n ?? 0;
+  }
+
+  return {
+    viaDossier,
+    viaLlm,
+    total: viaDossier + viaLlm,
+    llmAvailable,
+  };
+}
+
+/** Condition Drizzle : scrutins rattachés au thème (dossier prioritaire sur LLM). */
+export async function themeScrutinCondition(themeSlug: string) {
+  const dbSlug = resolveThemeSlugForDb(themeSlug);
+  const viaDossier = dossierThemeScrutinCondition(dbSlug);
+
+  if (!(await hasScrutinsClassificationsTable())) {
+    return viaDossier;
+  }
+
+  return or(viaDossier, llmThemeScrutinCondition(dbSlug));
 }
