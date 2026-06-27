@@ -20,7 +20,7 @@ Entrées les plus récentes en haut. Le dépôt est la mémoire de l'agent : ce 
 - **Appris** : l'UI atlas peut préparer la transparence LLM avant le premier run prod — le décompte LLM reste à 0 tant que la table n'est pas peuplée.
 - **Bloqueurs** : credentials cloud DB + OpenRouter (superviseur) ; application migration DDL (HITL) ; relecture PR #19.
 - **Prochaine étape** : superviseur corrige secrets → migration DDL → `seed:themes` + run pilote `classify:scrutins` ; relecture HITL PR #19.
-- **Livraison** : PR en cours (auto-merge — enrichissement page atlas existante, non nominatif).
+- **Livraison** : PR #35 mergée → prod (auto-merge, CI verte).
 - **Commits** : `feat(web): décompte source dossier/LLM sur atlas thématique (4.8)`.
 
 ---
