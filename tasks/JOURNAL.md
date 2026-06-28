@@ -21,7 +21,7 @@ Entrées les plus récentes en haut. Le dépôt est la mémoire de l'agent : ce 
 - **Appris** : la transparence source peut être préparée côté UI avant le premier run prod — les badges LLM n'apparaîtront qu'après migration + classification.
 - **Bloqueurs** : credentials cloud DB + OpenRouter (superviseur) ; application migration DDL (HITL) ; relecture PR #19.
 - **Prochaine étape** : superviseur corrige secrets → migration DDL → `seed:themes` + run pilote `classify:scrutins` ; relecture HITL PR #19.
-- **Livraison** : PR en cours (auto-merge — enrichissement transparence existante, non nominatif).
+- **Livraison** : PR #36 mergée → prod (auto-merge, CI verte).
 - **Commits** : `feat(web): source thématique dossier/LLM sur fiche scrutin (4.8)`.
 
 ---
