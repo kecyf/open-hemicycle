@@ -36,6 +36,7 @@ Le modèle **classe des faits publics** (titre/objet d'un scrutin). Il ne produi
 5. **Persistance** : table `scrutins_classifications` (upsert idempotent).
 6. **Mesure** : échantillon-or `classification-gold-sample.ts` + `pnpm etl validate:enrichissement`.
 7. **Lecture atlas** : `resolveEffectiveThemeSlug` (core) + `themeScrutinCondition` (web) — rattachement dossier prioritaire, sinon classification LLM si confiance ≥ seuil. Dégradation gracieuse si la migration n'est pas encore appliquée.
+8. **Fiche scrutin** : `getScrutinDetail` affiche les thèmes avec source (`dossier` | `llm`) ; badge « classification assistée » si applicable.
 
 Le job `classify:scrutins` **ignore** les scrutins déjà classifiés pour la `prompt_version` courante (rejeu idempotent).
 

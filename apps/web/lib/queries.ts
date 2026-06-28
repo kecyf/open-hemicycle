@@ -11,6 +11,9 @@ import {
   computeComptesMajoriteGroupeTheme,
   computeTauxAlignementGroupe,
   computeTauxParticipationTriple,
+  CONFIDENCE_THRESHOLD,
+  PROMPT_VERSION,
+  confidenceToBasisPoints,
   getThemesRevendiques,
   enrichThemeRowForDisplay,
   getCanonicalThemeSlug,
@@ -26,7 +29,7 @@ import {
   type VentilationGroupe,
   type VentilationGroupeScrutin,
 } from "@open-hemicycle/core";
-import { and, asc, desc, eq, inArray, isNull, sql } from "drizzle-orm";
+import { and, asc, desc, eq, gte, inArray, isNull, isNotNull, sql } from "drizzle-orm";
 import {
   getDb,
   deputes,
@@ -38,10 +41,18 @@ import {
   dossiersLegislatifs,
   themes,
   dossiersThemes,
+  scrutinsClassifications,
   activiteJournaliere,
   type Position,
 } from "@open-hemicycle/db";
-import { dossierIdsForTheme, getThemeScrutinSourceCounts, themeScrutinCondition } from "./theme-scrutin-filter.ts";
+import {
+  dossierIdsForTheme,
+  getThemeScrutinSourceCounts,
+  hasScrutinsClassificationsTable,
+  themeScrutinCondition,
+} from "./theme-scrutin-filter.ts";
+
+const CONFIDENCE_THRESHOLD_BP = confidenceToBasisPoints(CONFIDENCE_THRESHOLD);
 
 const LEGISLATURE = Number(process.env.AN_LEGISLATURE ?? "17");
 
@@ -743,14 +754,21 @@ export interface DossierLien {
   urlAn: string | null;
 }
 
+/** Rattachement thématique d'un scrutin, avec source vérifiable (dossier prioritaire sur LLM). */
+export interface ScrutinThemeLink {
+  slug: string;
+  nom: string;
+  source: "dossier" | "llm";
+}
+
 export interface ScrutinDetail extends ScrutinRow {
   groupes: GroupeVentilation[];
   /** Total de positions nominatives enregistrées (tous groupes confondus). */
   totalNominatif: number;
   /** Dossier législatif rattaché (null si scrutin de procédure / non rattaché). */
   dossier: DossierLien | null;
-  /** Thèmes hérités du dossier (classification éditoriale). */
-  themes: { slug: string; nom: string }[];
+  /** Thèmes effectifs (dossier législatif ou classification assistée). */
+  themes: ScrutinThemeLink[];
 }
 
 /**
@@ -797,7 +815,7 @@ export async function getScrutinDetail(uidAn: string): Promise<ScrutinDetail | n
       }
     : null;
 
-  const themesRows = meta.dossierId
+  const dossierThemeRows = meta.dossierId
     ? await db
         .select({ slug: themes.slug, nom: themes.nom })
         .from(dossiersThemes)
@@ -805,6 +823,37 @@ export async function getScrutinDetail(uidAn: string): Promise<ScrutinDetail | n
         .where(eq(dossiersThemes.dossierId, meta.dossierId))
         .orderBy(asc(themes.nom))
     : [];
+
+  const themeLinks: ScrutinThemeLink[] = dossierThemeRows.map((t) => ({
+    slug: t.slug,
+    nom: t.nom,
+    source: "dossier",
+  }));
+
+  if (
+    themeLinks.length === 0 &&
+    (await hasScrutinsClassificationsTable())
+  ) {
+    const [llmRow] = await db
+      .select({
+        slug: scrutinsClassifications.themeSlug,
+        nom: themes.nom,
+      })
+      .from(scrutinsClassifications)
+      .innerJoin(themes, eq(themes.slug, scrutinsClassifications.themeSlug))
+      .where(
+        and(
+          eq(scrutinsClassifications.scrutinId, meta.id),
+          eq(scrutinsClassifications.promptVersion, PROMPT_VERSION),
+          gte(scrutinsClassifications.confidence, CONFIDENCE_THRESHOLD_BP),
+          isNotNull(scrutinsClassifications.themeSlug),
+        ),
+      )
+      .limit(1);
+    if (llmRow?.slug && llmRow.nom) {
+      themeLinks.push({ slug: llmRow.slug, nom: llmRow.nom, source: "llm" });
+    }
+  }
 
   const rows = await db
     .select({
@@ -874,7 +923,7 @@ export async function getScrutinDetail(uidAn: string): Promise<ScrutinDetail | n
     groupes,
     totalNominatif,
     dossier,
-    themes: themesRows,
+    themes: themeLinks,
   };
 }
 

@@ -4,6 +4,28 @@ Entrées les plus récentes en haut. Le dépôt est la mémoire de l'agent : ce 
 
 ---
 
+## 2026-06-28 — Fiche scrutin : source thématique dossier/LLM (4.8)
+
+🔔 Pour le superviseur :
+1. **`DATABASE_URL` cloud** : format OK mais **auth toujours en échec** (`password authentication failed for user "postgres"`) — mettre à jour le secret avec le rôle **`oh_agent`** et un mot de passe valide. `pnpm etl check:db` pour vérifier. Bloque `seed:themes` et `classify:scrutins` depuis le cloud.
+2. **Migration `scrutins_classifications`** : SQL prêt (`0001`) — **application prod = HITL** (DDL). Après application + secrets OK → `pnpm etl classify:scrutins --limit=50`.
+3. **`OPENROUTER_API_KEY`** : absent en cloud — requis pour classification live.
+4. **PR #19 (4.3b revendications)** : toujours DRAFT HITL — relecture superviseur requise avant merge (indicateur nominatif).
+
+- **Objectif du jour** : transparence source sur la fiche scrutin (dossier vs classification assistée, 4.8).
+- **Contexte** : `main` à jour (#35 décompte source atlas) ; DB cloud KO (auth postgres) ; PR #19 HITL en attente ; pas de PR bloquante CI rouge.
+- **Fait** :
+  - **Web** : `ScrutinThemeLink` + `getScrutinDetail` lit la classification LLM si table présente et dossier non thématisé ; badge « classification assistée » sur `/scrutins/[uid]`.
+  - **Docs** : `METHODOLOGY.md` §5 (classification assistée déployée progressivement) ; `enrichissement-llm.md` pipeline étape fiche scrutin.
+  - **CI locale** : `pnpm typecheck` ✓, `pnpm test` ✓ (77/77), `pnpm build` ✓.
+- **Appris** : la transparence source peut être préparée côté UI avant le premier run prod — les badges LLM n'apparaîtront qu'après migration + classification.
+- **Bloqueurs** : credentials cloud DB + OpenRouter (superviseur) ; application migration DDL (HITL) ; relecture PR #19.
+- **Prochaine étape** : superviseur corrige secrets → migration DDL → `seed:themes` + run pilote `classify:scrutins` ; relecture HITL PR #19.
+- **Livraison** : PR en cours (auto-merge — enrichissement transparence existante, non nominatif).
+- **Commits** : `feat(web): source thématique dossier/LLM sur fiche scrutin (4.8)`.
+
+---
+
 ## 2026-06-27 — Atlas : décompte source dossier / classification LLM (4.8)
 
 🔔 Pour le superviseur :
