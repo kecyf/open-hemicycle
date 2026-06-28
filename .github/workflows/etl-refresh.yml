@@ -4,6 +4,7 @@ name: ETL Refresh
 # Exclut job:activite (DELETE + rebuild de activite_journaliere → HITL/agent).
 #
 # Secret requis : DATABASE_URL (rôle limité oh_agent, jamais postgres).
+# seed:themes exclu (DELETE sur dossiers_themes — réservé au superviseur via postgres).
 # À configurer dans GitHub → Settings → Secrets → Actions.
 
 on:
@@ -75,7 +76,6 @@ jobs:
           pnpm --filter @open-hemicycle/etl backfill:votes
           pnpm --filter @open-hemicycle/etl ingest:dossiers
           pnpm --filter @open-hemicycle/etl ingest:scrutins
-          pnpm --filter @open-hemicycle/etl seed:themes
 
       - name: Compteurs après
         id: after
@@ -96,5 +96,5 @@ jobs:
             echo "| Avant | \`${{ steps.before.outputs.stats }}\` |"
             echo "| Après | \`${{ steps.after.outputs.stats }}\` |"
             echo ""
-            echo "> Exclut \`job:activite\` (reconstruction heatmap = HITL). Connexion attendue : rôle \`oh_agent\`."
+            echo "> Exclut \`job:activite\` (reconstruction heatmap = HITL) et \`seed:themes\` (DELETE = postgres superviseur). Connexion : rôle \`oh_agent\`."
           } >> "$GITHUB_STEP_SUMMARY"
