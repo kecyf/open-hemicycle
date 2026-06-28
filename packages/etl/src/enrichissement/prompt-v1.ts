@@ -7,7 +7,9 @@
 import { PROMPT_VERSION } from "@open-hemicycle/core";
 import { THEMES_TAXONOMIE } from "@open-hemicycle/core";
 
-export const CLASSIFICATION_MODEL_DEFAULT = "google/gemini-2.0-flash-001";
+/** Modèle OpenRouter par défaut (override : OPENROUTER_MODEL). */
+export const CLASSIFICATION_MODEL_DEFAULT =
+  process.env.OPENROUTER_MODEL?.trim() || "google/gemini-2.5-flash";
 
 export interface PromptBuildInput {
   titre: string;

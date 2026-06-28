@@ -31,7 +31,7 @@ Le modèle **classe des faits publics** (titre/objet d'un scrutin). Il ne produi
 
 1. **Entrée** : `uid_an`, `titre`, `objet` (sources AN officielles).
 2. **Prompt v1** : liste exhaustive des 8 thèmes + consignes JSON (`packages/etl/src/enrichissement/prompt-v1.ts`).
-3. **Modèle par défaut** : `google/gemini-2.0-flash-001` via [OpenRouter](https://openrouter.ai/) (`temperature = 0`).
+3. **Modèle par défaut** : `google/gemini-2.5-flash` via [OpenRouter](https://openrouter.ai/) (`temperature = 0` ; override `OPENROUTER_MODEL`).
 4. **Parse + filtre** : `parseLlmClassificationResponse` → `resolveClassification` (core).
 5. **Persistance** : table `scrutins_classifications` (upsert idempotent).
 6. **Mesure** : échantillon-or `classification-gold-sample.ts` + `pnpm etl validate:enrichissement`.
