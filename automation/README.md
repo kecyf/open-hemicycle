@@ -26,8 +26,8 @@ Un workflow GitHub Actions rafraîchit les données **additives** chaque nuit, *
 
 - Fichier : [`.github/workflows/etl-refresh.yml`](../.github/workflows/etl-refresh.yml)
 - Cron : `30 4 * * *` UTC (~06:30 Paris) + déclenchement manuel (`workflow_dispatch`)
-- Commandes : `download` → `ingest:deputes` → `ingest:acteurs-historique` → `backfill:votes` → `ingest:dossiers` → `ingest:scrutins` → `seed:themes`
-- **Exclut** `job:activite` (DELETE + rebuild de `activite_journaliere` → HITL ou run agent explicite)
+- Commandes : `download` → `ingest:deputes` → `ingest:acteurs-historique` → `backfill:votes` → `ingest:dossiers` → `ingest:scrutins`
+- **Exclut** `seed:themes` (DELETE sur `dossiers_themes` → réservé superviseur/postgres) et `job:activite` (DELETE + rebuild de `activite_journaliere` → HITL ou run agent explicite)
 - Compteurs avant/après dans le job summary (`pnpm etl stats`)
 
 **Secret requis (action superviseur)** : `DATABASE_URL` dans GitHub → Settings → Secrets → Actions, chaîne pooler Supabase avec le rôle **`oh_agent`**.
