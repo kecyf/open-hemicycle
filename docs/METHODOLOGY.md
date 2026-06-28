@@ -144,12 +144,21 @@ Page publique **non nominative** : pour un thème donné, affiche le positionnem
 - **Phrase factuelle** : générée par `phrasePositionnementGroupe` (`packages/core/src/positionnement-theme.ts`) — effectifs, parts des votes exprimés, décompte des positions majoritaires du groupe scrutin par scrutin. Aucun adjectif moral.
 - **Symétrie** : tous les groupes de la législature sont listés (tri par sigle), y compris ceux sans vote sur le périmètre.
 - **Sources** : liste des scrutins récents cliquables (lien vers fiche scrutin + page officielle AN).
+- **Transparence source** : décompte « via dossier législatif » vs « via classification assistée » sur chaque page thème ; fiche scrutin indique la source du rattachement (badge « classification assistée » si applicable).
 - **Ce que ce n'est pas** : un score de loyauté, un classement « top des incohérents », ni une inférence sur des personnes.
+
+### Classification assistée (4.8 — déploiement progressif)
+
+Couche **figée, versionnée et auditable** pour rattacher les scrutins sans dossier thématisé (~80 % du corpus) :
+
+- **Règle de priorité** : rattachement dossier législatif > classification LLM (si confiance ≥ 0,75).
+- **Lecture** : `resolveEffectiveThemeSlug` (core) + `themeScrutinCondition` (web) ; dégradation gracieuse si la migration DB n'est pas encore appliquée.
+- **Transparence** : décompte par source sur l'atlas ; badge source sur la fiche scrutin.
+- **Détail technique** : [`docs/enrichissement-llm.md`](enrichissement-llm.md).
 
 ### Méthodes futures envisagées (par ordre de préférence)
 1. Métadonnées thématiques des dossiers législatifs (quand exploitables).
-2. **Classification assistée LLM (4.8 — en cours)** : modèle + prompt versionnés, seuil de confiance, fallback « non classé », précision mesurée sur échantillon-or. Voir [`docs/enrichissement-llm.md`](enrichissement-llm.md).
-3. Jamais de thème « deviné » sans trace vérifiable.
+2. Jamais de thème « deviné » sans trace vérifiable.
 
 ---
 

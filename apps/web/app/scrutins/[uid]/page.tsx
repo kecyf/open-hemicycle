@@ -68,16 +68,33 @@ export default async function ScrutinPage({
           {capitalize(scrutin.objet)}
         </h1>
         {scrutin.themes.length > 0 && (
-          <div className="flex flex-wrap items-center gap-2">
-            {scrutin.themes.map((t) => (
-              <Link
-                key={t.slug}
-                href={`/themes/${t.slug}`}
-                className="inline-flex items-center rounded-full border border-accent bg-accent/10 px-2.5 py-0.5 text-xs text-foreground transition-colors hover:bg-accent/20"
-              >
-                {t.nom}
-              </Link>
-            ))}
+          <div className="flex flex-col gap-2">
+            <div className="flex flex-wrap items-center gap-2">
+              {scrutin.themes.map((t) => (
+                <Link
+                  key={`${t.slug}-${t.source}`}
+                  href={`/themes/${t.slug}`}
+                  className="inline-flex items-center gap-1.5 rounded-full border border-accent bg-accent/10 px-2.5 py-0.5 text-xs text-foreground transition-colors hover:bg-accent/20"
+                >
+                  {t.nom}
+                  {t.source === "llm" && (
+                    <span className="rounded-full bg-muted/40 px-1.5 py-px text-[10px] font-normal text-muted">
+                      classification assistée
+                    </span>
+                  )}
+                </Link>
+              ))}
+            </div>
+            {scrutin.themes.some((t) => t.source === "llm") && (
+              <p className="text-xs text-muted">
+                Thème issu d&apos;une classification assistée (modèle + prompt versionnés, seuil
+                de confiance) — voir la{" "}
+                <Link href="/methodologie" className="text-accent hover:underline">
+                  méthodologie
+                </Link>
+                .
+              </p>
+            )}
           </div>
         )}
         {scrutin.dossier && (
