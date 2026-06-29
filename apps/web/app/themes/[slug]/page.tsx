@@ -3,6 +3,7 @@ import { notFound, redirect } from "next/navigation";
 import { getCanonicalThemeSlug, isDeprecatedPilotThemeSlug } from "@open-hemicycle/core";
 import { GroupeVentilationBar } from "../../_components/groupe-ventilation-bar";
 import { DataNotice } from "../../_components/data-notice";
+import { ThemeScrutinSourceNote } from "../../_components/theme-scrutin-source-note";
 import { getThemeAtlas } from "../../../lib/queries";
 import { capitalize, dateFr, sortBadge, typeLabel } from "../../../lib/scrutin-format";
 
@@ -52,46 +53,9 @@ export default async function ThemeAtlasPage({
         {theme.description && (
           <p className="max-w-2xl text-base text-muted">{theme.description}</p>
         )}
+        <ThemeScrutinSourceNote sourceCounts={sourceCounts} total={totalScrutins} />
         <p className="text-sm text-muted">
-          <span className="font-medium text-foreground">
-            {totalScrutins.toLocaleString("fr-FR")} scrutin{totalScrutins > 1 ? "s" : ""}
-          </span>{" "}
-          rattaché{totalScrutins > 1 ? "s" : ""} à ce thème :{" "}
-          <span className="font-medium text-foreground">
-            {sourceCounts.viaDossier.toLocaleString("fr-FR")}
-          </span>{" "}
-          via dossier législatif officiel
-          {sourceCounts.llmAvailable && sourceCounts.viaLlm > 0 && (
-            <>
-              ,{" "}
-              <span className="font-medium text-foreground">
-                {sourceCounts.viaLlm.toLocaleString("fr-FR")}
-              </span>{" "}
-              via classification assistée (modèle + prompt versionnés, seuil de confiance — voir{" "}
-              <Link href="/methodologie" className="text-accent hover:underline">
-                méthodologie
-              </Link>
-              )
-            </>
-          )}
-          {sourceCounts.llmAvailable && sourceCounts.viaLlm === 0 && (
-            <>
-              {" "}
-              (classification assistée activée mais aucun scrutin classifié pour ce thème pour
-              l&apos;instant)
-            </>
-          )}
-          {!sourceCounts.llmAvailable && (
-            <>
-              {" "}
-              (classification assistée pour les scrutins sans dossier — couche en déploiement, voir{" "}
-              <Link href="/methodologie" className="text-accent hover:underline">
-                méthodologie
-              </Link>
-              )
-            </>
-          )}
-          . Données : votes nominatifs publiés par l&apos;Assemblée nationale (17ᵉ législature).
+          Données : votes nominatifs publiés par l&apos;Assemblée nationale (17ᵉ législature).
         </p>
         <Link
           href={`/scrutins?theme=${theme.slug}`}
