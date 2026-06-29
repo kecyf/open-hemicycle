@@ -5,7 +5,11 @@ import {
   getThemeBySlug,
   type TypeScrutinFiltre,
 } from "../../lib/queries";
+import { getThemeScrutinSourceCounts } from "../../lib/theme-scrutin-filter";
 import { DataNotice } from "../_components/data-notice";
+import { ThemeScrutinSourceNote } from "../_components/theme-scrutin-source-note";
+
+const LEGISLATURE = Number(process.env.AN_LEGISLATURE ?? "17");
 import { capitalize, dateFr, sortBadge, typeLabel } from "../../lib/scrutin-format";
 
 export const dynamic = "force-dynamic";
@@ -40,10 +44,13 @@ export default async function ScrutinsPage({
   const page = Math.max(1, Number(sp.page ?? "1") || 1);
   const offset = (page - 1) * PAGE_SIZE;
 
-  const [scrutins, total, theme] = await Promise.all([
+  const [scrutins, total, theme, sourceCounts] = await Promise.all([
     listScrutins({ type, theme: themeSlug, limit: PAGE_SIZE, offset }),
     countScrutins(type, themeSlug),
     themeSlug ? getThemeBySlug(themeSlug) : Promise.resolve(null),
+    themeSlug
+      ? getThemeScrutinSourceCounts(themeSlug, LEGISLATURE)
+      : Promise.resolve(null),
   ]);
   const lastPage = Math.max(1, Math.ceil(total / PAGE_SIZE));
 
@@ -77,17 +84,25 @@ export default async function ScrutinsPage({
           Cliquez sur un scrutin pour voir le détail des votes par groupe.
         </p>
         {themeSlug && (
-          <div className="flex flex-wrap items-center gap-2 text-sm">
-            <span className="inline-flex items-center gap-2 rounded-full border border-accent bg-accent/10 px-3 py-1">
-              <span className="text-xs uppercase tracking-wider text-muted">Thème</span>
-              <span className="font-medium">{theme?.nom ?? themeSlug}</span>
-            </span>
-            <Link href="/scrutins" className="text-muted hover:text-foreground">
-              ✕ retirer le filtre
-            </Link>
-            <Link href="/themes" className="text-accent hover:underline">
-              tous les thèmes →
-            </Link>
+          <div className="flex flex-col gap-3">
+            <div className="flex flex-wrap items-center gap-2 text-sm">
+              <span className="inline-flex items-center gap-2 rounded-full border border-accent bg-accent/10 px-3 py-1">
+                <span className="text-xs uppercase tracking-wider text-muted">Thème</span>
+                <span className="font-medium">{theme?.nom ?? themeSlug}</span>
+              </span>
+              <Link href="/scrutins" className="text-muted hover:text-foreground">
+                ✕ retirer le filtre
+              </Link>
+              <Link href={`/themes/${themeSlug}`} className="text-accent hover:underline">
+                atlas du thème →
+              </Link>
+              <Link href="/themes" className="text-muted hover:text-foreground">
+                tous les thèmes
+              </Link>
+            </div>
+            {sourceCounts && (
+              <ThemeScrutinSourceNote sourceCounts={sourceCounts} total={total} />
+            )}
           </div>
         )}
       </header>

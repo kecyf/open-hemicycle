@@ -50,6 +50,7 @@ import {
   getThemeScrutinSourceCounts,
   hasScrutinsClassificationsTable,
   themeScrutinCondition,
+  type ThemeScrutinSourceCounts,
 } from "./theme-scrutin-filter.ts";
 
 const CONFIDENCE_THRESHOLD_BP = confidenceToBasisPoints(CONFIDENCE_THRESHOLD);
@@ -506,11 +507,7 @@ export interface ThemeAtlas {
   scrutinsRecents: ScrutinRow[];
   totalScrutins: number;
   /** Répartition par source de rattachement (dossier officiel vs classification assistée). */
-  sourceCounts: {
-    viaDossier: number;
-    viaLlm: number;
-    llmAvailable: boolean;
-  };
+  sourceCounts: ThemeScrutinSourceCounts;
 }
 
 /**
@@ -634,11 +631,7 @@ export async function getThemeAtlas(slug: string): Promise<ThemeAtlas | null> {
     groupes,
     scrutinsRecents,
     totalScrutins,
-    sourceCounts: {
-      viaDossier: sourceCounts.viaDossier,
-      viaLlm: sourceCounts.viaLlm,
-      llmAvailable: sourceCounts.llmAvailable,
-    },
+    sourceCounts,
   };
 }
 

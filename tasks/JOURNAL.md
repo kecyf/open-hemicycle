@@ -4,6 +4,27 @@ Entrées les plus récentes en haut. Le dépôt est la mémoire de l'agent : ce 
 
 ---
 
+## 2026-06-29 — Liste scrutins : transparence source thématique (4.8)
+
+🔔 Pour le superviseur :
+1. **`DATABASE_URL` cloud** : format OK, rôle `oh_agent` détecté mais **auth en échec** (`password authentication failed for user "oh_agent"`) — mettre à jour le mot de passe du secret. `pnpm etl check:db` pour vérifier. Bloque `seed:themes` et `classify:scrutins` depuis le cloud.
+2. **Migration `scrutins_classifications`** : SQL prêt (`0001`) — **application prod = HITL** (DDL). Après application + secrets OK → `pnpm etl classify:scrutins --limit=50`.
+3. **`OPENROUTER_API_KEY`** : absent en cloud — requis pour classification live.
+4. **PR #19 (4.3b revendications)** : toujours DRAFT HITL — relecture superviseur requise avant merge (indicateur nominatif).
+
+- **Objectif du jour** : transparence source sur la liste scrutins filtrée par thème (4.8).
+- **Contexte** : `main` à jour (#38 cron ETL) ; DB cloud KO (auth oh_agent) ; PR #19 HITL en attente ; pas de PR bloquante CI rouge.
+- **Fait** :
+  - **Web** : composant partagé `ThemeScrutinSourceNote` ; `/scrutins?theme=…` affiche le décompte dossier / classification assistée ; lien vers l'atlas du thème ; refactor atlas pour réutiliser le composant.
+  - **CI locale** : `pnpm typecheck` ✓, `pnpm test` ✓ (77/77), `pnpm build` ✓.
+- **Appris** : le rôle cloud est passé de `postgres` à `oh_agent` (progrès) mais le mot de passe reste invalide — le diagnostic `check:db` distingue bien format / auth / migration.
+- **Bloqueurs** : mot de passe `oh_agent` + OpenRouter (superviseur) ; application migration DDL (HITL) ; relecture PR #19.
+- **Prochaine étape** : superviseur corrige secrets → migration DDL → `seed:themes` + run pilote `classify:scrutins` ; relecture HITL PR #19.
+- **Livraison** : PR en cours (auto-merge — enrichissement transparence existante, non nominatif).
+- **Commits** : `feat(web): transparence source dossier/LLM sur liste scrutins (4.8)`.
+
+---
+
 ## 2026-06-28 — Fiche scrutin : source thématique dossier/LLM (4.8)
 
 🔔 Pour le superviseur :

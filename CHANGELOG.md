@@ -14,6 +14,7 @@ Catégories : `Ajouté` · `Modifié` · `Corrigé` · `Supprimé` · `Données`
 ## [Non publié]
 
 ### Ajouté
+- **Liste scrutins — transparence source (4.8)** : décompte dossier / classification assistée sur `/scrutins?theme=…` ; composant partagé `ThemeScrutinSourceNote` (atlas + liste).
 - **Fiche scrutin — source thématique (4.8)** : badges thème avec indication « classification assistée » quand le rattachement vient du LLM (dossier prioritaire) ; `ScrutinThemeLink` dans `getScrutinDetail`.
 - **Atlas thématique — transparence source (4.8)** : décompte par source de rattachement sur `/themes/[slug]` (dossier législatif vs classification assistée) ; `getThemeScrutinSourceCounts` + refactor `theme-scrutin-filter`.
 - **Tests validate enrichissement (4.8 offline)** : vitest `validate/enrichissement.test.ts` (structure échantillon-or, prédictions benchmark).
