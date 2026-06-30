@@ -459,11 +459,11 @@ export interface ThemeRow {
   slug: string;
   nom: string;
   description: string | null;
-  /** Nombre de scrutins rattachés (via leurs dossiers). */
+  /** Nombre de scrutins rattachés (dossier prioritaire + classification assistée si disponible). */
   nbScrutins: number;
 }
 
-/** Liste des thèmes avec le nombre de scrutins rattachés (via dossiers). */
+/** Liste des thèmes avec le nombre de scrutins rattachés (dossier + LLM, cf. themeScrutinCondition). */
 export async function listThemes(): Promise<ThemeRow[]> {
   const db = getDb();
   const rows = await db
@@ -471,21 +471,22 @@ export async function listThemes(): Promise<ThemeRow[]> {
       slug: themes.slug,
       nom: themes.nom,
       description: themes.description,
-      nbScrutins: sql<number>`count(distinct ${scrutins.id})::int`,
     })
-    .from(themes)
-    .leftJoin(dossiersThemes, eq(dossiersThemes.themeId, themes.id))
-    .leftJoin(scrutins, eq(scrutins.dossierId, dossiersThemes.dossierId))
-    .groupBy(themes.slug, themes.nom, themes.description)
-    .orderBy(desc(sql`count(distinct ${scrutins.id})`));
-  return rows.map((r) =>
-    enrichThemeRowForDisplay({
-      slug: r.slug,
-      nom: r.nom,
-      description: r.description,
-      nbScrutins: r.nbScrutins,
+    .from(themes);
+
+  const withCounts = await Promise.all(
+    rows.map(async (r) => {
+      const { total } = await getThemeScrutinSourceCounts(r.slug, LEGISLATURE);
+      return enrichThemeRowForDisplay({
+        slug: r.slug,
+        nom: r.nom,
+        description: r.description,
+        nbScrutins: total,
+      });
     }),
-  ) as ThemeRow[];
+  );
+
+  return withCounts.sort((a, b) => (b.nbScrutins ?? 0) - (a.nbScrutins ?? 0)) as ThemeRow[];
 }
 
 /** Un thème par slug (pilote ou taxonomie — résolution transparente). */
