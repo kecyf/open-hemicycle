@@ -1,3 +1,5 @@
+import type { DbCheckResult } from "@open-hemicycle/db";
+
 export type CiState = "success" | "failure" | "pending" | "unknown";
 
 export interface PullRequestSummary {
@@ -51,6 +53,7 @@ export interface AdminDashboardData {
   supervisorDecisions: SupervisorDecision[];
   deployments: DeploymentSummary[];
   agentRuns: AgentRunSummary[];
+  database: DbCheckResult;
   configured: {
     github: boolean;
     vercel: boolean;
