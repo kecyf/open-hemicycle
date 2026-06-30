@@ -14,6 +14,7 @@ Catégories : `Ajouté` · `Modifié` · `Corrigé` · `Supprimé` · `Données`
 ## [Non publié]
 
 ### Ajouté
+- **Admin — diagnostic DATABASE_URL** : panneau « Base de données » sur `/admin` (format, connexion, rôle, migration `scrutins_classifications`) ; `checkDatabase` partagé dans `@open-hemicycle/db`.
 - **Liste scrutins — transparence source (4.8)** : décompte dossier / classification assistée sur `/scrutins?theme=…` ; composant partagé `ThemeScrutinSourceNote` (atlas + liste).
 - **Fiche scrutin — source thématique (4.8)** : badges thème avec indication « classification assistée » quand le rattachement vient du LLM (dossier prioritaire) ; `ScrutinThemeLink` dans `getScrutinDetail`.
 - **Atlas thématique — transparence source (4.8)** : décompte par source de rattachement sur `/themes/[slug]` (dossier législatif vs classification assistée) ; `getThemeScrutinSourceCounts` + refactor `theme-scrutin-filter`.
@@ -31,6 +32,7 @@ Catégories : `Ajouté` · `Modifié` · `Corrigé` · `Supprimé` · `Données`
 - **`tasks/supervisor-inbox.md`** : fichier append-only pour les décisions du superviseur, lu par l'agent au standup.
 
 ### Modifié
+- **Index thèmes `/themes` (4.8)** : compteur de scrutins aligné sur `themeScrutinCondition` (dossier + classification assistée), cohérent avec l'atlas et la liste filtrée.
 - **Pages méthodologie et thèmes (4.8 doc)** : copie alignée sur la taxonomie 8 commissions + classification assistée (dossier prioritaire) ; fin de la mention « phase pilote 2 thèmes ».
 - **Revendications + taxonomie (4.3b infra)** : `isKnownThemeSlug` ; `validate:revendications` accepte slugs taxonomie ; `hasThemeRevendique` et requêtes web résolvent via `resolveThemeSlugForDb`.
 - **`resolveThemeSlugForDb`** : requêtes DB sur slugs taxonomie (pilote déprécié → taxonomie).
