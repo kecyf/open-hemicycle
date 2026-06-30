@@ -37,6 +37,8 @@ Le modèle **classe des faits publics** (titre/objet d'un scrutin). Il ne produi
 6. **Mesure** : échantillon-or `classification-gold-sample.ts` + `pnpm etl validate:enrichissement`.
 7. **Lecture atlas** : `resolveEffectiveThemeSlug` (core) + `themeScrutinCondition` (web) — rattachement dossier prioritaire, sinon classification LLM si confiance ≥ seuil. Dégradation gracieuse si la migration n'est pas encore appliquée.
 8. **Fiche scrutin** : `getScrutinDetail` affiche les thèmes avec source (`dossier` | `llm`) ; badge « classification assistée » si applicable.
+9. **Liste scrutins** : `/scrutins?theme=…` affiche le décompte par source (`ThemeScrutinSourceNote`) ; compteur aligné sur `themeScrutinCondition`.
+10. **Index thèmes** : `/themes` compte les scrutins via la même logique (dossier + LLM), pas uniquement les dossiers.
 
 Le job `classify:scrutins` **ignore** les scrutins déjà classifiés pour la `prompt_version` courante (rejeu idempotent).
 

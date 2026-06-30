@@ -3,6 +3,7 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { getAdminDashboardData } from "@/lib/admin/dashboard";
 import { AgentsPanel } from "./_components/agents-panel";
+import { DbStatusPanel } from "./_components/db-status-panel";
 import { DecisionForm } from "./_components/decision-form";
 import { DeploymentsPanel } from "./_components/deployments-panel";
 import { HitlPanel } from "./_components/hitl-panel";
@@ -32,6 +33,7 @@ export default async function AdminPage() {
         <Badge variant={data.configured.github ? "default" : "destructive"}>GitHub API</Badge>
         <Badge variant={data.configured.vercel ? "default" : "destructive"}>Vercel API</Badge>
         <Badge variant={data.configured.cursor ? "default" : "destructive"}>Cursor API</Badge>
+        <Badge variant={data.database.connected ? "default" : "destructive"}>DATABASE_URL</Badge>
       </div>
 
       <Tabs defaultValue="overview" className="space-y-4">
@@ -54,6 +56,7 @@ export default async function AdminPage() {
             <DeploymentsPanel deployments={data.deployments} />
             <AgentsPanel agentRuns={data.agentRuns} />
           </div>
+          <DbStatusPanel database={data.database} />
         </TabsContent>
 
         <TabsContent value="decision">

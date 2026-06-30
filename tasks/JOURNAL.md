@@ -4,6 +4,29 @@ Entrées les plus récentes en haut. Le dépôt est la mémoire de l'agent : ce 
 
 ---
 
+## 2026-06-30 — Index thèmes aligné + diagnostic DB admin (4.8)
+
+🔔 Pour le superviseur :
+1. **`DATABASE_URL` cloud** : format OK, rôle `oh_agent` détecté mais **auth en échec** (`password authentication failed for user "oh_agent"`) — mettre à jour le mot de passe du secret. Le panneau `/admin` affiche désormais l'état en direct. `pnpm etl check:db` pour vérifier. Bloque `seed:themes` et `classify:scrutins` depuis le cloud.
+2. **Migration `scrutins_classifications`** : SQL prêt (`0001`) — **application prod = HITL** (DDL). Après application + secrets OK → `pnpm etl classify:scrutins --limit=50`.
+3. **`OPENROUTER_API_KEY`** : absent en cloud — requis pour classification live.
+4. **PR #19 (4.3b revendications)** : toujours DRAFT HITL — relecture superviseur requise avant merge (indicateur nominatif).
+
+- **Objectif du jour** : aligner les compteurs `/themes` sur la logique dossier+LLM (4.8) + diagnostic DB visible dans l'admin.
+- **Contexte** : `main` à jour (#39 transparence liste scrutins) ; DB cloud KO (auth oh_agent) ; PR #19 HITL en attente ; pas de PR bloquante CI rouge.
+- **Fait** :
+  - **Web** : `listThemes()` utilise `getThemeScrutinSourceCounts` (cohérent avec atlas/liste/fiche) ; panneau `DbStatusPanel` sur `/admin` (format, connexion, rôle, migration).
+  - **DB** : `checkDatabase` extrait dans `@open-hemicycle/db` (partagé ETL + admin).
+  - **Docs** : `enrichissement-llm.md` étapes 9–10 (liste scrutins + index thèmes).
+  - **CI locale** : `pnpm typecheck` ✓, `pnpm test` ✓ (77/77), `pnpm build` ✓.
+- **Appris** : l'index `/themes` sous-comptait les scrutins (dossier seul) — incohérence corrigée avant le premier run LLM prod.
+- **Bloqueurs** : mot de passe `oh_agent` + OpenRouter (superviseur) ; application migration DDL (HITL) ; relecture PR #19.
+- **Prochaine étape** : superviseur corrige secrets → migration DDL → `seed:themes` + run pilote `classify:scrutins` ; relecture HITL PR #19.
+- **Livraison** : PR en cours (auto-merge — alignement compteurs + outillage admin, non nominatif).
+- **Commits** : `fix(web): aligner compteurs themes sur dossier+LLM (4.8)` ; `feat(admin): panneau diagnostic DATABASE_URL` ; `refactor(db): extraire checkDatabase partagé`.
+
+---
+
 ## 2026-06-29 — Liste scrutins : transparence source thématique (4.8)
 
 🔔 Pour le superviseur :
