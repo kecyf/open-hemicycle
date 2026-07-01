@@ -60,6 +60,13 @@ export function DbStatusPanel({ database }: { database: DbCheckResult }) {
             (HITL) avant le run <code className="text-xs">classify:scrutins</code>.
           </p>
         )}
+        {database.user === "oh_agent" && database.ohAgentEtlGrantsOk === false && (
+          <p className="text-muted-foreground">
+            Grants ETL incomplets — appliquer{" "}
+            <code className="text-xs">packages/db/drizzle/0002_oh_agent_grants.sql</code> (DELETE
+            sur affiliations_groupe / mandats pour le cron ingest).
+          </p>
+        )}
       </CardContent>
     </Card>
   );

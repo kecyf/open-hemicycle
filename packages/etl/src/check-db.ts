@@ -25,6 +25,11 @@ export async function runCheckDb(): Promise<void> {
   if (result.classificationsCount !== undefined) {
     console.log(`  classifications : ${result.classificationsCount}`);
   }
+  if (result.ohAgentEtlGrantsOk !== undefined) {
+    console.log(
+      `  grants ETL     : ${result.ohAgentEtlGrantsOk ? "OK (DELETE affiliations)" : "KO — appliquer packages/db/drizzle/0002_oh_agent_grants.sql"}`,
+    );
+  }
 
   if (!result.ok) {
     console.error(`\n[check:db] ÉCHEC — ${result.error}\n`);
