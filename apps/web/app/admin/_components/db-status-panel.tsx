@@ -40,6 +40,14 @@ export function DbStatusPanel({ database }: { database: DbCheckResult }) {
             </span>
           </p>
         )}
+        {database.classificationsCount !== undefined && (
+          <p>
+            Classifications LLM :{" "}
+            <span className="font-medium tabular-nums">
+              {database.classificationsCount.toLocaleString("fr-FR")}
+            </span>
+          </p>
+        )}
         {!database.ok && database.error && (
           <p className="rounded-lg border border-destructive/40 bg-destructive/10 p-3 text-destructive">
             {database.error}
