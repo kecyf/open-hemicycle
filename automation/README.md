@@ -11,8 +11,17 @@ Une Cursor Automation peut lancer un agent sur un planning (ex. tous les jours �
 3. Cible ce dépôt (`open-hemicycle`).
 4. Comme prompt, colle le contenu de [`automation/daily-prompt.md`](daily-prompt.md) (ou pointe dessus).
 5. Active l'outil **Open Pull Request** et les permissions GitHub App (Pull requests = write).
-6. Fournis `DATABASE_URL` dans **Cloud Agents → Secrets** (rôle limité `oh_agent`, jamais `postgres`).
+6. Fournis les secrets dans **Cloud Agents → Secrets** (voir § Secrets ci-dessous).
 7. L'agent travaille, journalise, ouvre une PR et auto-merge le travail sûr ; relis les entrées « 🔔 Pour le superviseur » dans `tasks/JOURNAL.md`.
+
+### Secrets (superviseur)
+
+| Secret | Où | Valeur |
+|--------|-----|--------|
+| `DATABASE_URL` | Cloud Agents + GitHub Actions | Chaîne **`.env.oh_agent`** (rôle `oh_agent`, pooler `:6543`) — **pas** le rôle `postgres` |
+| `OPENROUTER_API_KEY` | Cloud Agents (+ local `.env`) | Clé OpenRouter pour `classify:scrutins` live |
+
+Vérification : `pnpm etl check:db` doit afficher connexion OK, rôle `oh_agent`, grants ETL OK, table classif. OK.
 
 > Le superviseur humain garde la main : indicateurs sensibles, release majeure et nouvelle surface publique = merge HITL (voir `AGENTS.md` §3 et §6 ter).
 
@@ -30,7 +39,9 @@ Un workflow GitHub Actions rafraîchit les données **additives** chaque nuit, *
 - **Exclut** `seed:themes` (DELETE sur `dossiers_themes` → réservé superviseur/postgres) et `job:activite` (DELETE + rebuild de `activite_journaliere` → HITL ou run agent explicite)
 - Compteurs avant/après dans le job summary (`pnpm etl stats`)
 
-**Secret requis (action superviseur)** : `DATABASE_URL` dans GitHub → Settings → Secrets → Actions, chaîne pooler Supabase avec le rôle **`oh_agent`**.
+**Secret requis (action superviseur)** : `DATABASE_URL` dans GitHub → Settings → Secrets → Actions — **même chaîne que `.env.oh_agent`** (rôle `oh_agent`, jamais `postgres`).
+
+**Grants oh_agent** : le cron `ingest:deputes` nécessite DELETE sur `affiliations_groupe` et `mandats` — voir `packages/db/drizzle/0002_oh_agent_grants.sql` (appliqué une fois en prod via Supabase SQL Editor).
 
 ## Smoke prod post-merge
 

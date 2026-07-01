@@ -14,6 +14,7 @@ Catégories : `Ajouté` · `Modifié` · `Corrigé` · `Supprimé` · `Données`
 ## [Non publié]
 
 ### Ajouté
+- **GRANTs oh_agent ETL (0002)** : DELETE sur `affiliations_groupe` et `mandats` (cron `ingest:deputes`) ; `check:db` vérifie les grants pour le rôle `oh_agent`.
 - **Admin — readiness enrichissement LLM (4.8)** : panneau « Enrichissement LLM » sur `/admin` (clé OpenRouter, prompt/modèle, checklist migration+secrets, compteur classifications) ; badge `OpenRouter API` ; `checkDatabase` expose `classificationsCount`.
 - **Admin — diagnostic DATABASE_URL** : panneau « Base de données » sur `/admin` (format, connexion, rôle, migration `scrutins_classifications`) ; `checkDatabase` partagé dans `@open-hemicycle/db`.
 - **Liste scrutins — transparence source (4.8)** : décompte dossier / classification assistée sur `/scrutins?theme=…` ; composant partagé `ThemeScrutinSourceNote` (atlas + liste).
@@ -46,6 +47,9 @@ Catégories : `Ajouté` · `Modifié` · `Corrigé` · `Supprimé` · `Données`
 
 ### Garde-fous
 - **Couche d'enrichissement encadrée** : usage de modèles de langage autorisé pour *classer* des faits publics (scrutin → thème), jamais pour juger ou inférer une position individuelle. Sortie figée, versionnée, auditable et rejouable ; fallback « non classé » ; précision mesurée. Documenté dans `VISION.md`.
+
+### Données
+- **Classification LLM prod** : +100 scrutins classifiés (650 total en base) ; `seed:themes` taxonomie 8 commissions exécuté en prod.
 
 ---
 

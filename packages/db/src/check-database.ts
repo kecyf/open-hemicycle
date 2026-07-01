@@ -18,6 +18,8 @@ export interface DbCheckResult {
   scrutinsCount?: number;
   scrutinsClassificationsTable: boolean;
   classificationsCount?: number;
+  /** DELETE sur affiliations_groupe (requis pour ingest:deputes / cron ETL). */
+  ohAgentEtlGrantsOk?: boolean;
   error?: string;
 }
 
@@ -55,6 +57,16 @@ export async function checkDatabase(): Promise<DbCheckResult> {
       scrutinsClassificationsTable = false;
     }
 
+    let ohAgentEtlGrantsOk: boolean | undefined;
+    if (user === "oh_agent") {
+      const grants = await db.execute(sql`
+        SELECT count(*)::int AS c FROM information_schema.table_privileges
+        WHERE grantee = 'oh_agent' AND table_schema = 'public'
+          AND table_name = 'affiliations_groupe' AND privilege_type = 'DELETE'
+      `);
+      ohAgentEtlGrantsOk = (firstRow<{ c: number }>(grants)?.c ?? 0) > 0;
+    }
+
     return {
       ok: true,
       formatOk: true,
@@ -63,6 +75,7 @@ export async function checkDatabase(): Promise<DbCheckResult> {
       scrutinsCount,
       scrutinsClassificationsTable,
       classificationsCount,
+      ohAgentEtlGrantsOk,
     };
   } catch (err) {
     const message = (err as Error).message;

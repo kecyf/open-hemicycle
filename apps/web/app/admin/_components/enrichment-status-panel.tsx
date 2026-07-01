@@ -17,6 +17,10 @@ export function EnrichmentStatusPanel({
       ok: database.connected,
     },
     {
+      label: "Grants ETL oh_agent (DELETE affiliations/mandats)",
+      ok: database.ohAgentEtlGrantsOk !== false,
+    },
+    {
       label: "Migration scrutins_classifications (HITL)",
       ok: database.scrutinsClassificationsTable,
     },

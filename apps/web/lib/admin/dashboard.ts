@@ -36,6 +36,7 @@ export async function getAdminDashboardData(): Promise<AdminDashboardData> {
       readyForClassify:
         database.ok &&
         database.scrutinsClassificationsTable &&
+        database.ohAgentEtlGrantsOk !== false &&
         openRouterConfigured,
       classificationsCount: database.classificationsCount,
     },
