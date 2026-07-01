@@ -21,7 +21,7 @@ Entrées les plus récentes en haut. Le dépôt est la mémoire de l'agent : ce 
 - **Appris** : les 3 bloqueurs 4.8 (DB, migration, OpenRouter) sont désormais visibles côte à côte dans l'admin — même pattern que le diagnostic DB de la veille.
 - **Bloqueurs** : mot de passe `oh_agent` + OpenRouter (superviseur) ; application migration DDL (HITL) ; relecture PR #19.
 - **Prochaine étape** : superviseur corrige secrets → migration DDL → `seed:themes` + run pilote `classify:scrutins` ; relecture HITL PR #19.
-- **Livraison** : PR en cours (auto-merge — outillage admin + transparence bandeau, non nominatif).
+- **Livraison** : PR #41 mergée → prod (auto-merge — outillage admin + transparence bandeau, non nominatif).
 - **Commits** : `feat(admin): panneau readiness enrichissement LLM (4.8)` ; `feat(db): compteur classifications dans checkDatabase` ; `fix(web): transparence dossier/LLM dans DataNotice`.
 
 ---
