@@ -46,6 +46,15 @@ export interface AgentRunSummary {
   createdAt: string | null;
 }
 
+export interface EnrichmentStatus {
+  openRouterConfigured: boolean;
+  modelDefault: string;
+  promptVersion: string;
+  themeCount: number;
+  readyForClassify: boolean;
+  classificationsCount?: number;
+}
+
 export interface AdminDashboardData {
   openPullRequests: PullRequestSummary[];
   recentlyMergedPullRequests: PullRequestSummary[];
@@ -54,9 +63,11 @@ export interface AdminDashboardData {
   deployments: DeploymentSummary[];
   agentRuns: AgentRunSummary[];
   database: DbCheckResult;
+  enrichment: EnrichmentStatus;
   configured: {
     github: boolean;
     vercel: boolean;
     cursor: boolean;
+    openrouter: boolean;
   };
 }

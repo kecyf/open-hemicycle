@@ -4,6 +4,28 @@ Entrées les plus récentes en haut. Le dépôt est la mémoire de l'agent : ce 
 
 ---
 
+## 2026-07-01 — Readiness enrichissement LLM admin + transparence DataNotice (4.8)
+
+🔔 Pour le superviseur :
+1. **`DATABASE_URL` cloud** : format OK, rôle `oh_agent` détecté mais **auth en échec** (`password authentication failed for user "oh_agent"`) — mettre à jour le mot de passe du secret. Panneaux `/admin` (DB + enrichissement) affichent l'état en direct. `pnpm etl check:db` pour vérifier. Bloque `seed:themes` et `classify:scrutins` depuis le cloud.
+2. **Migration `scrutins_classifications`** : SQL prêt (`0001`) — **application prod = HITL** (DDL). Après application + secrets OK → `pnpm etl classify:scrutins --limit=50`.
+3. **`OPENROUTER_API_KEY`** : absent en cloud — badge + panneau readiness sur `/admin` ; requis pour classification live.
+4. **PR #19 (4.3b revendications)** : toujours DRAFT HITL — relecture superviseur requise avant merge (indicateur nominatif).
+
+- **Objectif du jour** : panneau readiness enrichissement LLM sur `/admin` (4.8) + transparence dossier/classification assistée sur le bandeau DataNotice.
+- **Contexte** : `main` à jour (#40 index thèmes + diagnostic DB) ; DB cloud KO (auth oh_agent) ; PR #19 HITL en attente ; pas de PR bloquante CI rouge.
+- **Fait** :
+  - **Admin** : `EnrichmentStatusPanel` (checklist migration+secrets, prompt/modèle, compteur classifications) ; badge `OpenRouter API` ; `checkDatabase` expose `classificationsCount`.
+  - **Web** : `DataNotice` distingue dossier législatif (prioritaire) vs classification assistée (déploiement progressif).
+  - **CI locale** : `pnpm typecheck` ✓, `pnpm test` ✓ (77/77), `pnpm build` ✓.
+- **Appris** : les 3 bloqueurs 4.8 (DB, migration, OpenRouter) sont désormais visibles côte à côte dans l'admin — même pattern que le diagnostic DB de la veille.
+- **Bloqueurs** : mot de passe `oh_agent` + OpenRouter (superviseur) ; application migration DDL (HITL) ; relecture PR #19.
+- **Prochaine étape** : superviseur corrige secrets → migration DDL → `seed:themes` + run pilote `classify:scrutins` ; relecture HITL PR #19.
+- **Livraison** : PR en cours (auto-merge — outillage admin + transparence bandeau, non nominatif).
+- **Commits** : `feat(admin): panneau readiness enrichissement LLM (4.8)` ; `feat(db): compteur classifications dans checkDatabase` ; `fix(web): transparence dossier/LLM dans DataNotice`.
+
+---
+
 ## 2026-06-30 — Index thèmes aligné + diagnostic DB admin (4.8)
 
 🔔 Pour le superviseur :

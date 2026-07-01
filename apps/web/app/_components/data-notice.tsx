@@ -42,8 +42,13 @@ export async function DataNotice({
         ) : (
           " (chiffres temporairement indisponibles)."
         )}{" "}
-        Le rattachement de l'ensemble des scrutins à un thème lisible est en cours. Les
-        chiffres affichés sont <em>indicatifs et susceptibles d'évoluer</em>.
+        Le rattachement thématique combine le{" "}
+        <strong className="text-foreground">dossier législatif officiel</strong> (prioritaire) et,
+        pour les scrutins sans dossier, une{" "}
+        <strong className="text-foreground">classification assistée</strong> (modèle de langage,
+        seuil de confiance, méthode publiée). Ce déploiement est{" "}
+        <strong className="text-foreground">progressif</strong>. Les chiffres affichés sont{" "}
+        <em>indicatifs et susceptibles d'évoluer</em>.
       </p>
     </aside>
   );

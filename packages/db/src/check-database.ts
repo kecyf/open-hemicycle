@@ -17,6 +17,7 @@ export interface DbCheckResult {
   user?: string;
   scrutinsCount?: number;
   scrutinsClassificationsTable: boolean;
+  classificationsCount?: number;
   error?: string;
 }
 
@@ -43,9 +44,13 @@ export async function checkDatabase(): Promise<DbCheckResult> {
     const scrutinsCount = firstRow<{ c: number }>(scrutins)?.c ?? 0;
 
     let scrutinsClassificationsTable = false;
+    let classificationsCount: number | undefined;
     try {
-      await db.execute(sql`SELECT count(*)::int AS c FROM scrutins_classifications`);
+      const classif = await db.execute(
+        sql`SELECT count(*)::int AS c FROM scrutins_classifications`,
+      );
       scrutinsClassificationsTable = true;
+      classificationsCount = firstRow<{ c: number }>(classif)?.c ?? 0;
     } catch {
       scrutinsClassificationsTable = false;
     }
@@ -57,6 +62,7 @@ export async function checkDatabase(): Promise<DbCheckResult> {
       user,
       scrutinsCount,
       scrutinsClassificationsTable,
+      classificationsCount,
     };
   } catch (err) {
     const message = (err as Error).message;

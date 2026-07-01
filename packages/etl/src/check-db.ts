@@ -22,6 +22,9 @@ export async function runCheckDb(): Promise<void> {
   console.log(
     `  table classif. : ${result.scrutinsClassificationsTable ? "OK (migration appliquée)" : "absente (migration 0001 HITL)"}`,
   );
+  if (result.classificationsCount !== undefined) {
+    console.log(`  classifications : ${result.classificationsCount}`);
+  }
 
   if (!result.ok) {
     console.error(`\n[check:db] ÉCHEC — ${result.error}\n`);
