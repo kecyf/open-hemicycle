@@ -17,6 +17,58 @@ import {
   type ClassificationResult,
 } from "@open-hemicycle/core";
 import { classifyScrutin } from "../enrichissement/classify-scrutin.ts";
+import { sleep } from "../lib/retry.ts";
+
+export interface ClassifyScrutinsStats {
+  promptVersion: string;
+  scrutinsSansDossier: number;
+  dejaClassifies: number;
+  enAttente: number;
+}
+
+/** Compteurs pour piloter l'extension classify (sans dossier législatif). */
+export async function getClassifyScrutinsStats(
+  promptVersion: string = PROMPT_VERSION,
+): Promise<ClassifyScrutinsStats> {
+  const db = getDb();
+
+  const [sansDossierRow] = await db
+    .select({ count: sql<number>`count(*)::int` })
+    .from(scrutins)
+    .where(isNull(scrutins.dossierId));
+
+  const [dejaRow] = await db
+    .select({ count: sql<number>`count(*)::int` })
+    .from(scrutins)
+    .innerJoin(
+      scrutinsClassifications,
+      and(
+        eq(scrutinsClassifications.scrutinId, scrutins.id),
+        eq(scrutinsClassifications.promptVersion, promptVersion),
+      ),
+    )
+    .where(isNull(scrutins.dossierId));
+
+  const scrutinsSansDossier = sansDossierRow?.count ?? 0;
+  const dejaClassifies = dejaRow?.count ?? 0;
+
+  return {
+    promptVersion,
+    scrutinsSansDossier,
+    dejaClassifies,
+    enAttente: Math.max(0, scrutinsSansDossier - dejaClassifies),
+  };
+}
+
+export async function printClassifyScrutinsStats(
+  promptVersion: string = PROMPT_VERSION,
+): Promise<ClassifyScrutinsStats> {
+  const stats = await getClassifyScrutinsStats(promptVersion);
+  console.log(
+    `[classify:stats] prompt=${stats.promptVersion} sans_dossier=${stats.scrutinsSansDossier} classifiés=${stats.dejaClassifies} en_attente=${stats.enAttente}`,
+  );
+  return stats;
+}
 
 export async function upsertScrutinClassification(
   scrutinId: string,
@@ -55,11 +107,19 @@ export async function jobClassifyScrutinsSansDossier(opts?: {
   limit?: number;
   dryRun?: boolean;
   promptVersion?: string;
+  /** Pause entre deux appels OpenRouter (évite le rate-limit à l'échelle). */
+  delayMs?: number;
 }): Promise<void> {
   const db = getDb();
   const limit = opts?.limit ?? 50;
   const dryRun = opts?.dryRun ?? !process.env.OPENROUTER_API_KEY?.trim();
   const promptVersion = opts?.promptVersion ?? PROMPT_VERSION;
+  const delayMs = opts?.delayMs ?? 0;
+
+  const stats = await getClassifyScrutinsStats(promptVersion);
+  console.log(
+    `[classify:scrutins] backlog sans_dossier=${stats.scrutinsSansDossier} classifiés=${stats.dejaClassifies} en_attente=${stats.enAttente}`,
+  );
 
   const [run] = await db
     .insert(syncRuns)
@@ -123,6 +183,9 @@ export async function jobClassifyScrutinsSansDossier(opts?: {
       console.log(
         `[classify:scrutins] ${row.uidAn} → ${out.result.status} ${out.result.themeSlug ?? "—"}`,
       );
+      if (!dryRun && delayMs > 0 && processed < rows.length) {
+        await sleep(delayMs);
+      }
     } catch (err) {
       errors += 1;
       console.error(`[classify:scrutins] ERR ${row.uidAn}: ${(err as Error).message}`);

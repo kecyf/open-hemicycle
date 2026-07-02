@@ -49,7 +49,9 @@ Le job `classify:scrutins` **ignore** les scrutins déjà classifiés pour la `p
 pnpm etl validate:enrichissement
 
 # Live (OPENROUTER_API_KEY + DATABASE_URL + migration appliquée)
+pnpm etl classify:stats
 pnpm etl classify:scrutins --limit=50
+pnpm etl classify:scrutins --limit=100 --delay-ms=500
 pnpm etl classify:scrutins --dry-run --limit=5
 ```
 

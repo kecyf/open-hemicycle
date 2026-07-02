@@ -9,6 +9,7 @@ import {
   type LlmClassificationRaw,
   type ParseClassificationError,
 } from "@open-hemicycle/core";
+import { isRetryableHttpStatus, withRetry } from "../lib/retry.ts";
 import { CLASSIFICATION_MODEL_DEFAULT } from "./prompt-v1.ts";
 
 export interface OpenRouterMessage {
@@ -39,47 +40,72 @@ function getApiKey(): string {
   return key;
 }
 
+export class OpenRouterHttpError extends Error {
+  constructor(
+    readonly status: number,
+    readonly body: string,
+  ) {
+    super(`OpenRouter HTTP ${status}: ${body.slice(0, 500)}`);
+    this.name = "OpenRouterHttpError";
+  }
+}
+
 export async function callOpenRouter(
   request: OpenRouterCompletionRequest,
 ): Promise<OpenRouterCompletionResult> {
   const apiKey = getApiKey();
   const model = request.model ?? CLASSIFICATION_MODEL_DEFAULT;
 
-  const res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${apiKey}`,
-      "Content-Type": "application/json",
-      "HTTP-Referer": "https://open-hemicycle.vercel.app",
-      "X-Title": "Open Hémicycle ETL",
+  return withRetry(
+    async () => {
+      const res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${apiKey}`,
+          "Content-Type": "application/json",
+          "HTTP-Referer": "https://open-hemicycle.vercel.app",
+          "X-Title": "Open Hémicycle ETL",
+        },
+        body: JSON.stringify({
+          model,
+          messages: request.messages,
+          temperature: request.temperature ?? 0,
+          response_format: request.responseFormat ?? { type: "json_object" },
+        }),
+      });
+
+      if (!res.ok) {
+        const body = await res.text();
+        throw new OpenRouterHttpError(res.status, body);
+      }
+
+      const raw = (await res.json()) as {
+        model?: string;
+        choices?: Array<{ message?: { content?: string } }>;
+      };
+      const content = raw.choices?.[0]?.message?.content;
+      if (!content) {
+        throw new Error("OpenRouter : réponse vide");
+      }
+
+      return {
+        content,
+        model: raw.model ?? model,
+        raw,
+      };
     },
-    body: JSON.stringify({
-      model,
-      messages: request.messages,
-      temperature: request.temperature ?? 0,
-      response_format: request.responseFormat ?? { type: "json_object" },
-    }),
-  });
-
-  if (!res.ok) {
-    const body = await res.text();
-    throw new Error(`OpenRouter HTTP ${res.status}: ${body.slice(0, 500)}`);
-  }
-
-  const raw = (await res.json()) as {
-    model?: string;
-    choices?: Array<{ message?: { content?: string } }>;
-  };
-  const content = raw.choices?.[0]?.message?.content;
-  if (!content) {
-    throw new Error("OpenRouter : réponse vide");
-  }
-
-  return {
-    content,
-    model: raw.model ?? model,
-    raw,
-  };
+    {
+      isRetryable: (error) =>
+        error instanceof OpenRouterHttpError && isRetryableHttpStatus(error.status),
+      onRetry: (attempt, error) => {
+        const status =
+          error instanceof OpenRouterHttpError ? error.status : "erreur";
+        console.warn(
+          `[openrouter] tentative ${attempt} échouée (${status}) — nouvel essai…`,
+        );
+      },
+    },
+  );
 }
 
 export async function classifyWithOpenRouter(
