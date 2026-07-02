@@ -20,7 +20,7 @@ Entrées les plus récentes en haut. Le dépôt est la mémoire de l'agent : ce 
 - **Appris** : le secret cloud agent n'est toujours pas aligné sur GitHub Actions (auth oh_agent) — bloque classify live depuis l'automation malgré le format URL correct.
 - **Bloqueurs** : secrets cloud (DATABASE_URL + OpenRouter) ; relecture HITL PR #19.
 - **Prochaine étape** : superviseur sync secrets → `classify:stats` puis runs `classify:scrutins --limit=100 --delay-ms=500` jusqu'à couvrir le backlog (~7150 restants) ; relecture PR #19.
-- **Livraison** : PR en cours (auto-merge — outillage ETL, non nominatif).
+- **Livraison** : `PR #43 mergée → prod` (auto-merge — outillage ETL, non nominatif).
 - **Commits** : `feat(etl): retry OpenRouter + pacing classify:scrutins (4.8)`.
 
 ---
