@@ -14,6 +14,7 @@ Catégories : `Ajouté` · `Modifié` · `Corrigé` · `Supprimé` · `Données`
 ## [Non publié]
 
 ### Ajouté
+- **ETL classify:scrutins durci (4.8)** : retry backoff OpenRouter (429/5xx) ; option `--delay-ms` pour le pacing ; commande `classify:stats` (backlog sans dossier / classifiés / en attente) ; 7 tests vitest `retry`.
 - **GRANTs oh_agent ETL (0002)** : DELETE sur `affiliations_groupe` et `mandats` (cron `ingest:deputes`) ; `check:db` vérifie les grants pour le rôle `oh_agent`.
 - **Admin — readiness enrichissement LLM (4.8)** : panneau « Enrichissement LLM » sur `/admin` (clé OpenRouter, prompt/modèle, checklist migration+secrets, compteur classifications) ; badge `OpenRouter API` ; `checkDatabase` expose `classificationsCount`.
 - **Admin — diagnostic DATABASE_URL** : panneau « Base de données » sur `/admin` (format, connexion, rôle, migration `scrutins_classifications`) ; `checkDatabase` partagé dans `@open-hemicycle/db`.
