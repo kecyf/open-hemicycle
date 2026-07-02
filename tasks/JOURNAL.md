@@ -4,6 +4,27 @@ Entrées les plus récentes en haut. Le dépôt est la mémoire de l'agent : ce 
 
 ---
 
+## 2026-07-02 — Retry OpenRouter + pacing classify:scrutins (4.8)
+
+🔔 Pour le superviseur :
+1. **`DATABASE_URL` cloud** : format OK mais **auth en échec** (`password authentication failed for user "oh_agent"`) — synchroniser le secret Cursor Cloud Agents avec la chaîne `.env.oh_agent` (identique à GitHub Actions, qui fonctionne).
+2. **`OPENROUTER_API_KEY` cloud** : absent — copier depuis `.env` local pour `classify:scrutins` autonome.
+3. **PR #19 (4.3b revendications)** : toujours DRAFT HITL — relecture superviseur requise avant merge (indicateur nominatif).
+
+- **Objectif du jour** : extension cloud-safe du job `classify:scrutins` (retry, pacing, stats backlog) en attendant les secrets cloud.
+- **Contexte** : `main` à jour (#42 GRANTs oh_agent) ; DB cloud KO (auth) ; OpenRouter absent ; PR #19 HITL en attente ; pas de PR bloquante CI rouge.
+- **Fait** :
+  - **ETL** : `withRetry` backoff (429/5xx) sur OpenRouter ; `--delay-ms` pour espacer les appels ; `classify:stats` (sans dossier / classifiés / en attente) ; backlog affiché au démarrage du job.
+  - **Tests** : 7 tests vitest `retry` ; CI locale `typecheck` ✓, `test` ✓ (84/84), `build` ✓.
+  - **Docs** : `enrichissement-llm.md` mis à jour (commandes `classify:stats`, `--delay-ms`).
+- **Appris** : le secret cloud agent n'est toujours pas aligné sur GitHub Actions (auth oh_agent) — bloque classify live depuis l'automation malgré le format URL correct.
+- **Bloqueurs** : secrets cloud (DATABASE_URL + OpenRouter) ; relecture HITL PR #19.
+- **Prochaine étape** : superviseur sync secrets → `classify:stats` puis runs `classify:scrutins --limit=100 --delay-ms=500` jusqu'à couvrir le backlog (~7150 restants) ; relecture PR #19.
+- **Livraison** : PR en cours (auto-merge — outillage ETL, non nominatif).
+- **Commits** : `feat(etl): retry OpenRouter + pacing classify:scrutins (4.8)`.
+
+---
+
 ## 2026-07-01 (après-midi) — Déblocage prod : GRANTs oh_agent + classify + ETL cron
 
 🔔 Pour le superviseur :
