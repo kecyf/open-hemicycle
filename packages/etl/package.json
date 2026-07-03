@@ -28,6 +28,7 @@
     "validate:themes": "tsx src/cli.ts validate:themes",
     "validate:enrichissement": "tsx src/cli.ts validate:enrichissement",
     "classify:scrutins": "tsx src/cli.ts classify:scrutins",
+    "classify:stats": "tsx src/cli.ts classify:stats",
     "audit:dossiers-scrutins": "tsx src/cli.ts audit:dossiers-scrutins",
     "test": "vitest run",
     "test:watch": "vitest",

@@ -80,7 +80,7 @@ export async function checkDatabase(): Promise<DbCheckResult> {
   } catch (err) {
     const message = (err as Error).message;
     const hint = message.includes("password authentication failed")
-      ? " — vérifier le mot de passe et le rôle (oh_agent recommandé en cloud, pas postgres)"
+      ? " — copier la chaîne .env.oh_agent depuis GitHub Actions Secrets (ETL Refresh vert) vers Cursor Cloud Agents ; rôle oh_agent, pas postgres"
       : message.includes("scrutins_classifications")
         ? " — migration 0001 non appliquée (HITL)"
         : "";

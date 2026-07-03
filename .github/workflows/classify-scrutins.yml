@@ -1,0 +1,128 @@
+name: Classify Scrutins (LLM)
+
+# Extension additive de la classification LLM (scrutins sans dossier législatif).
+# Déclenchement manuel uniquement (coût API OpenRouter → pas de cron automatique).
+#
+# Secrets requis (GitHub → Settings → Secrets → Actions) :
+#   DATABASE_URL       — même chaîne .env.oh_agent que ETL Refresh
+#   OPENROUTER_API_KEY — clé OpenRouter (superviseur)
+
+on:
+  workflow_dispatch:
+    inputs:
+      limit:
+        description: "Nombre max de scrutins à classifier"
+        required: false
+        default: "100"
+        type: string
+      delay_ms:
+        description: "Pause entre appels OpenRouter (ms)"
+        required: false
+        default: "500"
+        type: string
+      dry_run:
+        description: "Dry-run (pas d'écriture DB ni appel API)"
+        required: false
+        default: false
+        type: boolean
+
+concurrency:
+  group: classify-scrutins
+  cancel-in-progress: false
+
+jobs:
+  classify:
+    name: classify:scrutins
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.33.0
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Vérifier secrets
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+        run: |
+          if [ -z "$DATABASE_URL" ]; then
+            echo "::error::DATABASE_URL absent — configurer le secret GitHub Actions (rôle oh_agent)."
+            exit 1
+          fi
+          if ! echo "$DATABASE_URL" | grep -q '^postgresql://'; then
+            echo "::error::DATABASE_URL doit être une chaîne postgresql:// (pooler Supabase)."
+            exit 1
+          fi
+          if [ "${{ inputs.dry_run }}" != "true" ] && [ -z "$OPENROUTER_API_KEY" ]; then
+            echo "::error::OPENROUTER_API_KEY absent — requis pour classify live (ou activer dry_run)."
+            exit 1
+          fi
+
+      - name: Diagnostic DB
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: pnpm --filter @open-hemicycle/etl check:db
+
+      - name: Backlog avant
+        id: before
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: |
+          OUT=$(pnpm --filter @open-hemicycle/etl classify:stats 2>&1 | tail -1)
+          echo "$OUT"
+          echo "stats=$OUT" >> "$GITHUB_OUTPUT"
+
+      - name: Classification LLM
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+        run: |
+          ARGS="--limit=${{ inputs.limit }} --delay-ms=${{ inputs.delay_ms }}"
+          if [ "${{ inputs.dry_run }}" = "true" ]; then
+            ARGS="$ARGS --dry-run"
+          fi
+          pnpm --filter @open-hemicycle/etl classify:scrutins -- $ARGS
+
+      - name: Backlog après
+        if: inputs.dry_run != true
+        id: after
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: |
+          OUT=$(pnpm --filter @open-hemicycle/etl classify:stats 2>&1 | tail -1)
+          echo "$OUT"
+          echo "stats=$OUT" >> "$GITHUB_OUTPUT"
+
+      - name: Résumé
+        run: |
+          {
+            echo "## Classify Scrutins — $(date -u +%Y-%m-%dT%H:%MZ)"
+            echo ""
+            echo "| Paramètre | Valeur |"
+            echo "|-----------|--------|"
+            echo "| limit | \`${{ inputs.limit }}\` |"
+            echo "| delay_ms | \`${{ inputs.delay_ms }}\` |"
+            echo "| dry_run | \`${{ inputs.dry_run }}\` |"
+            echo ""
+            echo "| Étape | Stats |"
+            echo "|-------|-------|"
+            echo "| Avant | \`${{ steps.before.outputs.stats }}\` |"
+            if [ "${{ inputs.dry_run }}" != "true" ]; then
+              echo "| Après | \`${{ steps.after.outputs.stats }}\` |"
+            fi
+            echo ""
+            echo "> Job additif/idempotent — upsert \`scrutins_classifications\` uniquement."
+          } >> "$GITHUB_STEP_SUMMARY"
