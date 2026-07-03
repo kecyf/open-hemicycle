@@ -22,7 +22,7 @@ Entrées les plus récentes en haut. Le dépôt est la mémoire de l'agent : ce 
 - **Appris** : GitHub Actions a un `DATABASE_URL` fonctionnel (ETL Refresh) mais le secret Cloud Agent n'est pas synchronisé — le workflow classify permet au superviseur de lancer des runs sans attendre le fix cloud.
 - **Bloqueurs** : auth `oh_agent` cloud ; `OPENROUTER_API_KEY` (GH + cloud) ; relecture HITL PR #19.
 - **Prochaine étape** : superviseur ajoute `OPENROUTER_API_KEY` en GH Secrets → lancer workflow classify (100/run, delay 500ms) ; sync `DATABASE_URL` cloud ; relecture PR #19.
-- **Livraison** : PR en cours (auto-merge — outillage CI, non nominatif).
+- **Livraison** : PR #44 mergée → prod (auto-merge, CI verte).
 - **Commits** : `feat(ci): workflow GitHub Actions classify:scrutins (4.8)`.
 
 ---
