@@ -19,9 +19,19 @@ Une Cursor Automation peut lancer un agent sur un planning (ex. tous les jours �
 | Secret | Où | Valeur |
 |--------|-----|--------|
 | `DATABASE_URL` | Cloud Agents + GitHub Actions | Chaîne **`.env.oh_agent`** (rôle `oh_agent`, pooler `:6543`) — **pas** le rôle `postgres` |
-| `OPENROUTER_API_KEY` | Cloud Agents (+ local `.env`) | Clé OpenRouter pour `classify:scrutins` live |
+| `OPENROUTER_API_KEY` | Cloud Agents + GitHub Actions | Clé OpenRouter pour `classify:scrutins` live |
 
 Vérification : `pnpm etl check:db` doit afficher connexion OK, rôle `oh_agent`, grants ETL OK, table classif. OK.
+
+### Classification LLM via GitHub Actions
+
+Si les secrets Cloud Agents ne sont pas synchronisés, le superviseur peut lancer la classification depuis **Actions → Classify Scrutins (LLM)** (`workflow_dispatch`) :
+
+1. Ajouter `OPENROUTER_API_KEY` dans GitHub Actions Secrets (à côté de `DATABASE_URL`).
+2. Lancer avec `limit=100`, `delay_ms=500` (défauts) — **pas de cron** (coût API OpenRouter).
+3. Le job affiche le backlog avant/après dans le résumé.
+
+Fichier : [`.github/workflows/classify-scrutins.yml`](../.github/workflows/classify-scrutins.yml).
 
 > Le superviseur humain garde la main : indicateurs sensibles, release majeure et nouvelle surface publique = merge HITL (voir `AGENTS.md` §3 et §6 ter).
 

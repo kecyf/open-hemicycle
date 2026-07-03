@@ -26,6 +26,16 @@ export interface ClassifyScrutinsStats {
   enAttente: number;
 }
 
+/** Calcule le backlog restant (jamais négatif). */
+export function computeClassifyBacklog(
+  scrutinsSansDossier: number,
+  dejaClassifies: number,
+): Pick<ClassifyScrutinsStats, "enAttente"> {
+  return {
+    enAttente: Math.max(0, scrutinsSansDossier - dejaClassifies),
+  };
+}
+
 /** Compteurs pour piloter l'extension classify (sans dossier législatif). */
 export async function getClassifyScrutinsStats(
   promptVersion: string = PROMPT_VERSION,
@@ -51,12 +61,13 @@ export async function getClassifyScrutinsStats(
 
   const scrutinsSansDossier = sansDossierRow?.count ?? 0;
   const dejaClassifies = dejaRow?.count ?? 0;
+  const { enAttente } = computeClassifyBacklog(scrutinsSansDossier, dejaClassifies);
 
   return {
     promptVersion,
     scrutinsSansDossier,
     dejaClassifies,
-    enAttente: Math.max(0, scrutinsSansDossier - dejaClassifies),
+    enAttente,
   };
 }
 

@@ -53,6 +53,9 @@ pnpm etl classify:stats
 pnpm etl classify:scrutins --limit=50
 pnpm etl classify:scrutins --limit=100 --delay-ms=500
 pnpm etl classify:scrutins --dry-run --limit=5
+
+# Via GitHub Actions (workflow_dispatch — secrets Actions, pas Cloud Agents)
+# Actions → « Classify Scrutins (LLM) » — limit/delay_ms configurables
 ```
 
 ---

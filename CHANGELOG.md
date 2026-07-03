@@ -14,6 +14,8 @@ Catégories : `Ajouté` · `Modifié` · `Corrigé` · `Supprimé` · `Données`
 ## [Non publié]
 
 ### Ajouté
+- **Workflow GitHub Actions classify:scrutins (4.8)** : déclenchement manuel (`workflow_dispatch`) avec `limit` / `delay_ms` / `dry_run` ; utilise les secrets Actions (`DATABASE_URL` + `OPENROUTER_API_KEY`) — contournement si secrets Cloud Agents non synchronisés ; script npm `classify:stats`.
+- **Tests backlog classify** : `computeClassifyBacklog` + 3 tests vitest ; message `check:db` oriente vers la chaîne GitHub Actions en cas d'auth échouée.
 - **ETL classify:scrutins durci (4.8)** : retry backoff OpenRouter (429/5xx) ; option `--delay-ms` pour le pacing ; commande `classify:stats` (backlog sans dossier / classifiés / en attente) ; 7 tests vitest `retry`.
 - **GRANTs oh_agent ETL (0002)** : DELETE sur `affiliations_groupe` et `mandats` (cron `ingest:deputes`) ; `check:db` vérifie les grants pour le rôle `oh_agent`.
 - **Admin — readiness enrichissement LLM (4.8)** : panneau « Enrichissement LLM » sur `/admin` (clé OpenRouter, prompt/modèle, checklist migration+secrets, compteur classifications) ; badge `OpenRouter API` ; `checkDatabase` expose `classificationsCount`.

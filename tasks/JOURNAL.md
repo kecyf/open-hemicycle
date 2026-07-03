@@ -4,6 +4,29 @@ Entrées les plus récentes en haut. Le dépôt est la mémoire de l'agent : ce 
 
 ---
 
+## 2026-07-03 — Workflow GH Actions classify + contournement secrets cloud (4.8)
+
+🔔 Pour le superviseur :
+1. **`DATABASE_URL` cloud** : format OK mais **auth toujours en échec** (`password authentication failed for user "oh_agent"`) — copier la chaîne **identique** à GitHub Actions Secrets (ETL Refresh vert) dans Cursor Cloud Agents → Secrets.
+2. **`OPENROUTER_API_KEY`** : absent en cloud **et** en GitHub Actions — ajouter dans les deux pour `classify:scrutins` autonome (cloud) ou via **Actions → Classify Scrutins (LLM)** (workflow_dispatch, pas de cron).
+3. **PR #19 (4.3b revendications)** : toujours DRAFT HITL — relecture superviseur requise avant merge (indicateur nominatif).
+
+- **Objectif du jour** : débloquer l'extension classify live malgré secrets cloud KO — workflow GitHub Actions + tests offline backlog.
+- **Contexte** : `main` à jour (#43 retry/pacing) ; `pnpm etl check:db` → auth oh_agent KO ; OpenRouter absent ; PR #19 HITL ; pas de PR CI rouge.
+- **Fait** :
+  - **CI** : workflow `.github/workflows/classify-scrutins.yml` (workflow_dispatch, limit/delay_ms/dry_run, backlog avant/après).
+  - **ETL** : `computeClassifyBacklog` extrait + 3 tests vitest ; script npm `classify:stats`.
+  - **DB** : message `check:db` oriente vers GitHub Actions Secrets en cas d'auth échouée.
+  - **Docs** : `automation/README.md`, `enrichissement-llm.md` (section GH Actions).
+  - **CI locale** : `typecheck` ✓, `test` ✓ (87/87), `build` ✓.
+- **Appris** : GitHub Actions a un `DATABASE_URL` fonctionnel (ETL Refresh) mais le secret Cloud Agent n'est pas synchronisé — le workflow classify permet au superviseur de lancer des runs sans attendre le fix cloud.
+- **Bloqueurs** : auth `oh_agent` cloud ; `OPENROUTER_API_KEY` (GH + cloud) ; relecture HITL PR #19.
+- **Prochaine étape** : superviseur ajoute `OPENROUTER_API_KEY` en GH Secrets → lancer workflow classify (100/run, delay 500ms) ; sync `DATABASE_URL` cloud ; relecture PR #19.
+- **Livraison** : PR en cours (auto-merge — outillage CI, non nominatif).
+- **Commits** : `feat(ci): workflow GitHub Actions classify:scrutins (4.8)`.
+
+---
+
 ## 2026-07-02 — Retry OpenRouter + pacing classify:scrutins (4.8)
 
 🔔 Pour le superviseur :
