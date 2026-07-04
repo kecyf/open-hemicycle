@@ -4,6 +4,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import type { DbCheckResult } from "@open-hemicycle/db";
 import type { EnrichmentStatus } from "@/lib/admin/types";
 
+const CLASSIFY_WORKFLOW_URL =
+  "https://github.com/kecyf/open-hemicycle/actions/workflows/classify-scrutins.yml";
+
 export function EnrichmentStatusPanel({
   enrichment,
   database,
@@ -66,6 +69,28 @@ export function EnrichmentStatusPanel({
               </dd>
             </div>
           )}
+          {enrichment.backlog && (
+            <>
+              <div>
+                <dt className="inline">Scrutins sans dossier : </dt>
+                <dd className="inline font-medium tabular-nums text-foreground">
+                  {enrichment.backlog.scrutinsSansDossier.toLocaleString("fr-FR")}
+                </dd>
+              </div>
+              <div>
+                <dt className="inline">Classifiés (prompt courant) : </dt>
+                <dd className="inline font-medium tabular-nums text-foreground">
+                  {enrichment.backlog.dejaClassifies.toLocaleString("fr-FR")}
+                </dd>
+              </div>
+              <div>
+                <dt className="inline">En attente : </dt>
+                <dd className="inline font-medium tabular-nums text-foreground">
+                  {enrichment.backlog.enAttente.toLocaleString("fr-FR")}
+                </dd>
+              </div>
+            </>
+          )}
         </dl>
 
         <ul className="space-y-1 rounded-lg border border-border/60 p-3">
@@ -80,10 +105,25 @@ export function EnrichmentStatusPanel({
         </ul>
 
         {enrichment.readyForClassify ? (
-          <p className="text-muted-foreground">
-            Lancer un run pilote :{" "}
-            <code className="text-xs">pnpm etl classify:scrutins --limit=50</code>
-          </p>
+          <div className="space-y-2 text-muted-foreground">
+            <p>
+              Lancer un run pilote :{" "}
+              <code className="text-xs">pnpm etl classify:scrutins --limit=50</code>
+            </p>
+            <p>
+              Ou via GitHub Actions :{" "}
+              <a
+                href={CLASSIFY_WORKFLOW_URL}
+                className="underline underline-offset-2"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Classify Scrutins (LLM)
+              </a>{" "}
+              — <code className="text-xs">limit=100</code>,{" "}
+              <code className="text-xs">delay_ms=500</code>
+            </p>
+          </div>
         ) : (
           <p className="text-muted-foreground">
             Compléter la checklist ci-dessus avant le premier run de classification. Voir{" "}
@@ -100,6 +140,17 @@ export function EnrichmentStatusPanel({
               docs/enrichissement-llm.md
             </a>
             .
+            {" "}
+            Classification via{" "}
+            <a
+              href={CLASSIFY_WORKFLOW_URL}
+              className="underline underline-offset-2"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              GitHub Actions
+            </a>{" "}
+            si les secrets Cloud Agents ne sont pas synchronisés.
           </p>
         )}
       </CardContent>

@@ -14,6 +14,7 @@ Catégories : `Ajouté` · `Modifié` · `Corrigé` · `Supprimé` · `Données`
 ## [Non publié]
 
 ### Ajouté
+- **Admin — backlog classify (4.8)** : panneau enrichissement affiche scrutins sans dossier / classifiés / en attente ; lien direct vers le workflow GitHub Actions « Classify Scrutins (LLM) » ; requête partagée `getClassifyBacklogStats` dans `@open-hemicycle/db`.
 - **Workflow GitHub Actions classify:scrutins (4.8)** : déclenchement manuel (`workflow_dispatch`) avec `limit` / `delay_ms` / `dry_run` ; utilise les secrets Actions (`DATABASE_URL` + `OPENROUTER_API_KEY`) — contournement si secrets Cloud Agents non synchronisés ; script npm `classify:stats`.
 - **Tests backlog classify** : `computeClassifyBacklog` + 3 tests vitest ; message `check:db` oriente vers la chaîne GitHub Actions en cas d'auth échouée.
 - **ETL classify:scrutins durci (4.8)** : retry backoff OpenRouter (429/5xx) ; option `--delay-ms` pour le pacing ; commande `classify:stats` (backlog sans dossier / classifiés / en attente) ; 7 tests vitest `retry`.
