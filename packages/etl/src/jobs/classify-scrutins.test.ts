@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { computeClassifyBacklog } from "./classify-scrutins.ts";
+import { computeClassifyBacklog } from "@open-hemicycle/db";
 
 describe("computeClassifyBacklog", () => {
   it("calcule en_attente = sans_dossier - classifiés", () => {

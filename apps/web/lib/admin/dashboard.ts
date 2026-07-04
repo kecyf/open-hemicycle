@@ -1,4 +1,4 @@
-import { checkDatabase } from "@open-hemicycle/db";
+import { checkDatabase, getClassifyBacklogStats } from "@open-hemicycle/db";
 import { PROMPT_VERSION, THEMES_TAXONOMIE } from "@open-hemicycle/core";
 import { getAgentRuns } from "./cursor";
 import { getPullRequests } from "./github";
@@ -20,6 +20,24 @@ export async function getAdminDashboardData(): Promise<AdminDashboardData> {
 
   const openRouterConfigured = !!process.env.OPENROUTER_API_KEY?.trim();
 
+  let backlog: AdminDashboardData["enrichment"]["backlog"];
+  if (
+    database.ok &&
+    database.scrutinsClassificationsTable &&
+    database.ohAgentEtlGrantsOk !== false
+  ) {
+    try {
+      const stats = await getClassifyBacklogStats(PROMPT_VERSION);
+      backlog = {
+        scrutinsSansDossier: stats.scrutinsSansDossier,
+        dejaClassifies: stats.dejaClassifies,
+        enAttente: stats.enAttente,
+      };
+    } catch {
+      backlog = undefined;
+    }
+  }
+
   return {
     openPullRequests: open,
     recentlyMergedPullRequests: merged,
@@ -39,6 +57,7 @@ export async function getAdminDashboardData(): Promise<AdminDashboardData> {
         database.ohAgentEtlGrantsOk !== false &&
         openRouterConfigured,
       classificationsCount: database.classificationsCount,
+      backlog,
     },
     configured: {
       github: !!process.env.GITHUB_ADMIN_TOKEN,

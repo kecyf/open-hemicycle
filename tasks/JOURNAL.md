@@ -4,6 +4,27 @@ Entrées les plus récentes en haut. Le dépôt est la mémoire de l'agent : ce 
 
 ---
 
+## 2026-07-04 — Backlog classify admin + lien workflow GH Actions (4.8)
+
+🔔 Pour le superviseur :
+1. **`DATABASE_URL` cloud** : format OK mais **auth toujours en échec** (`password authentication failed for user "oh_agent"`) — copier la chaîne **identique** à GitHub Actions Secrets (ETL Refresh vert) dans Cursor Cloud Agents → Secrets.
+2. **`OPENROUTER_API_KEY`** : absent en cloud **et** en GitHub Actions — ajouter dans les deux pour `classify:scrutins` autonome (cloud) ou via **Actions → Classify Scrutins (LLM)** (workflow_dispatch).
+3. **PR #19 (4.3b revendications)** : toujours DRAFT HITL — relecture superviseur requise avant merge (indicateur nominatif).
+
+- **Objectif du jour** : visibilité backlog classify sur `/admin` (4.8) — tâche cloud-safe pendant blocage secrets.
+- **Contexte** : `main` à jour (#44 workflow classify) ; `pnpm etl check:db` → auth oh_agent KO ; OpenRouter absent ; PR #19 HITL ; ETL Refresh + smoke prod verts.
+- **Fait** :
+  - **DB** : `getClassifyBacklogStats` + `computeClassifyBacklog` extraits dans `@open-hemicycle/db` (partagé ETL + admin).
+  - **Admin** : panneau enrichissement affiche scrutins sans dossier / classifiés / en attente ; lien direct workflow GitHub Actions classify.
+  - **CI locale** : `typecheck` ✓, `test` ✓ (87/87), `build` ✓.
+- **Appris** : le superviseur peut piloter l'extension classify depuis `/admin` (backlog live) + GH Actions sans attendre le fix secrets cloud agent.
+- **Bloqueurs** : auth `oh_agent` cloud ; `OPENROUTER_API_KEY` (GH + cloud) ; relecture HITL PR #19.
+- **Prochaine étape** : superviseur ajoute `OPENROUTER_API_KEY` en GH Secrets → lancer workflow classify (100/run, delay 500ms) ; sync `DATABASE_URL` cloud ; relecture PR #19.
+- **Livraison** : PR en cours (auto-merge — outillage admin, non nominatif).
+- **Commits** : `feat(admin): backlog classify + lien workflow GH Actions (4.8)`.
+
+---
+
 ## 2026-07-03 — Workflow GH Actions classify + contournement secrets cloud (4.8)
 
 🔔 Pour le superviseur :

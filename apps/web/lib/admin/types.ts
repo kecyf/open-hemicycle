@@ -53,6 +53,12 @@ export interface EnrichmentStatus {
   themeCount: number;
   readyForClassify: boolean;
   classificationsCount?: number;
+  /** Backlog classify (scrutins sans dossier) — présent si DB + migration OK. */
+  backlog?: {
+    scrutinsSansDossier: number;
+    dejaClassifies: number;
+    enAttente: number;
+  };
 }
 
 export interface AdminDashboardData {
