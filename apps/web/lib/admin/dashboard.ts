@@ -1,7 +1,7 @@
 import { checkDatabase, getClassifyBacklogStats } from "@open-hemicycle/db";
 import { PROMPT_VERSION, THEMES_TAXONOMIE } from "@open-hemicycle/core";
 import { getAgentRuns } from "./cursor";
-import { getPullRequests } from "./github";
+import { getClassifyWorkflowRuns, getPullRequests } from "./github";
 import { getJournalData } from "./journal";
 import type { AdminDashboardData } from "./types";
 import { getDeployments } from "./vercel";
@@ -10,12 +10,14 @@ const CLASSIFICATION_MODEL_DEFAULT =
   process.env.OPENROUTER_MODEL?.trim() || "google/gemini-2.5-flash";
 
 export async function getAdminDashboardData(): Promise<AdminDashboardData> {
-  const [{ open, merged }, journal, deployments, agentRuns, database] = await Promise.all([
+  const [{ open, merged }, journal, deployments, agentRuns, database, classifyWorkflowRuns] =
+    await Promise.all([
     getPullRequests(),
     getJournalData(),
     getDeployments(),
     getAgentRuns(),
     checkDatabase(),
+    getClassifyWorkflowRuns(),
   ]);
 
   const openRouterConfigured = !!process.env.OPENROUTER_API_KEY?.trim();
@@ -59,6 +61,7 @@ export async function getAdminDashboardData(): Promise<AdminDashboardData> {
       classificationsCount: database.classificationsCount,
       backlog,
     },
+    classifyWorkflowRuns,
     configured: {
       github: !!process.env.GITHUB_ADMIN_TOKEN,
       vercel: !!process.env.VERCEL_ACCESS_TOKEN && !!process.env.VERCEL_PROJECT_ID,

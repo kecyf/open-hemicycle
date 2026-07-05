@@ -1,6 +1,6 @@
 import { unstable_cache } from "next/cache";
 import { createOctokit, getRepoName, getRepoOwner } from "./config";
-import type { CiState, PullRequestSummary } from "./types";
+import type { CiState, PullRequestSummary, WorkflowRunSummary } from "./types";
 
 const CI_CHECK_NAME = "Typecheck · Test · Build";
 
@@ -93,6 +93,42 @@ async function fetchPullRequestsUncached(): Promise<{
 export const getPullRequests = unstable_cache(fetchPullRequestsUncached, ["admin-pull-requests"], {
   revalidate: 90,
 });
+
+const CLASSIFY_WORKFLOW_FILE = "classify-scrutins.yml";
+
+async function fetchClassifyWorkflowRunsUncached(): Promise<WorkflowRunSummary[]> {
+  const octokit = createOctokit();
+  if (!octokit) return [];
+
+  const owner = getRepoOwner();
+  const repo = getRepoName();
+
+  try {
+    const { data } = await octokit.rest.actions.listWorkflowRuns({
+      owner,
+      repo,
+      workflow_id: CLASSIFY_WORKFLOW_FILE,
+      per_page: 5,
+    });
+
+    return data.workflow_runs.map((run) => ({
+      id: run.id,
+      status: run.status ?? "unknown",
+      conclusion: run.conclusion,
+      url: run.html_url,
+      createdAt: run.created_at,
+      displayTitle: run.display_title ?? run.name ?? "Classify Scrutins",
+    }));
+  } catch {
+    return [];
+  }
+}
+
+export const getClassifyWorkflowRuns = unstable_cache(
+  fetchClassifyWorkflowRunsUncached,
+  ["admin-classify-workflow-runs"],
+  { revalidate: 120 },
+);
 
 export async function appendSupervisorInbox(content: string, message: string): Promise<void> {
   const octokit = createOctokit();

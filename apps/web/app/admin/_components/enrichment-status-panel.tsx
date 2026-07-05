@@ -2,17 +2,37 @@ import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import type { DbCheckResult } from "@open-hemicycle/db";
-import type { EnrichmentStatus } from "@/lib/admin/types";
+import { computeClassifyProgressSummary } from "@open-hemicycle/core";
+import type { EnrichmentStatus, WorkflowRunSummary } from "@/lib/admin/types";
 
 const CLASSIFY_WORKFLOW_URL =
   "https://github.com/kecyf/open-hemicycle/actions/workflows/classify-scrutins.yml";
 
+const DEFAULT_CLASSIFY_BATCH = 100;
+
+function workflowBadgeVariant(
+  run: WorkflowRunSummary,
+): "default" | "secondary" | "destructive" {
+  if (run.status !== "completed") return "secondary";
+  return run.conclusion === "success" ? "default" : "destructive";
+}
+
+function formatRunDate(iso: string): string {
+  return new Date(iso).toLocaleString("fr-FR", {
+    dateStyle: "short",
+    timeStyle: "short",
+    timeZone: "Europe/Paris",
+  });
+}
+
 export function EnrichmentStatusPanel({
   enrichment,
   database,
+  classifyWorkflowRuns,
 }: {
   enrichment: EnrichmentStatus;
   database: DbCheckResult;
+  classifyWorkflowRuns: WorkflowRunSummary[];
 }) {
   const steps = [
     {
@@ -32,6 +52,10 @@ export function EnrichmentStatusPanel({
       ok: enrichment.openRouterConfigured,
     },
   ];
+
+  const progress = enrichment.backlog
+    ? computeClassifyProgressSummary(enrichment.backlog, DEFAULT_CLASSIFY_BATCH)
+    : null;
 
   return (
     <Card>
@@ -93,6 +117,41 @@ export function EnrichmentStatusPanel({
           )}
         </dl>
 
+        {progress && (
+          <div className="space-y-2 rounded-lg border border-border/60 p-3">
+            <div className="flex items-center justify-between text-xs text-muted-foreground">
+              <span>Progression classify (scrutins sans dossier)</span>
+              <span className="tabular-nums font-medium text-foreground">
+                {progress.percentComplete} %
+              </span>
+            </div>
+            <div
+              className="h-2 overflow-hidden rounded-full bg-muted"
+              role="progressbar"
+              aria-valuenow={progress.percentComplete}
+              aria-valuemin={0}
+              aria-valuemax={100}
+              aria-label="Progression de la classification LLM"
+            >
+              <div
+                className="h-full rounded-full bg-primary transition-all"
+                style={{ width: `${progress.percentComplete}%` }}
+              />
+            </div>
+            {progress.estimatedRuns > 0 && (
+              <p className="text-xs text-muted-foreground">
+                Environ{" "}
+                <span className="font-medium tabular-nums text-foreground">
+                  {progress.estimatedRuns.toLocaleString("fr-FR")}
+                </span>{" "}
+                run{progress.estimatedRuns > 1 ? "s" : ""} GitHub Actions (
+                <code className="text-xs">limit={progress.batchSize}</code>,{" "}
+                <code className="text-xs">delay_ms=500</code>) pour couvrir le backlog restant.
+              </p>
+            )}
+          </div>
+        )}
+
         <ul className="space-y-1 rounded-lg border border-border/60 p-3">
           {steps.map((step) => (
             <li key={step.label} className="flex items-center gap-2">
@@ -103,6 +162,37 @@ export function EnrichmentStatusPanel({
             </li>
           ))}
         </ul>
+
+        {classifyWorkflowRuns.length > 0 && (
+          <div className="space-y-2">
+            <p className="text-xs font-medium text-muted-foreground">Derniers runs classify (GH Actions)</p>
+            <ul className="space-y-2">
+              {classifyWorkflowRuns.map((run) => (
+                <li
+                  key={run.id}
+                  className="flex flex-wrap items-center justify-between gap-2 rounded-lg border border-border/60 px-3 py-2"
+                >
+                  <a
+                    href={run.url}
+                    className="text-xs underline underline-offset-2"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    #{run.id}
+                  </a>
+                  <Badge variant={workflowBadgeVariant(run)} className="text-xs">
+                    {run.status === "completed"
+                      ? run.conclusion ?? "terminé"
+                      : run.status}
+                  </Badge>
+                  <span className="text-xs tabular-nums text-muted-foreground">
+                    {formatRunDate(run.createdAt)}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
 
         {enrichment.readyForClassify ? (
           <div className="space-y-2 text-muted-foreground">
