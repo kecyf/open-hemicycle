@@ -46,6 +46,15 @@ export interface AgentRunSummary {
   createdAt: string | null;
 }
 
+export interface WorkflowRunSummary {
+  id: number;
+  status: string;
+  conclusion: string | null;
+  url: string;
+  createdAt: string;
+  displayTitle: string;
+}
+
 export interface EnrichmentStatus {
   openRouterConfigured: boolean;
   modelDefault: string;
@@ -70,6 +79,7 @@ export interface AdminDashboardData {
   agentRuns: AgentRunSummary[];
   database: DbCheckResult;
   enrichment: EnrichmentStatus;
+  classifyWorkflowRuns: WorkflowRunSummary[];
   configured: {
     github: boolean;
     vercel: boolean;

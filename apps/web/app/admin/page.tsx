@@ -60,7 +60,11 @@ export default async function AdminPage() {
           </div>
           <div className="grid gap-6 lg:grid-cols-2">
             <DbStatusPanel database={data.database} />
-            <EnrichmentStatusPanel enrichment={data.enrichment} database={data.database} />
+            <EnrichmentStatusPanel
+              enrichment={data.enrichment}
+              database={data.database}
+              classifyWorkflowRuns={data.classifyWorkflowRuns}
+            />
           </div>
         </TabsContent>
 
