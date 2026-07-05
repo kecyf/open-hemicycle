@@ -14,6 +14,7 @@ Catégories : `Ajouté` · `Modifié` · `Corrigé` · `Supprimé` · `Données`
 ## [Non publié]
 
 ### Ajouté
+- **Admin — progression classify (4.8)** : barre de progression (% scrutins sans dossier classifiés) + estimation du nombre de runs GitHub Actions pour couvrir le backlog ; historique des 5 derniers runs du workflow « Classify Scrutins (LLM) » ; helper `computeClassifyProgressSummary` dans `@open-hemicycle/core` (5 tests vitest).
 - **Admin — backlog classify (4.8)** : panneau enrichissement affiche scrutins sans dossier / classifiés / en attente ; lien direct vers le workflow GitHub Actions « Classify Scrutins (LLM) » ; requête partagée `getClassifyBacklogStats` dans `@open-hemicycle/db`.
 - **Workflow GitHub Actions classify:scrutins (4.8)** : déclenchement manuel (`workflow_dispatch`) avec `limit` / `delay_ms` / `dry_run` ; utilise les secrets Actions (`DATABASE_URL` + `OPENROUTER_API_KEY`) — contournement si secrets Cloud Agents non synchronisés ; script npm `classify:stats`.
 - **Tests backlog classify** : `computeClassifyBacklog` + 3 tests vitest ; message `check:db` oriente vers la chaîne GitHub Actions en cas d'auth échouée.

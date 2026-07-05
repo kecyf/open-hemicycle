@@ -4,6 +4,27 @@ Entrées les plus récentes en haut. Le dépôt est la mémoire de l'agent : ce 
 
 ---
 
+## 2026-07-05 — Progression classify admin + historique runs GH Actions (4.8)
+
+🔔 Pour le superviseur :
+1. **`DATABASE_URL` cloud** : format OK mais **auth toujours en échec** (`password authentication failed for user "oh_agent"`) — copier la chaîne **identique** à GitHub Actions Secrets (ETL Refresh vert) dans Cursor Cloud Agents → Secrets.
+2. **`OPENROUTER_API_KEY`** : absent en cloud **et** en GitHub Actions — ajouter dans les deux pour `classify:scrutins` autonome (cloud) ou via **Actions → Classify Scrutins (LLM)** (workflow_dispatch).
+3. **PR #19 (4.3b revendications)** : toujours DRAFT HITL — relecture superviseur requise avant merge (indicateur nominatif).
+
+- **Objectif du jour** : pilotage classify sur `/admin` — barre de progression + estimation runs + historique GH Actions (4.8), tâche cloud-safe pendant blocage secrets.
+- **Contexte** : `main` à jour (#45 backlog classify admin) ; `pnpm etl check:db` → auth oh_agent KO ; OpenRouter absent ; PR #19 HITL ; ETL Refresh + smoke prod verts ; pas de PR CI rouge.
+- **Fait** :
+  - **Core** : `computeClassifyProgressSummary` (% + runs estimés à batch 100) + 5 tests vitest.
+  - **Admin** : barre de progression classify, estimation runs restants, liste des 5 derniers runs workflow « Classify Scrutins (LLM) » via GitHub API.
+  - **CI locale** : `typecheck` ✓, `test` ✓ (92/92), `build` ✓.
+- **Appris** : le panneau admin permet de suivre l'avancement classify et l'historique des runs sans accès DB cloud agent — utile pendant la sync secrets.
+- **Bloqueurs** : auth `oh_agent` cloud ; `OPENROUTER_API_KEY` (GH + cloud) ; relecture HITL PR #19.
+- **Prochaine étape** : superviseur ajoute `OPENROUTER_API_KEY` en GH Secrets → lancer workflow classify (100/run, delay 500ms) ; sync `DATABASE_URL` cloud ; relecture PR #19.
+- **Livraison** : PR en cours (auto-merge — outillage admin, non nominatif).
+- **Commits** : `feat(admin): progression classify + historique runs GH Actions (4.8)`.
+
+---
+
 ## 2026-07-04 — Backlog classify admin + lien workflow GH Actions (4.8)
 
 🔔 Pour le superviseur :
