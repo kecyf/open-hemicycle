@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import type { DbCheckResult } from "@open-hemicycle/db";
 import { computeClassifyProgressSummary } from "@open-hemicycle/core";
 import type { EnrichmentStatus, WorkflowRunSummary } from "@/lib/admin/types";
+import { ClassifyDispatchForm } from "./classify-dispatch-form";
 
 const CLASSIFY_WORKFLOW_URL =
   "https://github.com/kecyf/open-hemicycle/actions/workflows/classify-scrutins.yml";
@@ -29,10 +30,14 @@ export function EnrichmentStatusPanel({
   enrichment,
   database,
   classifyWorkflowRuns,
+  githubConfigured,
+  classifyRunInProgress,
 }: {
   enrichment: EnrichmentStatus;
   database: DbCheckResult;
   classifyWorkflowRuns: WorkflowRunSummary[];
+  githubConfigured: boolean;
+  classifyRunInProgress: boolean;
 }) {
   const steps = [
     {
@@ -163,7 +168,7 @@ export function EnrichmentStatusPanel({
           ))}
         </ul>
 
-        {classifyWorkflowRuns.length > 0 && (
+        {classifyWorkflowRuns.length > 0 ? (
           <div className="space-y-2">
             <p className="text-xs font-medium text-muted-foreground">Derniers runs classify (GH Actions)</p>
             <ul className="space-y-2">
@@ -192,7 +197,16 @@ export function EnrichmentStatusPanel({
               ))}
             </ul>
           </div>
+        ) : (
+          <p className="text-xs text-muted-foreground">
+            Aucun run classify enregistré — lancez le premier via le bouton ci-dessous ou GitHub Actions.
+          </p>
         )}
+
+        <ClassifyDispatchForm
+          githubConfigured={githubConfigured}
+          classifyRunInProgress={classifyRunInProgress}
+        />
 
         {enrichment.readyForClassify ? (
           <div className="space-y-2 text-muted-foreground">

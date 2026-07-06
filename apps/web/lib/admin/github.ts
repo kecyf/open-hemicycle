@@ -1,5 +1,5 @@
 import { unstable_cache } from "next/cache";
-import { createOctokit, getRepoName, getRepoOwner } from "./config";
+import { createOctokit, getRepoName, getRepoOwner, githubRepoUrl } from "./config";
 import type { CiState, PullRequestSummary, WorkflowRunSummary } from "./types";
 
 const CI_CHECK_NAME = "Typecheck · Test · Build";
@@ -129,6 +129,73 @@ export const getClassifyWorkflowRuns = unstable_cache(
   ["admin-classify-workflow-runs"],
   { revalidate: 120 },
 );
+
+export interface DispatchClassifyWorkflowResult {
+  runId: number;
+  url: string;
+}
+
+/** Déclenche workflow_dispatch « Classify Scrutins (LLM) » via GitHub API. */
+export async function dispatchClassifyWorkflow(inputs: {
+  limit: number;
+  delayMs: number;
+  dryRun: boolean;
+}): Promise<DispatchClassifyWorkflowResult> {
+  const octokit = createOctokit();
+  if (!octokit) throw new Error("GITHUB_ADMIN_TOKEN manquant");
+
+  const owner = getRepoOwner();
+  const repo = getRepoName();
+
+  const { data } = await octokit.rest.actions.createWorkflowDispatch({
+    owner,
+    repo,
+    workflow_id: CLASSIFY_WORKFLOW_FILE,
+    ref: "main",
+    inputs: {
+      limit: String(inputs.limit),
+      delay_ms: String(inputs.delayMs),
+      dry_run: inputs.dryRun,
+    },
+  });
+
+  void data;
+
+  // Le run n'est pas immédiatement listé — on récupère le plus récent en attente.
+  await new Promise((resolve) => setTimeout(resolve, 1500));
+
+  const { data: runs } = await octokit.rest.actions.listWorkflowRuns({
+    owner,
+    repo,
+    workflow_id: CLASSIFY_WORKFLOW_FILE,
+    per_page: 1,
+  });
+
+  const latest = runs.workflow_runs[0];
+  if (!latest) {
+    return { runId: 0, url: `${githubRepoUrl()}/actions/workflows/${CLASSIFY_WORKFLOW_FILE}` };
+  }
+
+  return { runId: latest.id, url: latest.html_url };
+}
+
+export async function hasActiveClassifyWorkflowRun(): Promise<boolean> {
+  const octokit = createOctokit();
+  if (!octokit) return false;
+
+  try {
+    const { data } = await octokit.rest.actions.listWorkflowRuns({
+      owner: getRepoOwner(),
+      repo: getRepoName(),
+      workflow_id: CLASSIFY_WORKFLOW_FILE,
+      status: "in_progress",
+      per_page: 1,
+    });
+    return data.total_count > 0;
+  } catch {
+    return false;
+  }
+}
 
 export async function appendSupervisorInbox(content: string, message: string): Promise<void> {
   const octokit = createOctokit();
