@@ -25,7 +25,7 @@ Vérification : `pnpm etl check:db` doit afficher connexion OK, rôle `oh_agent`
 
 ### Classification LLM via GitHub Actions
 
-Si les secrets Cloud Agents ne sont pas synchronisés, le superviseur peut lancer la classification depuis **Actions → Classify Scrutins (LLM)** (`workflow_dispatch`) :
+Si les secrets Cloud Agents ne sont pas synchronisés, le superviseur peut lancer la classification depuis **Actions → Classify Scrutins (LLM)** (`workflow_dispatch`) **ou depuis `/admin`** (bouton « Lancer classify » — nécessite `GITHUB_ADMIN_TOKEN` sur Vercel) :
 
 1. Ajouter `OPENROUTER_API_KEY` dans GitHub Actions Secrets (à côté de `DATABASE_URL`).
 2. Lancer avec `limit=100`, `delay_ms=500` (défauts) — **pas de cron** (coût API OpenRouter).

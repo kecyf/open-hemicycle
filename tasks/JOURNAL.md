@@ -4,6 +4,27 @@ Entrées les plus récentes en haut. Le dépôt est la mémoire de l'agent : ce 
 
 ---
 
+## 2026-07-06 — Dispatch classify depuis /admin (4.8)
+
+🔔 Pour le superviseur :
+1. **`DATABASE_URL` cloud** : format OK mais **auth toujours en échec** (`password authentication failed for user "oh_agent"`) — copier la chaîne **identique** à GitHub Actions Secrets (ETL Refresh vert) dans Cursor Cloud Agents → Secrets.
+2. **`OPENROUTER_API_KEY`** : absent en cloud **et** en GitHub Actions — ajouter dans les deux pour `classify:scrutins` autonome (cloud) ou via **Actions → Classify Scrutins (LLM)** / bouton `/admin` (workflow_dispatch).
+3. **PR #19 (4.3b revendications)** : toujours DRAFT HITL — relecture superviseur requise avant merge (indicateur nominatif).
+
+- **Objectif du jour** : déclenchement classify depuis `/admin` via GitHub API (4.8) — tâche cloud-safe pendant blocage secrets.
+- **Contexte** : `main` à jour (#46 progression classify admin) ; `pnpm etl check:db` → auth oh_agent KO ; OpenRouter absent ; PR #19 HITL ; ETL Refresh + smoke prod verts (homepage 200 ; `/themes` 504 transitoire observé) ; pas de PR CI rouge.
+- **Fait** :
+  - **Core** : `parseClassifyDispatchInputs` (validation limit/delay_ms/dry_run) + 6 tests vitest.
+  - **Admin** : bouton « Lancer classify (GH Actions) » sur panneau enrichissement ; route `POST /api/admin/classify` ; garde-fou run en cours ; état vide runs + lien run lancé.
+  - **CI locale** : `typecheck` ✓, `test` ✓ (98/98), `build` ✓.
+- **Appris** : le superviseur peut piloter classify depuis `/admin` sans quitter le dashboard — contournement utile tant que les secrets Cloud Agents ne sont pas synchronisés (le workflow utilise les secrets GitHub Actions).
+- **Bloqueurs** : auth `oh_agent` cloud ; `OPENROUTER_API_KEY` (GH + cloud) ; relecture HITL PR #19.
+- **Prochaine étape** : superviseur ajoute `OPENROUTER_API_KEY` en GH Secrets → lancer classify via `/admin` ou GH Actions (100/run, delay 500ms) ; sync `DATABASE_URL` cloud ; relecture PR #19.
+- **Livraison** : PR en cours (auto-merge — outillage admin, non nominatif).
+- **Commits** : `feat(admin): dispatch classify workflow depuis /admin (4.8)`.
+
+---
+
 ## 2026-07-05 — Progression classify admin + historique runs GH Actions (4.8)
 
 🔔 Pour le superviseur :
