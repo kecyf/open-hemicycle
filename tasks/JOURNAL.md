@@ -20,7 +20,7 @@ Entrées les plus récentes en haut. Le dépôt est la mémoire de l'agent : ce 
 - **Appris** : le superviseur peut piloter classify depuis `/admin` sans quitter le dashboard — contournement utile tant que les secrets Cloud Agents ne sont pas synchronisés (le workflow utilise les secrets GitHub Actions).
 - **Bloqueurs** : auth `oh_agent` cloud ; `OPENROUTER_API_KEY` (GH + cloud) ; relecture HITL PR #19.
 - **Prochaine étape** : superviseur ajoute `OPENROUTER_API_KEY` en GH Secrets → lancer classify via `/admin` ou GH Actions (100/run, delay 500ms) ; sync `DATABASE_URL` cloud ; relecture PR #19.
-- **Livraison** : PR en cours (auto-merge — outillage admin, non nominatif).
+- **Livraison** : PR #47 mergée → prod (auto-merge, CI verte).
 - **Commits** : `feat(admin): dispatch classify workflow depuis /admin (4.8)`.
 
 ---
