@@ -64,6 +64,8 @@ export default async function AdminPage() {
               enrichment={data.enrichment}
               database={data.database}
               classifyWorkflowRuns={data.classifyWorkflowRuns}
+              githubConfigured={data.configured.github}
+              classifyRunInProgress={data.classifyRunInProgress}
             />
           </div>
         </TabsContent>

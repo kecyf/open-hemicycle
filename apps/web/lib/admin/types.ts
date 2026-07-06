@@ -80,6 +80,7 @@ export interface AdminDashboardData {
   database: DbCheckResult;
   enrichment: EnrichmentStatus;
   classifyWorkflowRuns: WorkflowRunSummary[];
+  classifyRunInProgress: boolean;
   configured: {
     github: boolean;
     vercel: boolean;

@@ -1,7 +1,7 @@
 import { checkDatabase, getClassifyBacklogStats } from "@open-hemicycle/db";
 import { PROMPT_VERSION, THEMES_TAXONOMIE } from "@open-hemicycle/core";
 import { getAgentRuns } from "./cursor";
-import { getClassifyWorkflowRuns, getPullRequests } from "./github";
+import { getClassifyWorkflowRuns, getPullRequests, hasActiveClassifyWorkflowRun } from "./github";
 import { getJournalData } from "./journal";
 import type { AdminDashboardData } from "./types";
 import { getDeployments } from "./vercel";
@@ -10,7 +10,7 @@ const CLASSIFICATION_MODEL_DEFAULT =
   process.env.OPENROUTER_MODEL?.trim() || "google/gemini-2.5-flash";
 
 export async function getAdminDashboardData(): Promise<AdminDashboardData> {
-  const [{ open, merged }, journal, deployments, agentRuns, database, classifyWorkflowRuns] =
+  const [{ open, merged }, journal, deployments, agentRuns, database, classifyWorkflowRuns, classifyRunInProgress] =
     await Promise.all([
     getPullRequests(),
     getJournalData(),
@@ -18,6 +18,7 @@ export async function getAdminDashboardData(): Promise<AdminDashboardData> {
     getAgentRuns(),
     checkDatabase(),
     getClassifyWorkflowRuns(),
+    hasActiveClassifyWorkflowRun(),
   ]);
 
   const openRouterConfigured = !!process.env.OPENROUTER_API_KEY?.trim();
@@ -62,6 +63,7 @@ export async function getAdminDashboardData(): Promise<AdminDashboardData> {
       backlog,
     },
     classifyWorkflowRuns,
+    classifyRunInProgress,
     configured: {
       github: !!process.env.GITHUB_ADMIN_TOKEN,
       vercel: !!process.env.VERCEL_ACCESS_TOKEN && !!process.env.VERCEL_PROJECT_ID,
