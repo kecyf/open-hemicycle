@@ -2,9 +2,10 @@ import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import type { DbCheckResult } from "@open-hemicycle/db";
-import { computeClassifyProgressSummary } from "@open-hemicycle/core";
+import { computeClassifyProgressSummary, formatClassifyRunInputsLabel } from "@open-hemicycle/core";
 import type { EnrichmentStatus, WorkflowRunSummary } from "@/lib/admin/types";
 import { ClassifyDispatchForm } from "./classify-dispatch-form";
+import { ClassifyRefreshPoller } from "./classify-refresh-poller";
 
 const CLASSIFY_WORKFLOW_URL =
   "https://github.com/kecyf/open-hemicycle/actions/workflows/classify-scrutins.yml";
@@ -177,14 +178,21 @@ export function EnrichmentStatusPanel({
                   key={run.id}
                   className="flex flex-wrap items-center justify-between gap-2 rounded-lg border border-border/60 px-3 py-2"
                 >
-                  <a
-                    href={run.url}
-                    className="text-xs underline underline-offset-2"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    #{run.id}
-                  </a>
+                  <div className="flex min-w-0 flex-col gap-0.5">
+                    <a
+                      href={run.url}
+                      className="text-xs underline underline-offset-2"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      #{run.id}
+                    </a>
+                    {run.inputs && (
+                      <span className="text-xs text-muted-foreground">
+                        {formatClassifyRunInputsLabel(run.inputs)}
+                      </span>
+                    )}
+                  </div>
                   <Badge variant={workflowBadgeVariant(run)} className="text-xs">
                     {run.status === "completed"
                       ? run.conclusion ?? "terminé"
@@ -202,6 +210,8 @@ export function EnrichmentStatusPanel({
             Aucun run classify enregistré — lancez le premier via le bouton ci-dessous ou GitHub Actions.
           </p>
         )}
+
+        <ClassifyRefreshPoller active={classifyRunInProgress} />
 
         <ClassifyDispatchForm
           githubConfigured={githubConfigured}

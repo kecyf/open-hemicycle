@@ -1,6 +1,7 @@
 import { unstable_cache } from "next/cache";
 import { createOctokit, getRepoName, getRepoOwner, githubRepoUrl } from "./config";
-import type { CiState, PullRequestSummary, WorkflowRunSummary } from "./types";
+import { parseClassifyDispatchInputs } from "@open-hemicycle/core";
+import type { ClassifyDispatchInputs } from "@open-hemicycle/core";
 
 const CI_CHECK_NAME = "Typecheck · Test · Build";
 
@@ -94,7 +95,18 @@ export const getPullRequests = unstable_cache(fetchPullRequestsUncached, ["admin
   revalidate: 90,
 });
 
-const CLASSIFY_WORKFLOW_FILE = "classify-scrutins.yml";
+function parseWorkflowRunInputs(
+  inputs: Record<string, unknown> | null | undefined,
+): ClassifyDispatchInputs | null {
+  if (!inputs) return null;
+  const parsed = parseClassifyDispatchInputs({
+    limit: inputs.limit,
+    delayMs: inputs.delay_ms,
+    dryRun: inputs.dry_run,
+  });
+  return parsed.ok ? parsed.inputs : null;
+}
+
 
 async function fetchClassifyWorkflowRunsUncached(): Promise<WorkflowRunSummary[]> {
   const octokit = createOctokit();
@@ -118,6 +130,7 @@ async function fetchClassifyWorkflowRunsUncached(): Promise<WorkflowRunSummary[]
       url: run.html_url,
       createdAt: run.created_at,
       displayTitle: run.display_title ?? run.name ?? "Classify Scrutins",
+      inputs: parseWorkflowRunInputs(run.inputs as Record<string, unknown> | undefined),
     }));
   } catch {
     return [];
@@ -127,7 +140,7 @@ async function fetchClassifyWorkflowRunsUncached(): Promise<WorkflowRunSummary[]
 export const getClassifyWorkflowRuns = unstable_cache(
   fetchClassifyWorkflowRunsUncached,
   ["admin-classify-workflow-runs"],
-  { revalidate: 120 },
+  { revalidate: 30 },
 );
 
 export interface DispatchClassifyWorkflowResult {
