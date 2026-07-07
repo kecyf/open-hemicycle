@@ -1,4 +1,5 @@
 import type { DbCheckResult } from "@open-hemicycle/db";
+import type { ClassifyDispatchInputs } from "@open-hemicycle/core";
 
 export type CiState = "success" | "failure" | "pending" | "unknown";
 
@@ -53,6 +54,7 @@ export interface WorkflowRunSummary {
   url: string;
   createdAt: string;
   displayTitle: string;
+  inputs?: ClassifyDispatchInputs | null;
 }
 
 export interface EnrichmentStatus {

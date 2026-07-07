@@ -47,7 +47,7 @@ Horizon de référence : **Jalon M1 à ~1 mois** (POC public fonctionnel). Le d�
 - [x] Cohérence d'affichage des effectifs (577 en mandat / 645 ayant siégé) sur homepage + annuaire + bandeau POC.
 - [x] Taxonomie de thèmes **neutre et exhaustive** (8 commissions permanentes AN, méthode anti-biais publiée dans `docs/theme-taxonomy.md`).
 - [~] Migration des slugs pilotes vers taxonomie commissions — **couche web + seed ETL** livrées ; exécution `seed:themes` en prod en attente credentials.
-- [~] Couche d'enrichissement : classification scrutin → thème par LLM — **fondations + lecture atlas web + décompte source + fiche scrutin + liste scrutins filtrée + index thèmes aligné + diagnostic DB admin + readiness enrichissement admin + retry/pacing classify + workflow GH Actions classify + backlog classify admin + progression classify admin + dispatch classify admin** livrées ; migration DB + runs live en attente (secrets + HITL dépense API si cron).
+- [~] Couche d'enrichissement : classification scrutin → thème par LLM — **fondations + lecture atlas web + décompte source + fiche scrutin + liste scrutins filtrée + index thèmes aligné + diagnostic DB admin + readiness enrichissement admin + retry/pacing classify + workflow GH Actions classify + backlog classify admin + progression classify admin + dispatch classify admin + historique runs enrichi + auto-refresh** livrées ; migration DB + runs live en attente (secrets + HITL dépense API si cron).
 - [x] Page thème publique (atlas `/themes/[slug]`) : positionnement par groupe (symétrique, sourcé, scrutins cliquables) — niveau groupe, non nominatif.
 
 **Cohérence v0 (en partie HITL)**
