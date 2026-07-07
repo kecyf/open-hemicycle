@@ -2,8 +2,10 @@ import { unstable_cache } from "next/cache";
 import { createOctokit, getRepoName, getRepoOwner, githubRepoUrl } from "./config";
 import { parseClassifyDispatchInputs } from "@open-hemicycle/core";
 import type { ClassifyDispatchInputs } from "@open-hemicycle/core";
+import type { CiState, PullRequestSummary, WorkflowRunSummary } from "./types";
 
 const CI_CHECK_NAME = "Typecheck · Test · Build";
+const CLASSIFY_WORKFLOW_FILE = "classify-scrutins.yml";
 
 function resolveCiState(
   checkRuns: Array<{ name: string; status: string; conclusion: string | null }>,
@@ -123,15 +125,18 @@ async function fetchClassifyWorkflowRunsUncached(): Promise<WorkflowRunSummary[]
       per_page: 5,
     });
 
-    return data.workflow_runs.map((run) => ({
-      id: run.id,
-      status: run.status ?? "unknown",
-      conclusion: run.conclusion,
-      url: run.html_url,
-      createdAt: run.created_at,
-      displayTitle: run.display_title ?? run.name ?? "Classify Scrutins",
-      inputs: parseWorkflowRunInputs(run.inputs as Record<string, unknown> | undefined),
-    }));
+    return data.workflow_runs.map((run) => {
+      const runInputs = (run as { inputs?: Record<string, unknown> }).inputs;
+      return {
+        id: run.id,
+        status: run.status ?? "unknown",
+        conclusion: run.conclusion,
+        url: run.html_url,
+        createdAt: run.created_at,
+        displayTitle: run.display_title ?? run.name ?? "Classify Scrutins",
+        inputs: parseWorkflowRunInputs(runInputs),
+      };
+    });
   } catch {
     return [];
   }
