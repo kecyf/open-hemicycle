@@ -5,6 +5,7 @@ export * from "./classify-dispatch.ts";
 export * from "./classify-progress.ts";
 export * from "./classify-run-label.ts";
 export * from "./classify-stats-parse.ts";
+export * from "./classify-run-stats.ts";
 export * from "./nosdeputes-crosscheck.ts";
 export * from "./data/classification-gold-sample.ts";
 export * from "./data/theme-slugs.ts";

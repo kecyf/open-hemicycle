@@ -2,7 +2,7 @@ import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import type { DbCheckResult } from "@open-hemicycle/db";
-import { computeClassifyProgressSummary, formatClassifyRunInputsLabel } from "@open-hemicycle/core";
+import { computeClassifyProgressSummary, formatClassifyRunInputsLabel, formatClassifyRunDeltaLabel, formatWorkflowRunDuration } from "@open-hemicycle/core";
 import type { EnrichmentStatus, WorkflowRunSummary } from "@/lib/admin/types";
 import { ClassifyDispatchForm } from "./classify-dispatch-form";
 import { ClassifyRefreshPoller } from "./classify-refresh-poller";
@@ -192,6 +192,11 @@ export function EnrichmentStatusPanel({
                         {formatClassifyRunInputsLabel(run.inputs)}
                       </span>
                     )}
+                    {run.statsDelta && (
+                      <span className="text-xs font-medium tabular-nums text-foreground">
+                        {formatClassifyRunDeltaLabel(run.statsDelta)}
+                      </span>
+                    )}
                   </div>
                   <Badge variant={workflowBadgeVariant(run)} className="text-xs">
                     {run.status === "completed"
@@ -200,6 +205,12 @@ export function EnrichmentStatusPanel({
                   </Badge>
                   <span className="text-xs tabular-nums text-muted-foreground">
                     {formatRunDate(run.createdAt)}
+                    {run.status === "completed" && formatWorkflowRunDuration(run.createdAt, run.updatedAt) && (
+                      <>
+                        {" "}
+                        · {formatWorkflowRunDuration(run.createdAt, run.updatedAt)}
+                      </>
+                    )}
                   </span>
                 </li>
               ))}

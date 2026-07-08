@@ -14,6 +14,7 @@ Catégories : `Ajouté` · `Modifié` · `Corrigé` · `Supprimé` · `Données`
 ## [Non publié]
 
 ### Ajouté
+- **Admin — delta classify par run GH Actions (4.8)** : historique enrichi avec le delta de classifications extrait des logs (`+N classifiés · M en attente`) et la durée du run ; helpers `extractClassifyStatsFromLogs`, `computeClassifyRunDelta`, `formatClassifyRunDeltaLabel`, `formatWorkflowRunDuration` dans `@open-hemicycle/core` (8 tests vitest).
 - **Admin — historique runs classify enrichi (4.8)** : paramètres `limit` / `delay_ms` / `dry_run` affichés pour chaque run GitHub Actions ; actualisation automatique toutes les 30 s pendant un run en cours ; helpers `parseClassifyStatsLine` et `formatClassifyRunInputsLabel` dans `@open-hemicycle/core` (5 tests vitest).
 - **Admin — dispatch classify (4.8)** : bouton sur `/admin` pour déclencher le workflow GitHub Actions « Classify Scrutins (LLM) » (`limit` / `delay_ms` / `dry_run`) via API ; garde-fou run en cours ; helper `parseClassifyDispatchInputs` dans `@open-hemicycle/core` (6 tests vitest).
 - **Admin — progression classify (4.8)** : barre de progression (% scrutins sans dossier classifiés) + estimation du nombre de runs GitHub Actions pour couvrir le backlog ; historique des 5 derniers runs du workflow « Classify Scrutins (LLM) » ; helper `computeClassifyProgressSummary` dans `@open-hemicycle/core` (5 tests vitest).

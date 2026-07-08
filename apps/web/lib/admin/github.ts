@@ -3,6 +3,11 @@ import { createOctokit, getRepoName, getRepoOwner, githubRepoUrl } from "./confi
 import { parseClassifyDispatchInputs } from "@open-hemicycle/core";
 import type { ClassifyDispatchInputs } from "@open-hemicycle/core";
 import type { CiState, PullRequestSummary, WorkflowRunSummary } from "./types";
+import {
+  computeClassifyRunDelta,
+  extractClassifyStatsFromLogs,
+  type ClassifyRunDelta,
+} from "@open-hemicycle/core";
 
 const CI_CHECK_NAME = "Typecheck · Test · Build";
 const CLASSIFY_WORKFLOW_FILE = "classify-scrutins.yml";
@@ -109,6 +114,65 @@ function parseWorkflowRunInputs(
   return parsed.ok ? parsed.inputs : null;
 }
 
+async function downloadJobLogs(
+  octokit: ReturnType<typeof createOctokit>,
+  owner: string,
+  repo: string,
+  jobId: number,
+): Promise<string | null> {
+  if (!octokit) return null;
+  try {
+    const response = await octokit.request(
+      "GET /repos/{owner}/{repo}/actions/jobs/{job_id}/logs",
+      {
+        owner,
+        repo,
+        job_id: jobId,
+        request: { redirect: "manual" },
+      },
+    );
+    if (response.status === 302 || response.status === 301) {
+      const location = response.headers.location;
+      if (!location || typeof location !== "string") return null;
+      const logRes = await fetch(location);
+      if (!logRes.ok) return null;
+      return await logRes.text();
+    }
+    if (typeof response.data === "string") return response.data;
+    return null;
+  } catch {
+    return null;
+  }
+}
+
+async function fetchClassifyRunStatsDelta(
+  octokit: ReturnType<typeof createOctokit>,
+  owner: string,
+  repo: string,
+  runId: number,
+): Promise<ClassifyRunDelta | null> {
+  if (!octokit) return null;
+  try {
+    const { data: jobsData } = await octokit.rest.actions.listJobsForWorkflowRun({
+      owner,
+      repo,
+      run_id: runId,
+      per_page: 5,
+    });
+    const job = jobsData.jobs[0];
+    if (!job?.id) return null;
+
+    const logs = await downloadJobLogs(octokit, owner, repo, job.id);
+    if (!logs) return null;
+
+    const { before, after } = extractClassifyStatsFromLogs(logs);
+    if (!before || !after) return null;
+    return computeClassifyRunDelta(before, after);
+  } catch {
+    return null;
+  }
+}
+
 
 async function fetchClassifyWorkflowRunsUncached(): Promise<WorkflowRunSummary[]> {
   const octokit = createOctokit();
@@ -133,8 +197,10 @@ async function fetchClassifyWorkflowRunsUncached(): Promise<WorkflowRunSummary[]
         conclusion: run.conclusion,
         url: run.html_url,
         createdAt: run.created_at,
+        updatedAt: run.updated_at ?? null,
         displayTitle: run.display_title ?? run.name ?? "Classify Scrutins",
         inputs: parseWorkflowRunInputs(runInputs),
+        statsDelta: null as ClassifyRunDelta | null,
       };
     });
   } catch {
@@ -142,8 +208,35 @@ async function fetchClassifyWorkflowRunsUncached(): Promise<WorkflowRunSummary[]
   }
 }
 
+async function enrichClassifyRunsWithStats(
+  runs: WorkflowRunSummary[],
+): Promise<WorkflowRunSummary[]> {
+  const octokit = createOctokit();
+  if (!octokit) return runs;
+
+  const owner = getRepoOwner();
+  const repo = getRepoName();
+
+  return Promise.all(
+    runs.map(async (run) => {
+      const isCompleted = run.status === "completed";
+      const isSuccess = run.conclusion === "success";
+      const isDryRun = run.inputs?.dryRun === true;
+      if (!isCompleted || !isSuccess || isDryRun) return run;
+
+      const statsDelta = await fetchClassifyRunStatsDelta(octokit, owner, repo, run.id);
+      return statsDelta ? { ...run, statsDelta } : run;
+    }),
+  );
+}
+
+async function fetchClassifyWorkflowRunsWithStatsUncached(): Promise<WorkflowRunSummary[]> {
+  const runs = await fetchClassifyWorkflowRunsUncached();
+  return enrichClassifyRunsWithStats(runs);
+}
+
 export const getClassifyWorkflowRuns = unstable_cache(
-  fetchClassifyWorkflowRunsUncached,
+  fetchClassifyWorkflowRunsWithStatsUncached,
   ["admin-classify-workflow-runs"],
   { revalidate: 30 },
 );

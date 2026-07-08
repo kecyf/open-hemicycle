@@ -1,5 +1,5 @@
 import type { DbCheckResult } from "@open-hemicycle/db";
-import type { ClassifyDispatchInputs } from "@open-hemicycle/core";
+import type { ClassifyDispatchInputs, ClassifyRunDelta } from "@open-hemicycle/core";
 
 export type CiState = "success" | "failure" | "pending" | "unknown";
 
@@ -53,8 +53,11 @@ export interface WorkflowRunSummary {
   conclusion: string | null;
   url: string;
   createdAt: string;
+  updatedAt: string | null;
   displayTitle: string;
   inputs?: ClassifyDispatchInputs | null;
+  /** Delta backlog extrait des logs GH Actions (runs terminés, non dry_run). */
+  statsDelta?: ClassifyRunDelta | null;
 }
 
 export interface EnrichmentStatus {
