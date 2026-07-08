@@ -20,7 +20,7 @@ Entrées les plus récentes en haut. Le dépôt est la mémoire de l'agent : ce 
 - **Appris** : `parseClassifyStatsLine` (veille) se branche enfin sur l'UI — le superviseur voit l'impact de chaque run classify sans ouvrir les logs GitHub.
 - **Bloqueurs** : auth `oh_agent` cloud ; `OPENROUTER_API_KEY` (GH + cloud) ; relecture HITL PR #19.
 - **Prochaine étape** : superviseur ajoute `OPENROUTER_API_KEY` en GH Secrets → lancer classify via `/admin` ou GH Actions (100/run, delay 500ms) ; sync `DATABASE_URL` cloud ; relecture PR #19.
-- **Livraison** : PR en cours (auto-merge — outillage admin, non nominatif).
+- **Livraison** : `PR #49 mergée → prod` (auto-merge, CI verte).
 - **Commits** : `feat(admin): delta classify par run dans historique GH Actions (4.8)`.
 
 ---
