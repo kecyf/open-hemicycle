@@ -4,6 +4,27 @@ Entrées les plus récentes en haut. Le dépôt est la mémoire de l'agent : ce 
 
 ---
 
+## 2026-07-08 — Delta classify par run dans historique admin (4.8)
+
+🔔 Pour le superviseur :
+1. **`DATABASE_URL` cloud** : format OK mais **auth toujours en échec** (`password authentication failed for user "oh_agent"`) — copier la chaîne **identique** à GitHub Actions Secrets (ETL Refresh vert) dans Cursor Cloud Agents → Secrets.
+2. **`OPENROUTER_API_KEY`** : absent en cloud **et** en GitHub Actions — ajouter dans les deux pour `classify:scrutins` autonome (cloud) ou via **Actions → Classify Scrutins (LLM)** / bouton `/admin` (workflow_dispatch).
+3. **PR #19 (4.3b revendications)** : toujours DRAFT HITL — relecture superviseur requise avant merge (indicateur nominatif).
+
+- **Objectif du jour** : afficher le delta de classifications par run GH Actions dans l'historique `/admin` (4.8) — tâche cloud-safe pendant blocage secrets.
+- **Contexte** : `main` à jour (#48 historique runs enrichi) ; `pnpm etl check:db` → auth oh_agent KO ; OpenRouter absent ; PR #19 HITL ; pas de PR CI rouge.
+- **Fait** :
+  - **Core** : `extractClassifyStatsFromLogs`, `computeClassifyRunDelta`, `formatClassifyRunDeltaLabel`, `formatWorkflowRunDuration` ; 8 tests vitest.
+  - **Admin** : historique runs affiche delta backlog (`+N classifiés · M en attente`) et durée ; parsing logs GH Actions via API (runs terminés, non dry_run).
+  - **CI locale** : `typecheck` ✓, `test` ✓ (111/111), `build` ✓.
+- **Appris** : `parseClassifyStatsLine` (veille) se branche enfin sur l'UI — le superviseur voit l'impact de chaque run classify sans ouvrir les logs GitHub.
+- **Bloqueurs** : auth `oh_agent` cloud ; `OPENROUTER_API_KEY` (GH + cloud) ; relecture HITL PR #19.
+- **Prochaine étape** : superviseur ajoute `OPENROUTER_API_KEY` en GH Secrets → lancer classify via `/admin` ou GH Actions (100/run, delay 500ms) ; sync `DATABASE_URL` cloud ; relecture PR #19.
+- **Livraison** : PR en cours (auto-merge — outillage admin, non nominatif).
+- **Commits** : `feat(admin): delta classify par run dans historique GH Actions (4.8)`.
+
+---
+
 ## 2026-07-07 — Historique runs classify enrichi + auto-refresh admin (4.8)
 
 🔔 Pour le superviseur :
