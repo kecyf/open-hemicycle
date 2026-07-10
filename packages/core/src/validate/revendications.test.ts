@@ -6,8 +6,9 @@ import {
 } from "./revendications.ts";
 
 describe("validate revendications", () => {
-  it("revendications pilote actuelles : structure valide (liste vide)", () => {
+  it("revendications pilote actuelles : structure valide", () => {
     expect(validateRevendicationsThematiques(REVENDICATIONS_THEMATIQUES)).toEqual([]);
+    expect(REVENDICATIONS_THEMATIQUES.length).toBeGreaterThanOrEqual(1);
   });
 
   it("accepte slug taxonomie", () => {
