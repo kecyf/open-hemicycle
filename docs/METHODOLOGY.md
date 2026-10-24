@@ -100,7 +100,7 @@ Un écart négatif marqué (très présent en général, absent précisément su
 
 **Implémentation actuelle (pilote)** :
 - Formule : `taux_participation_T = votes_exprimés_sur_thème / nb_scrutins_du_thème` (idem global) ; `écart = taux_T − taux_global` (points de participation, pas un score moral).
-- **Revendications sourcées** : mapping auditable `packages/core/src/data/themes-revendiques.ts` (URL + date + libellé neutre par député·e et thème). Liste vide tant que les premières sources ne sont pas validées par PR. Validation structurelle : `pnpm etl validate:revendications`.
+- **Revendications sourcées** : mapping auditable `packages/core/src/data/themes-revendiques.ts` (URL + date + libellé neutre par député·e et thème). Pilote : 2 entrées (rapporteur·e désigné·e sur un texte du thème, source AN) — relecture superviseur avant affichage nominatif. Validation structurelle : `pnpm etl validate:revendications`.
 - Logique pure : `@open-hemicycle/core/participation-theme.ts` (`computeComparaisonParticipationTheme`).
 - Requête serveur : `getComparaisonParticipationTheme` / `getComparaisonsParticipationThemesRevendiques` — composant UI préparé, **non branché** sur la fiche (publication nominative → relecture humaine).
 

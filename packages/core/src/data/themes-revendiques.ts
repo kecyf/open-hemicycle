@@ -29,7 +29,34 @@ export interface DeputeThemesRevendiques {
 }
 
 /** Revendications validées (pilotage progressif, entrées ajoutées par PR). */
-export const REVENDICATIONS_THEMATIQUES: DeputeThemesRevendiques[] = [];
+export const REVENDICATIONS_THEMATIQUES: DeputeThemesRevendiques[] = [
+  {
+    deputeSlug: "julien-dive-12015",
+    themes: [
+      {
+        themeSlug: "affaires-economiques",
+        sourceUrl:
+          "https://questions.assemblee-nationale.fr/dyn/17/rapports/cion-eco/l17b2765_rapport-fond.pdf",
+        sourceDate: "2026-05-07",
+        libelle:
+          "Rapporteur désigné sur le projet de loi d'urgence pour la protection et la souveraineté agricoles (n° 2632), commission des affaires économiques.",
+      },
+    ],
+  },
+  {
+    deputeSlug: "jean-louis-thieriot-43089",
+    themes: [
+      {
+        themeSlug: "defense-forces-armees",
+        sourceUrl:
+          "https://www.assemblee-nationale.fr/dyn/17/textes/l17b2695_texte-adopte-commission",
+        sourceDate: "2026-04-23",
+        libelle:
+          "Rapporteur désigné sur le projet de loi actualisant la programmation militaire 2024–2030 (n° 2630), commission de la défense nationale et des forces armées.",
+      },
+    ],
+  },
+];
 
 /** Revendications thématiques sourcées pour un·e député·e. */
 export function getThemesRevendiques(deputeSlug: string): ThemeRevendiqueClaim[] {

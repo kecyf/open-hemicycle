@@ -29,6 +29,7 @@ Catégories : `Ajouté` · `Modifié` · `Corrigé` · `Supprimé` · `Données`
 - **Fiche scrutin — source thématique (4.8)** : badges thème avec indication « classification assistée » quand le rattachement vient du LLM (dossier prioritaire) ; `ScrutinThemeLink` dans `getScrutinDetail`.
 - **Atlas thématique — transparence source (4.8)** : décompte par source de rattachement sur `/themes/[slug]` (dossier législatif vs classification assistée) ; `getThemeScrutinSourceCounts` + refactor `theme-scrutin-filter`.
 - **Tests validate enrichissement (4.8 offline)** : vitest `validate/enrichissement.test.ts` (structure échantillon-or, prédictions benchmark).
+- **Revendications pilote (4.3b)** : 2 entrées sourcées dans `themes-revendiques.ts` (rapporteur·e PL agriculture / programmation militaire ; URLs AN vérifiées ; slugs taxonomie) — relecture superviseur requise avant affichage nominatif.
 - **Atlas web + enrichissement LLM (4.8)** : `themeScrutinCondition` (web) applique `resolveEffectiveThemeSlug` — dossier prioritaire, classifications LLM si confiance ≥ seuil ; dégradation gracieuse si migration absente ; `scrutinBelongsToEffectiveTheme` (core).
 - **Enrichissement LLM (4.8 — durcissement offline)** : `resolveEffectiveThemeSlug` (dossier > LLM) ; `confidenceToBasisPoints` / `basisPointsToConfidence` (core) ; job `classify:scrutins` ignore les scrutins déjà classifiés pour la version de prompt ; tests vitest ETL (`classify-scrutin`, `prompt-v1`) ; CI exécute `validate:taxonomie`, `validate:themes`, `validate:enrichissement`.
 - **Seed thèmes taxonomie (4.7)** : `packages/etl/src/data/themes.ts` basculé sur les 8 slugs commissions AN ; `seed:themes` détache les liens pilotes dépréciés ; `pnpm etl validate:themes`.
@@ -49,6 +50,7 @@ Catégories : `Ajouté` · `Modifié` · `Corrigé` · `Supprimé` · `Données`
 - **`resolveThemeSlugForDb`** : requêtes DB sur slugs taxonomie (pilote déprécié → taxonomie).
 - **Boucle autonomie (hygiène PR)** : checklist post-PR dans `daily-standup` et `AGENTS.md` §6 ter (`gh pr ready`, vérif conflits, auto-merge) ; distinction journal « PR ouverte (HITL) » vs « PR mergée → prod ».
 - **Réorientation produit (2026-06-15)** : produit phare = **atlas des positionnements par thème** (niveau groupe, non nominatif) ; abandon explicite du « score » de confiance/honnêteté ; entrée principale par le thème. `VISION.md`, `ROADMAP.md`, `tasks/BACKLOG.md` (tâches 4.6–4.9) mis à jour.
+- `docs/METHODOLOGY.md` : statut du pilote revendications.
 
 ### Corrigé
 - **Cohérence des effectifs député·es (4.6)** : la homepage affichait « 645 » (toutes les personnes ayant siégé) à côté d'un bandeau figé « 577 ». On distingue désormais **« en mandat » (≈ 577) / « ayant siégé » (≈ 645)** sur la homepage, l'annuaire et le bandeau POC — chiffres **live** (fin des valeurs en dur dans `DataNotice`), texte obsolète sur les votes historiques retiré. `getGlobalCounts()` renvoie `deputesEnMandat` (`mandats.fin IS NULL`).
